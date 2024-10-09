@@ -1,0 +1,2 @@
+# Sistema_taller
+5-Sistema de Gestión de Mantenimiento para un Taller de Reparación de Autos: "Busco un programa que me ayude a organizar y gestionar las órdenes de trabajo de mi taller. El sistema debe permitir registrar la información de los clientes y sus vehículos, llevar un control de las reparaciones, y generar recordatorios automáticos para el mantenimiento periódico. También necesito un módulo que me permita registrar los costos y los pagos de cada servicio."
