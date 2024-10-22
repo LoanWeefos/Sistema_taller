@@ -11,31 +11,90 @@ import java.util.List;
  *
  * @author hoshi
  */
-public class ReparacionDAO implements IPersistencia<Reparacion>{
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.List;
+
+/**
+ *
+ * @author hoshi
+ */
+public class ReparacionDAO implements IPersistencia<Reparacion> {
+
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("miUnidadDePersistencia");
+    private EntityManager em;
+
+    public ReparacionDAO() {
+        em = emf.createEntityManager();
+    }
 
     @Override
     public void agregar(Reparacion entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            em.getTransaction().begin();
+            em.persist(entity);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void actualizar(Reparacion entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void eliminar(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            em.getTransaction().begin();
+            Reparacion reparacion = em.find(Reparacion.class, id);
+            if (reparacion != null) {
+                em.remove(reparacion);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Reparacion obtenerPorId(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return em.find(Reparacion.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public List<Reparacion> obtenerTodos() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return em.createQuery("SELECT r FROM Reparacion r", Reparacion.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-    
+
+    // Método para cerrar el EntityManager
+    public void cerrar() {
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 }
