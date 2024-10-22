@@ -5,12 +5,15 @@
 package Dominio;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -26,27 +29,26 @@ public class Servicio implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-     private String descripcion;
+    private String descripcion;
     private Double costo;
-
-    @ManyToOne
-    @JoinColumn(name = "reparacion_id")
-    private Reparacion reparacion;
+    
+    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL)
+    private List<ReparacionServicio> reparacionServicios;
 
     public Servicio() {
     }
 
-    public Servicio(Long id, String descripcion, Double costo, Reparacion reparacion) {
+    public Servicio(Long id, String descripcion, Double costo, List<ReparacionServicio> reparacionServicios) {
         this.id = id;
         this.descripcion = descripcion;
         this.costo = costo;
-        this.reparacion = reparacion;
+        this.reparacionServicios = reparacionServicios;
     }
 
-    public Servicio(String descripcion, Double costo, Reparacion reparacion) {
+    public Servicio(String descripcion, Double costo, List<ReparacionServicio> reparacionServicios) {
         this.descripcion = descripcion;
         this.costo = costo;
-        this.reparacion = reparacion;
+        this.reparacionServicios = reparacionServicios;
     }
 
     public String getDescripcion() {
@@ -65,14 +67,13 @@ public class Servicio implements Serializable {
         this.costo = costo;
     }
 
-    public Reparacion getReparacion() {
-        return reparacion;
+    public List<ReparacionServicio> getReparacionServicios() {
+        return reparacionServicios;
     }
 
-    public void setReparacion(Reparacion reparacion) {
-        this.reparacion = reparacion;
+    public void setReparacionServicios(List<ReparacionServicio> reparacionServicios) {
+        this.reparacionServicios = reparacionServicios;
     }
-    
     
     public Long getId() {
         return id;

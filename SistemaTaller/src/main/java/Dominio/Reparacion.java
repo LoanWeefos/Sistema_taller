@@ -6,6 +6,7 @@ package Dominio;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,28 +35,28 @@ public class Reparacion implements Serializable {
     @ManyToOne
     @JoinColumn(name = "vehiculo_id")
     private Vehiculo vehiculo;
-
-    @OneToMany(mappedBy = "reparacion")
-    private List<Servicio> servicios;
-
+    
+    @OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL)
+    private List<ReparacionServicio> reparacionServicios;
+    
     @OneToOne(mappedBy = "reparacion")
     private Pago pago;
 
     public Reparacion() {
     }
 
-    public Reparacion(Long id, String nombreE, Vehiculo vehiculo, List<Servicio> servicios, Pago pago) {
+    public Reparacion(Long id, String nombreE, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios, Pago pago) {
         this.id = id;
         this.nombreE = nombreE;
         this.vehiculo = vehiculo;
-        this.servicios = servicios;
+        this.reparacionServicios = reparacionServicios;
         this.pago = pago;
     }
 
-    public Reparacion(String nombreE, Vehiculo vehiculo, List<Servicio> servicios, Pago pago) {
+    public Reparacion(String nombreE, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios, Pago pago) {
         this.nombreE = nombreE;
         this.vehiculo = vehiculo;
-        this.servicios = servicios;
+        this.reparacionServicios = reparacionServicios;
         this.pago = pago;
     }
 
@@ -83,12 +84,12 @@ public class Reparacion implements Serializable {
         this.vehiculo = vehiculo;
     }
 
-    public List<Servicio> getServicios() {
-        return servicios;
+    public List<ReparacionServicio> getReparacionServicios() {
+        return reparacionServicios;
     }
 
-    public void setServicios(List<Servicio> servicios) {
-        this.servicios = servicios;
+    public void setReparacionServicios(List<ReparacionServicio> reparacionServicios) {
+        this.reparacionServicios = reparacionServicios;
     }
 
     public Pago getPago() {
