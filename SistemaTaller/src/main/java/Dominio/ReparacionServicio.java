@@ -12,43 +12,40 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "ReparacionServicio")
+@Table(name = "Reparaciones_Servicios")
 public class ReparacionServicio implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_repserv") // Clave primaria compuesta
+    private int id_repserv;
 
     @ManyToOne
-    @JoinColumn(name = "reparacion_id")
+    @JoinColumn(name = "id_reparacion") // Nombre de la columna según el esquema
     private Reparacion reparacion;
 
     @ManyToOne
-    @JoinColumn(name = "servicio_id")
+    @JoinColumn(name = "id_servicio") // Nombre de la columna según el esquema
     private Servicio servicio;
-
-    // Atributos adicionales opcionales (por ejemplo, fecha o costo específico para esta relación)
-    private String detalles;
-    private Double costoAdicional;
 
     public ReparacionServicio() {
     }
 
-    public ReparacionServicio(Reparacion reparacion, Servicio servicio, String detalles, Double costoAdicional) {
+    public ReparacionServicio(Reparacion reparacion, Servicio servicio) {
         this.reparacion = reparacion;
         this.servicio = servicio;
-        this.detalles = detalles;
-        this.costoAdicional = costoAdicional;
     }
 
-    public Long getId() {
-        return id;
+    // Getters y Setters
+
+    public int getId_repserv() {
+        return id_repserv;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId_repserv(int id_repserv) {
+        this.id_repserv = id_repserv;
     }
 
     public Reparacion getReparacion() {
@@ -67,26 +64,10 @@ public class ReparacionServicio implements Serializable {
         this.servicio = servicio;
     }
 
-    public String getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(String detalles) {
-        this.detalles = detalles;
-    }
-
-    public Double getCostoAdicional() {
-        return costoAdicional;
-    }
-
-    public void setCostoAdicional(Double costoAdicional) {
-        this.costoAdicional = costoAdicional;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (id_repserv != 0 ? id_repserv : 0);
         return hash;
     }
 
@@ -96,12 +77,12 @@ public class ReparacionServicio implements Serializable {
             return false;
         }
         ReparacionServicio other = (ReparacionServicio) object;
-        return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
+        return this.id_repserv == other.id_repserv;
     }
 
     @Override
     public String toString() {
-        return "Dominio.ReparacionServicio[ id=" + id + " ]";
+        return "Dominio.ReparacionServicio[ id_repserv=" + id_repserv + " ]";
     }
 }
 

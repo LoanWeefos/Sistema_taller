@@ -5,6 +5,7 @@
 package Persistencia;
 
 import Dominio.Pago;
+import Dominio.Reparacion;
 import java.sql.Connection;
 import java.util.List;
 import java.sql.PreparedStatement;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  *
  * @author hoshi
  */
-public class PagoDAO implements IPersistencia<Pago>{
+public class PagoDAO implements IPersistencia<Pago> {
     private Connection conexion;
 
     public PagoDAO(Connection conexion) {
@@ -26,39 +27,37 @@ public class PagoDAO implements IPersistencia<Pago>{
 
     @Override
     public void agregar(Pago pago) {
-        String sqlPago = "INSERT INTO cliente (total, metodo, fecha, reparacion) VALUES (?, ?, ?, ?)";
-        
-        
+        String sqlPago = "INSERT INTO Pagos (total, metodo, fecha, reparacion_id) VALUES (?, ?, ?, ?)";
+
         try (PreparedStatement psPago = conexion.prepareStatement(sqlPago, Statement.RETURN_GENERATED_KEYS)) {
             psPago.setDouble(1, pago.getTotal());
             psPago.setString(2, pago.getMetodo());
-            psPago.setDate(3, new java.sql.Date(pago.getFecha().getTime()));
-            psPago.setLong(4, pago.getReparacion().getId());
+            psPago.setTimestamp(3, java.sql.Timestamp.valueOf(pago.getFecha())); // Cambiado a Timestamp
+            psPago.setInt(4, pago.getReparacion().getId()); // Cambiado a setInt
 
             int affectedRows = psPago.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = psPago.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        pago.setId(generatedKeys.getLong(1)); // Establecer el ID generado
+                        pago.setId(generatedKeys.getInt(1)); // Cambiado a setInt
                     }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-      
     }
 
     @Override
     public void actualizar(Pago pago) {
-        String sqlPago = "UPDATE pago SET total = ?, metodo = ?, fecha = ?, reparacion_id = ? WHERE id = ?";
-        
+        String sqlPago = "UPDATE Pagos SET total = ?, metodo = ?, fecha = ?, reparacion_id = ? WHERE id = ?";
+
         try (PreparedStatement psPago = conexion.prepareStatement(sqlPago)) {
             psPago.setDouble(1, pago.getTotal());
             psPago.setString(2, pago.getMetodo());
-            psPago.setDate(3, new java.sql.Date(pago.getFecha().getTime()));
-            psPago.setLong(4, pago.getReparacion().getId());
-            psPago.setLong(5, pago.getId());
+            psPago.setTimestamp(3, java.sql.Timestamp.valueOf(pago.getFecha())); // Cambiado a Timestamp
+            psPago.setInt(4, pago.getReparacion().getId()); // Cambiado a setInt
+            psPago.setInt(5, pago.getId()); // Cambiado a setInt
 
             psPago.executeUpdate();
         } catch (SQLException e) {
@@ -66,64 +65,76 @@ public class PagoDAO implements IPersistencia<Pago>{
         }
     }
 
-    @Override
-    public void eliminar(Long id) {
-     String sqlEliminarPago = "DELETE FROM pago WHERE id = ?";
-        
+    public void eliminar(int id) { // Cambiado a int
+        String sqlEliminarPago = "DELETE FROM Pagos WHERE id = ?";
+
         try (PreparedStatement psEliminarPago = conexion.prepareStatement(sqlEliminarPago)) {
-            psEliminarPago.setLong(1, id);
+            psEliminarPago.setInt(1, id); // Cambiado a setInt
             psEliminarPago.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public Pago obtenerPorId(Long id) {
-    String sqlPago = "SELECT * FROM pago WHERE id = ?";
+    public Pago obtenerPorId(int id) { // Cambiado a int
+        String sqlPago = "SELECT * FROM Pagos WHERE id = ?";
         Pago pago = null;
-        
+
         try (PreparedStatement psPago = conexion.prepareStatement(sqlPago)) {
-            psPago.setLong(1, id);
+            psPago.setInt(1, id); // Cambiado a setInt
             try (ResultSet rsPago = psPago.executeQuery()) {
                 if (rsPago.next()) {
                     pago = new Pago();
-                    pago.setId(rsPago.getLong("id"));
+                    pago.setId(rsPago.getInt("id")); // Cambiado a getInt
                     pago.setTotal(rsPago.getDouble("total"));
                     pago.setMetodo(rsPago.getString("metodo"));
-                    pago.setFecha(rsPago.getDate("fecha"));
-                    pago.getReparacion().setId(rsPago.getLong("reparacion_id"));
+                    pago.setFecha(rsPago.getTimestamp("fecha").toLocalDateTime()); // Convertir a LocalDateTime
+                    Reparacion reparacion = new Reparacion();
+                    reparacion.setId(rsPago.getInt("reparacion_id")); // Cambiado a getInt
+                    pago.setReparacion(reparacion);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pago;
     }
 
     @Override
     public List<Pago> obtenerTodos() {
-     String sqlPago = "SELECT * FROM pago";
+        String sqlPago = "SELECT * FROM Pagos";
         List<Pago> pagos = new ArrayList<>();
-        
+
         try (Statement stmtPago = conexion.createStatement();
              ResultSet rsPago = stmtPago.executeQuery(sqlPago)) {
-             
+
             while (rsPago.next()) {
                 Pago pago = new Pago();
-                pago.setId(rsPago.getLong("id"));
+                pago.setId(rsPago.getInt("id")); // Cambiado a getInt
                 pago.setTotal(rsPago.getDouble("total"));
                 pago.setMetodo(rsPago.getString("metodo"));
-                pago.setFecha(rsPago.getDate("fecha"));
-                pago.getReparacion().setId(rsPago.getLong("reparacion_id"));
+                pago.setFecha(rsPago.getTimestamp("fecha").toLocalDateTime()); // Convertir a LocalDateTime
+                Reparacion reparacion = new Reparacion();
+                reparacion.setId(rsPago.getInt("reparacion_id")); // Cambiado a getInt
+                pago.setReparacion(reparacion);
                 pagos.add(pago);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return pagos;
     }
-    
+
+    @Override
+    public void eliminar(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Pago obtenerPorId(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
+

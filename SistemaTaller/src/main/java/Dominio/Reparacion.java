@@ -14,66 +14,61 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-/**
- *
- * @author Oscar
- */
 @Entity
 @Table(name = "Reparaciones")
 public class Reparacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    private String nombreE;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Se cambia a IDENTITY para reflejar la base de datos
+    private int id;
+
+    private String nombre_empleado; // Se cambia el nombre del atributo
 
     @ManyToOne
-    @JoinColumn(name = "vehiculo_id")
+    @JoinColumn(name = "placa_vehiculo") // Se cambia el nombre de la columna a placa_vehiculo
     private Vehiculo vehiculo;
     
     @OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL)
     private List<ReparacionServicio> reparacionServicios;
-    
-    @OneToOne(mappedBy = "reparacion")
-    private Pago pago;
+
+    // Se elimina la relación con Pago si no está en tu esquema
 
     public Reparacion() {
     }
 
-    public Reparacion(Long id, String nombreE, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios, Pago pago) {
+    public Reparacion(int id, String nombre_empleado, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios) {
         this.id = id;
-        this.nombreE = nombreE;
+        this.nombre_empleado = nombre_empleado;
         this.vehiculo = vehiculo;
         this.reparacionServicios = reparacionServicios;
-        this.pago = pago;
     }
 
-    public Reparacion(String nombreE, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios, Pago pago) {
-        this.nombreE = nombreE;
+    public Reparacion(String nombre_empleado, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios) {
+        this.nombre_empleado = nombre_empleado;
         this.vehiculo = vehiculo;
         this.reparacionServicios = reparacionServicios;
-        this.pago = pago;
     }
 
-    public Long getId() {
+    // Getters y Setters
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getNombreE() {
-        return nombreE;
+    public String getNombre_empleado() {
+        return nombre_empleado;
     }
 
-    public void setNombreE(String nombreE) {
-        this.nombreE = nombreE;
+    public void setNombre_empleado(String nombre_empleado) {
+        this.nombre_empleado = nombre_empleado;
     }
 
     public Vehiculo getVehiculo() {
@@ -92,38 +87,25 @@ public class Reparacion implements Serializable {
         this.reparacionServicios = reparacionServicios;
     }
 
-    public Pago getPago() {
-        return pago;
-    }
-
-    public void setPago(Pago pago) {
-        this.pago = pago;
-    }
-
-    
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (id != 0 ? id : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Reparacion)) {
             return false;
         }
         Reparacion other = (Reparacion) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return this.id == other.id;
     }
 
     @Override
     public String toString() {
-        return "Persistencia.Reparacion[ id=" + id + " ]";
+        return "Dominio.Reparacion[ id=" + id + " ]";
     }
-
 }
+

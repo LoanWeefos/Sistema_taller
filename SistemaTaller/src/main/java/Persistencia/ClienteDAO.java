@@ -1,89 +1,57 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Persistencia;
 
 import Dominio.Cliente;
+import Dominio.Domicilio;
 import Dominio.Vehiculo;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Oscar
- */
-public class ClienteDAO implements IPersistencia<Cliente>{
+public class ClienteDAO implements IPersistencia<Cliente> {
     private Connection conexion;
 
     public ClienteDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
+    // Método para agregar un cliente
     @Override
-     public void agregar(Cliente cliente) {
-        String sqlCliente = "INSERT INTO cliente (nombre, correo, fecha_nacimiento, rfc, domicilio) VALUES (?, ?, ?, ?, ?)";
-        String sqlVehiculo = "INSERT INTO vehiculo (cliente_id, placa, marca, modelo, color) VALUES (?, ?, ?, ?, ?)";
+    public void agregar(Cliente cliente) {
+        String sqlCliente = "INSERT INTO Clientes (rfc, nombre, correo, fecha_nacimiento, calle, colonia, numero) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
-        try {
-            conexion.setAutoCommit(false);  // Comenzamos una transacción
+        try (PreparedStatement statement = conexion.prepareStatement(sqlCliente)) {
+            statement.setString(1, cliente.getRfc());
+            statement.setString(2, cliente.getNombre());
+            statement.setString(3, cliente.getCorreo());
+            statement.setDate(4, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
+            statement.setString(5, cliente.getDomicilio().getCalle());
+            statement.setString(6, cliente.getDomicilio().getColonia());
+            statement.setInt(7, cliente.getDomicilio().getNumero());
 
-            // Agregar cliente
-            try (PreparedStatement psCliente = conexion.prepareStatement(sqlCliente, Statement.RETURN_GENERATED_KEYS)) {
-                psCliente.setString(1, cliente.getNombre());
-                psCliente.setString(2, cliente.getCorreo());
-                psCliente.setDate(3, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
-                psCliente.setLong(4, cliente.getId());
-                psCliente.setString(5, cliente.getDireccion());
-
-                int affectedRows = psCliente.executeUpdate();
-                if (affectedRows > 0) {
-                    try (ResultSet generatedKeys = psCliente.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            cliente.setId(generatedKeys.getLong(1));  // Establecer el ID generado
-                        }
-                    }
-                }
-
-                // Agregar vehículos del cliente
-                for (Vehiculo vehiculo : cliente.getVehiculos()) {
-                    try (PreparedStatement psVehiculo = conexion.prepareStatement(sqlVehiculo)) {
-                        psVehiculo.setLong(1, cliente.getId());
-                        psVehiculo.setString(2, vehiculo.getPlaca());
-                        psVehiculo.setString(3, vehiculo.getMarca());
-                        psVehiculo.setString(4, vehiculo.getModelo());
-                        psVehiculo.setString(5, vehiculo.getColor());
-                        psVehiculo.executeUpdate();
-                    }
-                }
-
-                conexion.commit();  // Confirmamos la transacción
-            } catch (SQLException e) {
-                conexion.rollback();  // Revertimos la transacción en caso de error
-                throw e;
-            }
+            statement.executeUpdate();
+            System.out.println("Cliente agregado exitosamente: " + cliente);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                conexion.setAutoCommit(true);  // Restauramos el comportamiento por defecto
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+    }
+
+    // Método para agregar un vehículo a un cliente
+    public void agregarVehiculoACliente(Vehiculo vehiculo, Cliente cliente) {
+        if (cliente == null) {
+            System.out.println("Cliente no puede ser nulo");
+            return;
+        }
+        vehiculo.setCliente(cliente); // Asociar el vehículo con el cliente
+
+        // Crear instancia de VehiculoDAO pasando la conexión
+        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion); // Pasa la conexión aquí
+        vehiculoDAO.agregar(vehiculo); // Agregar vehículo
     }
 
     @Override
     public void actualizar(Cliente cliente) {
-        String sqlCliente = "UPDATE cliente SET nombre = ?, correo = ?, fecha_nacimiento = ?, rfc = ?, domicilio = ? WHERE id = ?";
-        String sqlEliminarVehiculos = "DELETE FROM vehiculo WHERE cliente_id = ?";
-        String sqlVehiculo = "INSERT INTO vehiculo (cliente_id, placa, marca, modelo, color) VALUES (?, ?, ?, ?, ?)";
-
+        String sqlCliente = "UPDATE Clientes SET nombre = ?, correo = ?, fecha_nacimiento = ?, calle = ?, colonia = ?, numero = ? WHERE rfc = ?";
+        
         try {
             conexion.setAutoCommit(false);  // Comenzamos una transacción
 
@@ -92,29 +60,12 @@ public class ClienteDAO implements IPersistencia<Cliente>{
                 psCliente.setString(1, cliente.getNombre());
                 psCliente.setString(2, cliente.getCorreo());
                 psCliente.setDate(3, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
-                psCliente.setString(4, cliente.getRfc());
-                psCliente.setString(5, cliente.getDireccion());
-                psCliente.setLong(6, cliente.getId());
+                psCliente.setString(4, cliente.getDomicilio().getCalle());
+                psCliente.setString(5, cliente.getDomicilio().getColonia());
+                psCliente.setInt(6, cliente.getDomicilio().getNumero());
+                psCliente.setString(7, cliente.getRfc());
+
                 psCliente.executeUpdate();
-
-                // Eliminar vehículos actuales
-                try (PreparedStatement psEliminarVehiculos = conexion.prepareStatement(sqlEliminarVehiculos)) {
-                    psEliminarVehiculos.setLong(1, cliente.getId());
-                    psEliminarVehiculos.executeUpdate();
-                }
-
-                // Volver a insertar vehículos del cliente
-                for (Vehiculo vehiculo : cliente.getVehiculos()) {
-                    try (PreparedStatement psVehiculo = conexion.prepareStatement(sqlVehiculo)) {
-                        psVehiculo.setLong(1, cliente.getId());
-                        psVehiculo.setString(2, vehiculo.getPlaca());
-                        psVehiculo.setString(3, vehiculo.getMarca());
-                        psVehiculo.setString(4, vehiculo.getModelo());
-                        psVehiculo.setString(5, vehiculo.getColor());
-                        psVehiculo.executeUpdate();
-                    }
-                }
-
                 conexion.commit();  // Confirmamos la transacción
             } catch (SQLException e) {
                 conexion.rollback();  // Revertimos la transacción en caso de error
@@ -131,112 +82,87 @@ public class ClienteDAO implements IPersistencia<Cliente>{
         }
     }
 
-    @Override
-    public void eliminar(Long id) {
-        String sqlEliminarVehiculos = "DELETE FROM vehiculo WHERE cliente_id = ?";
-        String sqlEliminarCliente = "DELETE FROM cliente WHERE id = ?";
-        
-        try (PreparedStatement psEliminarVehiculos = conexion.prepareStatement(sqlEliminarVehiculos);
-             PreparedStatement psEliminarCliente = conexion.prepareStatement(sqlEliminarCliente)) {
-             
-            // Eliminar vehículos del cliente
-            psEliminarVehiculos.setLong(1, id);
-            psEliminarVehiculos.executeUpdate();
-            
-            // Eliminar cliente
-            psEliminarCliente.setLong(1, id);
+    public void eliminar(String rfc) {
+        String sqlEliminarCliente = "DELETE FROM Clientes WHERE rfc = ?";
+
+        try (PreparedStatement psEliminarCliente = conexion.prepareStatement(sqlEliminarCliente)) {
+            psEliminarCliente.setString(1, rfc);
             psEliminarCliente.executeUpdate();
-            
+            System.out.println("Cliente eliminado exitosamente: " + rfc);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public Cliente obtenerPorId(Long id) {
-        String sqlCliente = "SELECT * FROM cliente WHERE id = ?";
-        String sqlVehiculo = "SELECT * FROM vehiculo WHERE cliente_id = ?";
+    public Cliente obtenerPorId(String rfc) {
+        String sqlCliente = "SELECT * FROM Clientes WHERE rfc = ?";
         Cliente cliente = null;
-        
-        try (PreparedStatement psCliente = conexion.prepareStatement(sqlCliente);
-             PreparedStatement psVehiculo = conexion.prepareStatement(sqlVehiculo)) {
-             
-            // Obtener cliente
-            psCliente.setLong(1, id);
+
+        try (PreparedStatement psCliente = conexion.prepareStatement(sqlCliente)) {
+            psCliente.setString(1, rfc);
             try (ResultSet rsCliente = psCliente.executeQuery()) {
                 if (rsCliente.next()) {
                     cliente = new Cliente();
-                    cliente.setId(rsCliente.getLong("id"));
+                    cliente.setRfc(rsCliente.getString("rfc"));
                     cliente.setNombre(rsCliente.getString("nombre"));
                     cliente.setCorreo(rsCliente.getString("correo"));
                     cliente.setFechaNacimiento(rsCliente.getDate("fecha_nacimiento"));
-                    cliente.setRfc(rsCliente.getString("rfc"));
-                    cliente.setDireccion(rsCliente.getString("direccion"));
-                }
-            }
-            
-            // Obtener vehículos asociados al cliente
-            if (cliente != null) {
-                List<Vehiculo> vehiculos = new ArrayList<>();
-                psVehiculo.setLong(1, id);
-                try (ResultSet rsVehiculo = psVehiculo.executeQuery()) {
-                    while (rsVehiculo.next()) {
-                        Vehiculo vehiculo = new Vehiculo();
-                        vehiculo.setPlaca(rsVehiculo.getString("placa"));
-                        vehiculo.setMarca(rsVehiculo.getString("marca"));
-                        vehiculo.setModelo(rsVehiculo.getString("modelo"));
-                        vehiculo.setColor(rsVehiculo.getString("color"));
-                        vehiculos.add(vehiculo);
-                    }
-                    cliente.setVehiculos(vehiculos);
+
+                    // Recuperar domicilio
+                    Domicilio domicilio = new Domicilio();
+                    domicilio.setCalle(rsCliente.getString("calle"));
+                    domicilio.setColonia(rsCliente.getString("colonia"));
+                    domicilio.setNumero(rsCliente.getInt("numero"));
+                    cliente.setDomicilio(domicilio);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return cliente;
     }
 
     @Override
     public List<Cliente> obtenerTodos() {
-        String sqlCliente = "SELECT * FROM cliente";
+        String sqlCliente = "SELECT * FROM Clientes";
         List<Cliente> clientes = new ArrayList<>();
-        
+
         try (Statement stmtCliente = conexion.createStatement();
              ResultSet rsCliente = stmtCliente.executeQuery(sqlCliente)) {
-             
+
             while (rsCliente.next()) {
                 Cliente cliente = new Cliente();
-                cliente.setId(rsCliente.getLong("id"));
+                cliente.setRfc(rsCliente.getString("rfc"));
                 cliente.setNombre(rsCliente.getString("nombre"));
                 cliente.setCorreo(rsCliente.getString("correo"));
                 cliente.setFechaNacimiento(rsCliente.getDate("fecha_nacimiento"));
-                cliente.setRfc(rsCliente.getString("rfc"));
-                cliente.setDireccion(rsCliente.getString("domicilio"));
-                
-                // Obtener vehículos para cada cliente
-                String sqlVehiculo = "SELECT * FROM vehiculo WHERE cliente_id = " + cliente.getId();
-                List<Vehiculo> vehiculos = new ArrayList<>();
-                try (Statement stmtVehiculo = conexion.createStatement();
-                     ResultSet rsVehiculo = stmtVehiculo.executeQuery(sqlVehiculo)) {
-                     
-                    while (rsVehiculo.next()) {
-                        Vehiculo vehiculo = new Vehiculo();
-                        vehiculo.setPlaca(rsVehiculo.getString("placa"));
-                        vehiculo.setMarca(rsVehiculo.getString("marca"));
-                        vehiculo.setModelo(rsVehiculo.getString("modelo"));
-                        vehiculo.setColor(rsVehiculo.getString("color"));
-                        vehiculos.add(vehiculo);
-                    }
-                    cliente.setVehiculos(vehiculos);
-                }
-                   clientes.add(cliente);
+
+                // Recuperar domicilio
+                Domicilio domicilio = new Domicilio();
+                domicilio.setCalle(rsCliente.getString("calle"));
+                domicilio.setColonia(rsCliente.getString("colonia"));
+                domicilio.setNumero(rsCliente.getInt("numero"));
+                cliente.setDomicilio(domicilio);
+
+                clientes.add(cliente);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return clientes;
     }
+
+    @Override
+    public void eliminar(Long id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Cliente obtenerPorId(Long id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
+
+

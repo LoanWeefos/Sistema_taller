@@ -4,82 +4,39 @@
  */
 package Dominio;
 
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-/**
- *
- * @author Oscar
- */
 @Entity
 @Table(name = "Vehiculos")
 public class Vehiculo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    
-    private String placa;
+    @Column(unique = true, nullable = false) // Asegurando que la placa sea única
+    private String placa; // Usamos la placa como clave primaria
+
     private String marca;
     private String modelo;
     private String color;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
-
-    @OneToMany(mappedBy = "vehiculo")
-    private List<Reparacion> reparaciones;
+    @JoinColumn(name = "rfc_cliente", nullable = false) // Relación con Cliente
+    private Cliente cliente; 
 
     public Vehiculo() {
     }
 
-    public Vehiculo(Long id, String placa, String marca, String modelo, String color, Cliente cliente, List<Reparacion> reparaciones) {
-        this.id = id;
+    public Vehiculo(String placa, String marca, String modelo, String color, Cliente cliente) {
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
         this.color = color;
         this.cliente = cliente;
-        this.reparaciones = reparaciones;
     }
 
-    public Vehiculo(String placa, String marca, String modelo, String color, Cliente cliente, List<Reparacion> reparaciones) {
-        this.placa = placa;
-        this.marca = marca;
-        this.modelo = modelo;
-        this.color = color;
-        this.cliente = cliente;
-        this.reparaciones = reparaciones;
-    }
-
-    public List<Reparacion> getReparaciones() {
-        return reparaciones;
-    }
-
-    public void setReparaciones(List<Reparacion> reparaciones) {
-        this.reparaciones = reparaciones;
-    }
-    
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters y setters
     public String getPlaca() {
         return placa;
     }
@@ -119,32 +76,25 @@ public class Vehiculo implements Serializable {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
-    
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return placa != null ? placa.hashCode() : 0; // Hash por placa
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Vehiculo)) {
             return false;
         }
         Vehiculo other = (Vehiculo) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return this.placa != null && this.placa.equals(other.placa); // Comparar placas
     }
 
     @Override
     public String toString() {
-        return "Dominios.Vehiculo[ id=" + id + " ]";
+        return "Dominio.Vehiculo[ placa=" + placa + ", marca=" + marca + " ]"; // Representación
     }
-    
 }
+
+

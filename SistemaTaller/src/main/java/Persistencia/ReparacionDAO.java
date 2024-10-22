@@ -6,28 +6,10 @@ package Persistencia;
 
 import Dominio.Reparacion;
 import Dominio.ReparacionServicio;
-import java.util.List;
-
-/**
- *
- * @author hoshi
- */
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.List;
-
-/**
- *
- * @author hoshi
- */import javax.persistence.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Clase para la gestión de operaciones CRUD de la entidad Reparacion utilizando JDBC.
- */
 public class ReparacionDAO implements IPersistencia<Reparacion> {
     private Connection conexion;
 
@@ -37,26 +19,26 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
 
     @Override
     public void agregar(Reparacion entity) {
-        String sqlReparacion = "INSERT INTO Reparaciones (nombreE, vehiculo_id) VALUES (?, ?)";
+        String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
         String sqlReparacionServicio = "INSERT INTO ReparacionServicio (reparacion_id, servicio_id) VALUES (?, ?)";
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion, Statement.RETURN_GENERATED_KEYS)) {
             // Insertar la Reparacion
-            stmtReparacion.setString(1, entity.getNombreE());
-            stmtReparacion.setLong(2, entity.getVehiculo().getId());
+            stmtReparacion.setString(1, entity.getNombre_empleado());
+            stmtReparacion.setString(2, entity.getVehiculo().getPlaca()); // Cambiar a placa
             stmtReparacion.executeUpdate();
 
             // Obtener el ID generado para la Reparacion
             ResultSet generatedKeys = stmtReparacion.getGeneratedKeys();
             if (generatedKeys.next()) {
-                Long reparacionId = generatedKeys.getLong(1);
+                int reparacionId = generatedKeys.getInt(1); // Cambiado a int
                 entity.setId(reparacionId);
 
                 // Insertar las relaciones en la tabla ReparacionServicio
                 try (PreparedStatement stmtReparacionServicio = conexion.prepareStatement(sqlReparacionServicio)) {
                     for (ReparacionServicio reparacionServicio : entity.getReparacionServicios()) {
-                        stmtReparacionServicio.setLong(1, reparacionId);
-                        stmtReparacionServicio.setLong(2, reparacionServicio.getServicio().getId());
+                        stmtReparacionServicio.setInt(1, reparacionId); // Cambiado a int
+                        stmtReparacionServicio.setInt(2, reparacionServicio.getServicio().getId_servicio()); // Cambiado a int
                         stmtReparacionServicio.executeUpdate();
                     }
                 }
@@ -68,28 +50,28 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
 
     @Override
     public void actualizar(Reparacion entity) {
-        String sqlReparacion = "UPDATE Reparaciones SET nombreE = ?, vehiculo_id = ? WHERE id = ?";
+        String sqlReparacion = "UPDATE Reparaciones SET nombre_empleado = ?, placa_vehiculo = ? WHERE id = ?";
         String sqlDeleteReparacionServicio = "DELETE FROM ReparacionServicio WHERE reparacion_id = ?";
         String sqlInsertReparacionServicio = "INSERT INTO ReparacionServicio (reparacion_id, servicio_id) VALUES (?, ?)";
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion)) {
             // Actualizar la Reparacion
-            stmtReparacion.setString(1, entity.getNombreE());
-            stmtReparacion.setLong(2, entity.getVehiculo().getId());
-            stmtReparacion.setLong(3, entity.getId());
+            stmtReparacion.setString(1, entity.getNombre_empleado());
+            stmtReparacion.setString(2, entity.getVehiculo().getPlaca()); // Cambiar a placa
+            stmtReparacion.setInt(3, entity.getId()); // Cambiado a int
             stmtReparacion.executeUpdate();
 
             // Eliminar las relaciones existentes en la tabla ReparacionServicio
             try (PreparedStatement stmtDeleteReparacionServicio = conexion.prepareStatement(sqlDeleteReparacionServicio)) {
-                stmtDeleteReparacionServicio.setLong(1, entity.getId());
+                stmtDeleteReparacionServicio.setInt(1, entity.getId()); // Cambiado a int
                 stmtDeleteReparacionServicio.executeUpdate();
             }
 
             // Insertar las nuevas relaciones en la tabla ReparacionServicio
             try (PreparedStatement stmtInsertReparacionServicio = conexion.prepareStatement(sqlInsertReparacionServicio)) {
                 for (ReparacionServicio reparacionServicio : entity.getReparacionServicios()) {
-                    stmtInsertReparacionServicio.setLong(1, entity.getId());
-                    stmtInsertReparacionServicio.setLong(2, reparacionServicio.getServicio().getId());
+                    stmtInsertReparacionServicio.setInt(1, entity.getId()); // Cambiado a int
+                    stmtInsertReparacionServicio.setInt(2, reparacionServicio.getServicio().getId_servicio()); // Cambiado a int
                     stmtInsertReparacionServicio.executeUpdate();
                 }
             }
@@ -98,21 +80,20 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
         }
     }
 
-    @Override
-    public void eliminar(Long id) {
+    public void eliminar(int id) { // Cambiado a int
         String sqlReparacionServicio = "DELETE FROM ReparacionServicio WHERE reparacion_id = ?";
         String sqlReparacion = "DELETE FROM Reparaciones WHERE id = ?";
 
         try {
             // Eliminar las relaciones en la tabla ReparacionServicio
             try (PreparedStatement stmtReparacionServicio = conexion.prepareStatement(sqlReparacionServicio)) {
-                stmtReparacionServicio.setLong(1, id);
+                stmtReparacionServicio.setInt(1, id); // Cambiado a int
                 stmtReparacionServicio.executeUpdate();
             }
 
             // Eliminar la Reparacion
             try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion)) {
-                stmtReparacion.setLong(1, id);
+                stmtReparacion.setInt(1, id); // Cambiado a int
                 stmtReparacion.executeUpdate();
             }
         } catch (SQLException e) {
@@ -120,32 +101,31 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
         }
     }
 
-    @Override
-    public Reparacion obtenerPorId(Long id) {
+    public Reparacion obtenerPorId(int id) { // Cambiado a int
         String sqlReparacion = "SELECT * FROM Reparaciones WHERE id = ?";
         String sqlReparacionServicio = "SELECT * FROM ReparacionServicio WHERE reparacion_id = ?";
         Reparacion reparacion = null;
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion)) {
-            stmtReparacion.setLong(1, id);
+            stmtReparacion.setInt(1, id); // Cambiado a int
             ResultSet rsReparacion = stmtReparacion.executeQuery();
             if (rsReparacion.next()) {
                 reparacion = new Reparacion();
-                reparacion.setId(rsReparacion.getLong("id"));
-                reparacion.setNombreE(rsReparacion.getString("nombreE"));
-                
+                reparacion.setId(rsReparacion.getInt("id")); // Cambiado a int
+                reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
+
                 // Obtener las relaciones ReparacionServicio
                 try (PreparedStatement stmtReparacionServicio = conexion.prepareStatement(sqlReparacionServicio)) {
-                    stmtReparacionServicio.setLong(1, id);
+                    stmtReparacionServicio.setInt(1, id); // Cambiado a int
                     ResultSet rsReparacionServicio = stmtReparacionServicio.executeQuery();
                     List<ReparacionServicio> reparacionesServicios = new ArrayList<>();
                     while (rsReparacionServicio.next()) {
                         ReparacionServicio reparacionServicio = new ReparacionServicio();
                         // Aquí deberías cargar la entidad Servicio y asignarla a reparacionServicio
-                        //reparacionServicio.setServicio(new ServicioDAO(conexion).obtenerPorId(rsReparacionServicio.getLong("servicio_id")));
+                        // reparacionServicio.setServicio(new ServicioDAO(conexion).obtenerPorId(rsReparacionServicio.getInt("servicio_id"))); // Cambiado a int
                         reparacionesServicios.add(reparacionServicio);
                     }
-                    //reparacion.(reparacionesServicios);
+                    reparacion.setReparacionServicios(reparacionesServicios); // Asegúrate de asignar la lista de servicios
                 }
             }
         } catch (SQLException e) {
@@ -163,8 +143,8 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
             ResultSet rsReparacion = stmt.executeQuery(sqlReparacion);
             while (rsReparacion.next()) {
                 Reparacion reparacion = new Reparacion();
-                reparacion.setId(rsReparacion.getLong("id"));
-                reparacion.setNombreE(rsReparacion.getString("nombreE"));
+                reparacion.setId(rsReparacion.getInt("id")); // Cambiado a int
+                reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
 
                 // Aquí podrías cargar las relaciones ReparacionServicio si es necesario
                 reparaciones.add(reparacion);
@@ -174,4 +154,15 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
         }
         return reparaciones;
     }
+
+    @Override
+    public void eliminar(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Reparacion obtenerPorId(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
+
