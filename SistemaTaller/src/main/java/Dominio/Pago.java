@@ -27,7 +27,7 @@ public class Pago implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-     private Double total;
+    private Double total;
     private String metodo;
     private Date fecha;
 
