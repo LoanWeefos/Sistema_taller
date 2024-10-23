@@ -14,7 +14,7 @@ import java.util.Date;
  * 
  * @author MichellK
  */
-public class VehiculoDaoTest {
+public class VehiculoClienteDaoTest {
     public static void main(String[] args) {
         Connection conexion = null;
         // Establecer conexión a la base de datos
@@ -42,8 +42,8 @@ public class VehiculoDaoTest {
             System.out.println("No se pudo obtener el vehículo.");
         }
         // Eliminar el vehículo
-        vehiculoDAO.eliminar("ABC123");
-        System.out.println("Vehículo eliminado.");
+       // vehiculoDAO.eliminar("ABC123");
+        //System.out.println("Vehículo eliminado.");
         // Verificar si el vehículo ha sido eliminado
         Vehiculo vehiculoVerificado = vehiculoDAO.obtenerPorId("ABC123");
         if (vehiculoVerificado == null) {

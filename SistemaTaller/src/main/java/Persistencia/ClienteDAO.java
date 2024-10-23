@@ -163,6 +163,15 @@ public class ClienteDAO implements IPersistencia<Cliente> {
     public Cliente obtenerPorId(Long id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    public void eliminarVehiculosDeCliente(Cliente cliente) throws SQLException {
+    String sql = "DELETE FROM vehiculos WHERE rfc_cliente = ?";
+    try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        stmt.setString(1, cliente.getRfc());
+        stmt.executeUpdate();
+    }
+}
+
 }
 
 

@@ -17,35 +17,24 @@ import javax.persistence.Persistence;
 public class SistemaTaller {
 
     public static void main(String[] args) {
-        // Crear el EntityManagerFactory y EntityManager
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SistemaTallerPU");
-        EntityManager em = emf.createEntityManager();
+       
+    // Crear el EntityManagerFactory y EntityManager
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("SistemaTallerPU");
+    EntityManager em = emf.createEntityManager();
 
-        // Iniciar una transacción
-        EntityTransaction transaction = em.getTransaction();
+    // No es necesario iniciar una transacción si no vas a persistir nada
+    try {
+        // Aquí no es necesario realizar ninguna operación, ya que las tablas
+        // se crearán automáticamente si la configuración de persistence.xml está correcta.
 
-        try {
-            transaction.begin();
-
-            // Crear una nueva instancia de TuEntidad
-            Cliente entidad = new Cliente();
-            // Configura los atributos de la entidad si es necesario
-            // Por ejemplo: entidad.setNombre("Ejemplo");
-
-            // Persistir la entidad
-            em.persist(entidad);
-
-            transaction.commit(); // Guarda la transacción
-            System.out.println("Entidad persistida. Verifica las tablas en MySQL.");
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback(); // Revertir si algo falla
-            }
-            e.printStackTrace();
-        } finally {
-            em.close(); // Cerrar el EntityManager
-            emf.close(); // Cerrar el EntityManagerFactory
-        }
+        System.out.println("Las tablas se han creado correctamente.");
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        em.close(); // Cerrar el EntityManager
+        emf.close(); // Cerrar el EntityManagerFactory
     }
+}
+
 
 }
