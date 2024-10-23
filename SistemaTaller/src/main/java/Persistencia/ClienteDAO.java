@@ -14,6 +14,10 @@ public class ClienteDAO implements IPersistencia<Cliente> {
         this.conexion = conexion;
     }
 
+    public ClienteDAO() {
+    }
+
+    
     // Método para agregar un cliente
     @Override
     public void agregar(Cliente cliente) {

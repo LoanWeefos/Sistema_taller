@@ -134,7 +134,7 @@ public class ServicioDAO implements IPersistencia<Servicio> {
                     while (rsReparacionServicio.next()) {
                         ReparacionServicio reparacionServicio = new ReparacionServicio();
                         // Aquí, cambiamos el método para que reciba un int
-                        reparacionServicio.setReparacion(reparacionDAO.obtenerPorId(rsReparacionServicio.getInt("reparacion_id"))); // Cargar la Reparacion
+                        reparacionServicio.setReparacion(reparacionDAO.obtenerPorId(rsReparacionServicio.getLong("reparacion_id"))); // Cargar la Reparacion
                         reparacionesServicio.add(reparacionServicio);
                     }
                     servicio.setReparacionServicios(reparacionesServicio);
