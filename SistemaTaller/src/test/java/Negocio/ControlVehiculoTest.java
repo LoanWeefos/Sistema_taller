@@ -26,7 +26,7 @@ public class ControlVehiculoTest {
     private ControlCliente controlcliente;
 
     @BeforeAll
-    public static void setUpClass() throws SQLException{
+    public static void setUpClass() throws SQLException {
         // Si necesitas inicializar algo antes de todos los tests
         connection = Conexion.getConnection();
     }
@@ -51,12 +51,13 @@ public class ControlVehiculoTest {
         // Por ejemplo, eliminar el cliente agregado en setUp
 //        connection.createStatement().executeUpdate("DELETE FROM Clientes WHERE rfc = 'RFC123'");
 //        connection.createStatement().executeUpdate("DELETE FROM Vehiculos WHERE placa = 'ABC123'");
-     ClienteDAO cliente= new ClienteDAO(connection);
-     cliente.eliminar("RFC1");
-    
-     VehiculoDAO vehiculoDAO= new VehiculoDAO(connection);
-     vehiculoDAO.eliminar("ABC1");
-     
+
+        VehiculoDAO vehiculoDAO = new VehiculoDAO(connection);
+        vehiculoDAO.eliminar("ABC1");
+        
+        ClienteDAO cliente = new ClienteDAO(connection);
+        cliente.eliminar("RFC1");
+
     }
 
     @Test
