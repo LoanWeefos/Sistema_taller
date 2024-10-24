@@ -39,18 +39,18 @@ public class ClienteDAO implements IPersistencia<Cliente> {
         }
     }
 
-    // Método para agregar un vehículo a un cliente
-    public void agregarVehiculoACliente(Vehiculo vehiculo, Cliente cliente) {
-        if (cliente == null) {
-            System.out.println("Cliente no puede ser nulo");
-            return;
-        }
-        vehiculo.setCliente(cliente); // Asociar el vehículo con el cliente
-
-        // Crear instancia de VehiculoDAO pasando la conexión
-        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion); // Pasa la conexión aquí
-        vehiculoDAO.agregar(vehiculo); // Agregar vehículo
-    }
+//    // Método para agregar un vehículo a un cliente
+//    public void agregarVehiculoACliente(Vehiculo vehiculo, Cliente cliente) {
+//        if (cliente == null) {
+//            System.out.println("Cliente no puede ser nulo");
+//            return;
+//        }
+//        vehiculo.setCliente(cliente); // Asociar el vehículo con el cliente
+//
+//        // Crear instancia de VehiculoDAO pasando la conexión
+//        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion); // Pasa la conexión aquí
+//        vehiculoDAO.agregar(vehiculo); // Agregar vehículo
+//    }
 
     @Override
     public void actualizar(Cliente cliente) {

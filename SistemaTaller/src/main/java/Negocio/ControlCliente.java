@@ -97,14 +97,14 @@ public class ControlCliente {
         return clientes;
     }
 
-    // Método para agregar un vehículo a un cliente
-    public void agregarVehiculoACliente(Vehiculo vehiculo, String rfcCliente) {
-        Cliente cliente = obtenerClientePorRfc(rfcCliente);
-        if (cliente == null) {
-            throw new IllegalArgumentException("Cliente no encontrado para RFC: " + rfcCliente);
-        }
-
-        clienteDAO.agregarVehiculoACliente(vehiculo, cliente);
-        System.out.println("Vehículo agregado correctamente al cliente con RFC: " + rfcCliente);
-    }
+//    // Método para agregar un vehículo a un cliente
+//    public void agregarVehiculoACliente(Vehiculo vehiculo, String rfcCliente) {
+//        Cliente cliente = obtenerClientePorRfc(rfcCliente);
+//        if (cliente == null) {
+//            throw new IllegalArgumentException("Cliente no encontrado para RFC: " + rfcCliente);
+//        }
+//
+//        clienteDAO.agregarVehiculoACliente(vehiculo, cliente);
+//        System.out.println("Vehículo agregado correctamente al cliente con RFC: " + rfcCliente);
+//    }
 }

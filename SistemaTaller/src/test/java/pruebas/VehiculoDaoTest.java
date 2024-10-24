@@ -3,6 +3,7 @@ package pruebas;
 import Dominio.Vehiculo;
 import Dominio.Cliente;
 import Dominio.Domicilio;
+import Persistencia.ClienteDAO;
 import Persistencia.VehiculoDAO;
 import Persistencia.Conexion;
 import org.junit.jupiter.api.*;
@@ -22,7 +23,8 @@ class VehiculoDaoTest {
 
     private static Connection conexion;
     private VehiculoDAO vehiculoDAO;
-
+    private ClienteDAO clienteDAO;
+    
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
         // Obtener la conexión a la base de datos antes de ejecutar todas las pruebas
@@ -34,6 +36,7 @@ class VehiculoDaoTest {
     void setUp() {
         // Crear una nueva instancia de VehiculoDAO antes de cada prueba
         vehiculoDAO = new VehiculoDAO(conexion);
+         clienteDAO = new ClienteDAO(conexion);
     }
 
     @AfterEach
@@ -42,6 +45,7 @@ class VehiculoDaoTest {
         Statement stmt = conexion.createStatement();
         stmt.executeUpdate("DELETE FROM Vehiculos WHERE placa = 'ABC123'");
         stmt.executeUpdate("DELETE FROM Vehiculos WHERE placa = 'XYZ789'");
+        conexion.createStatement().executeUpdate("DELETE FROM Clientes WHERE rfc = 'TEST1'");
     }
 
     @Test
@@ -49,8 +53,8 @@ class VehiculoDaoTest {
         // Crear un cliente para asociar al vehículo
         Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1234", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
-
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        clienteDAO.agregar(cliente);
         // Crear un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
 
@@ -69,12 +73,12 @@ class VehiculoDaoTest {
         // Crear un cliente para asociar al vehículo
         Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1234", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
-
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        clienteDAO.agregar(cliente);
         // Crear y agregar un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
         vehiculoDAO.agregar(nuevoVehiculo);
-
+        
         // Actualizar el vehículo
         nuevoVehiculo.setMarca("Honda");
         nuevoVehiculo.setModelo("Civic");
@@ -92,8 +96,8 @@ class VehiculoDaoTest {
         // Crear un cliente para asociar al vehículo
         Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1234", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
-
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        clienteDAO.agregar(cliente);
         // Crear y agregar un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
         vehiculoDAO.agregar(nuevoVehiculo);
@@ -111,8 +115,8 @@ class VehiculoDaoTest {
         // Crear un cliente para asociar al vehículo
         Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1234", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
-
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        clienteDAO.agregar(cliente);
         // Crear y agregar un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
         vehiculoDAO.agregar(nuevoVehiculo);
