@@ -8,26 +8,18 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-/**
- *
- * @author Oscar
- */
 @Entity
 @Table(name = "Servicios")
 public class Servicio implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id_servicio;  // Cambiado a int y renombrado como en el esquema
 
     private String descripcion;
     private Double costo;
@@ -38,8 +30,8 @@ public class Servicio implements Serializable {
     public Servicio() {
     }
 
-    public Servicio(Long id, String descripcion, Double costo, List<ReparacionServicio> reparacionServicios) {
-        this.id = id;
+    public Servicio(int id_servicio, String descripcion, Double costo, List<ReparacionServicio> reparacionServicios) {
+        this.id_servicio = id_servicio;
         this.descripcion = descripcion;
         this.costo = costo;
         this.reparacionServicios = reparacionServicios;
@@ -49,6 +41,16 @@ public class Servicio implements Serializable {
         this.descripcion = descripcion;
         this.costo = costo;
         this.reparacionServicios = reparacionServicios;
+    }
+
+    // Getters y Setters
+
+    public int getId_servicio() {
+        return id_servicio;
+    }
+
+    public void setId_servicio(int id_servicio) {
+        this.id_servicio = id_servicio;
     }
 
     public String getDescripcion() {
@@ -74,38 +76,26 @@ public class Servicio implements Serializable {
     public void setReparacionServicios(List<ReparacionServicio> reparacionServicios) {
         this.reparacionServicios = reparacionServicios;
     }
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (id_servicio != 0 ? id_servicio : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Servicio)) {
             return false;
         }
         Servicio other = (Servicio) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return this.id_servicio == other.id_servicio;
     }
 
     @Override
     public String toString() {
-        return "Dominio.Servicio[ id=" + id + " ]";
+        return "Dominio.Servicio[ id_servicio=" + id_servicio + " ]";
     }
-    
 }
+

@@ -4,90 +4,49 @@
  */
 package Dominio;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-/**
- *
- * @author Oscar
- */
 @Entity
 @Table(name = "Clientes")
 public class Cliente implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String rfc;  // RFC como clave primaria
 
-    private String rfc;
     private String nombre;
     private String correo;
+
+    @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
 
-    private String direccion;
+    @Embedded
+    private Domicilio domicilio;  // Clase embebida para el domicilio
 
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vehiculo> vehiculos;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, String rfc, String nombre, String correo, Date fechaNacimiento, String direccion, List<Vehiculo> vehiculos) {
-        this.id = id;
-        this.rfc=rfc;
+    public Cliente(String rfc, String nombre, String correo, Date fechaNacimiento, Domicilio domicilio, List<Vehiculo> vehiculos) {
+        this.rfc = rfc;
         this.nombre = nombre;
         this.correo = correo;
         this.fechaNacimiento = fechaNacimiento;
-        this.direccion = direccion;
+        this.domicilio = domicilio;
         this.vehiculos = vehiculos;
     }
 
-    public Cliente(String nombre, String rfc, String correo, Date fechaNacimiento, String direccion, List<Vehiculo> vehiculos) {
-        this.nombre = nombre;
-        this.rfc=rfc;
-        this.correo = correo;
-        this.fechaNacimiento = fechaNacimiento;
-        this.direccion = direccion;
-        this.vehiculos = vehiculos;
+    // Getters y setters
+    public String getRfc() {
+        return rfc;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public List<Vehiculo> getVehiculos() {
-        return vehiculos;
-    }
-
-    public void setVehiculos(List<Vehiculo> vehiculos) {
-        this.vehiculos = vehiculos;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
     }
 
     public String getNombre() {
@@ -114,32 +73,38 @@ public class Cliente implements Serializable {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public String getRfc() {
-        return rfc;
+    public Domicilio getDomicilio() {
+        return domicilio;
     }
 
-    public void setRfc(String rfc) {
-        this.rfc = rfc;
+    public void setDomicilio(Domicilio domicilio) {
+        this.domicilio = domicilio;
     }
-    
-    
+
+    public List<Vehiculo> getVehiculos() {
+        return vehiculos;
+    }
+
+    public void setVehiculos(List<Vehiculo> vehiculos) {
+        this.vehiculos = vehiculos;
+    }
+
+    @Override
+    public int hashCode() {
+        return rfc != null ? rfc.hashCode() : 0;
+    }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Cliente)) {
             return false;
         }
         Cliente other = (Cliente) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return this.rfc != null && this.rfc.equals(other.rfc);
     }
 
     @Override
     public String toString() {
-        return "Dominios.Cliente[ id=" + id + " ]";
+        return "Dominio.Cliente[ rfc=" + rfc + " ]";
     }
-
 }
