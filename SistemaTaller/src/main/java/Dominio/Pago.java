@@ -5,7 +5,7 @@
 package Dominio;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime; // Cambiado para un manejo de fecha moderno
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,22 +14,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-/**
- *
- * @author Oscar
- */
 @Entity
 @Table(name = "Pagos")
 public class Pago implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Cambiado a IDENTITY para reflejar la base de datos
+    private int id; // Cambiado a int
 
     private Double total;
-    private String metodo;
-    private Date fecha;
+    private String metodo; // Cambiar a enum si se desea
+
+    private LocalDateTime fecha; // Cambiado a LocalDateTime
 
     @OneToOne
     @JoinColumn(name = "reparacion_id")
@@ -38,7 +36,7 @@ public class Pago implements Serializable {
     public Pago() {
     }
 
-    public Pago(Long id, Double total, String metodo, Date fecha, Reparacion reparacion) {
+    public Pago(int id, Double total, String metodo, LocalDateTime fecha, Reparacion reparacion) {
         this.id = id;
         this.total = total;
         this.metodo = metodo;
@@ -46,19 +44,18 @@ public class Pago implements Serializable {
         this.reparacion = reparacion;
     }
 
-    public Pago(Double total, String metodo, Date fecha, Reparacion reparacion) {
+    public Pago(Double total, String metodo, LocalDateTime fecha, Reparacion reparacion) {
         this.total = total;
         this.metodo = metodo;
         this.fecha = fecha;
         this.reparacion = reparacion;
     }
-    
-    
-    public Long getId() {
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -78,11 +75,11 @@ public class Pago implements Serializable {
         this.metodo = metodo;
     }
 
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
@@ -94,30 +91,25 @@ public class Pago implements Serializable {
         this.reparacion = reparacion;
     }
 
-    
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return (id != 0) ? Integer.hashCode(id) : 0;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Pago)) {
             return false;
         }
         Pago other = (Pago) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return this.id == other.id;
     }
 
     @Override
     public String toString() {
         return "Dominio.Pago[ id=" + id + " ]";
     }
-    
 }
+
+
+
