@@ -7,7 +7,7 @@ package Negocio;
 import Dominio.Cliente;
 import Dominio.Vehiculo;
 import Persistencia.ClienteDAO;
-import Persistencia.IPersistencia;
+import IPersistencia.IPersistencia;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;

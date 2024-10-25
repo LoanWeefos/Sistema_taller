@@ -1,8 +1,8 @@
 package Persistencia;
 
+import IPersistencia.IPersistencia;
 import Dominio.Cliente;
 import Dominio.Domicilio;
-import Dominio.Vehiculo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

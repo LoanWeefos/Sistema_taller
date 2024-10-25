@@ -4,6 +4,7 @@
  */
 package Persistencia;
 
+import IPersistencia.IPersistencia;
 import Dominio.Reparacion;
 import Dominio.ReparacionServicio;
 import java.sql.*;
