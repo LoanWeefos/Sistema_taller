@@ -1,7 +1,7 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-package com.mycompany.sistemataller;
+package Main;
 
 import Dominio.Cliente;
 import Dominio.Vehiculo;
