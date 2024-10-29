@@ -30,7 +30,7 @@ public class ClienteDAO implements IPersistencia<Cliente> {
             statement.setDate(4, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
             statement.setString(5, cliente.getDomicilio().getCalle());
             statement.setString(6, cliente.getDomicilio().getColonia());
-            statement.setInt(7, cliente.getDomicilio().getNumero());
+            statement.setString(7, cliente.getDomicilio().getNumero());
 
             statement.executeUpdate();
             System.out.println("Cliente agregado exitosamente: " + cliente);
@@ -66,7 +66,7 @@ public class ClienteDAO implements IPersistencia<Cliente> {
                 psCliente.setDate(3, new java.sql.Date(cliente.getFechaNacimiento().getTime()));
                 psCliente.setString(4, cliente.getDomicilio().getCalle());
                 psCliente.setString(5, cliente.getDomicilio().getColonia());
-                psCliente.setInt(6, cliente.getDomicilio().getNumero());
+                psCliente.setString(6, cliente.getDomicilio().getNumero());
                 psCliente.setString(7, cliente.getRfc());
 
                 psCliente.executeUpdate();
@@ -116,7 +116,7 @@ public class ClienteDAO implements IPersistencia<Cliente> {
                     Domicilio domicilio = new Domicilio();
                     domicilio.setCalle(rsCliente.getString("calle"));
                     domicilio.setColonia(rsCliente.getString("colonia"));
-                    domicilio.setNumero(rsCliente.getInt("numero"));
+                    domicilio.setNumero(rsCliente.getString("numero"));
                     cliente.setDomicilio(domicilio);
                 }
             }
@@ -146,7 +146,7 @@ public class ClienteDAO implements IPersistencia<Cliente> {
                 Domicilio domicilio = new Domicilio();
                 domicilio.setCalle(rsCliente.getString("calle"));
                 domicilio.setColonia(rsCliente.getString("colonia"));
-                domicilio.setNumero(rsCliente.getInt("numero"));
+                domicilio.setNumero(rsCliente.getString("numero"));
                 cliente.setDomicilio(domicilio);
 
                 clientes.add(cliente);

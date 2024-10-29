@@ -40,6 +40,16 @@ public class Cliente implements Serializable {
         this.vehiculos = vehiculos;
     }
 
+    public Cliente(String rfc, String nombre, String correo, Date fechaNacimiento, Domicilio domicilio) {
+        this.rfc = rfc;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.fechaNacimiento = fechaNacimiento;
+        this.domicilio = domicilio;
+    }
+    
+    
+
     // Getters y setters
     public String getRfc() {
         return rfc;

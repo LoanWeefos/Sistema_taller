@@ -8,7 +8,9 @@ import Dominio.Cliente;
 import Dominio.Vehiculo;
 import Persistencia.ClienteDAO;
 import IPersistencia.IPersistencia;
+import Persistencia.Conexion;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,27 +19,28 @@ import java.util.List;
  * @author Oscar
  */
 public class ControlCliente {
+    
     private ClienteDAO clienteDAO;
 
-    // Constructor que recibe una conexión y pasa al DAO
-    public ControlCliente(Connection conexion) {
-        this.clienteDAO = new ClienteDAO(conexion);  // Se inicializa el DAO con la conexión
+     // Constructor sin parámetros que inicializa clienteDAO con la conexión de la clase Conexion
+    public ControlCliente() {
+        this.clienteDAO = new ClienteDAO(Conexion.getConnection());  // Usamos la conexión de Conexion
     }
 
     // Método para agregar un cliente
-    public void agregarCliente(Cliente cliente) {
+    public boolean agregarCliente(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("El cliente no puede ser nulo");
         }
-        
+
         // Validaciones adicionales de negocio antes de insertar (si es necesario)
-        // Por ejemplo: Validar que el RFC no esté vacío
         if (cliente.getRfc() == null || cliente.getRfc().isEmpty()) {
             throw new IllegalArgumentException("El RFC del cliente es requerido");
         }
 
-        clienteDAO.agregar(cliente);
+        clienteDAO.agregar(cliente); // Suponiendo que este método no lanza una excepción si falla
         System.out.println("El cliente ha sido agregado correctamente");
+        return true; // Retornamos true si se agregó correctamente
     }
 
     // Método para actualizar un cliente

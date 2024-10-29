@@ -32,11 +32,11 @@ public class MenuVista extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnVehiculos = new javax.swing.JButton();
+        btnClientes = new javax.swing.JButton();
+        btnReparaciones = new javax.swing.JButton();
+        btnPagos = new javax.swing.JButton();
+        btnRecordatorios = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -57,88 +57,88 @@ public class MenuVista extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Logo.png"))); // NOI18N
 
-        jButton1.setBackground(new java.awt.Color(248, 242, 206));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/VehiculosBoton.png"))); // NOI18N
-        jButton1.setBorderPainted(false);
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnVehiculos.setBackground(new java.awt.Color(248, 242, 206));
+        btnVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/VehiculosBoton.png"))); // NOI18N
+        btnVehiculos.setBorderPainted(false);
+        btnVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton1MouseEntered(evt);
+                btnVehiculosMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton1MouseExited(evt);
+                btnVehiculosMouseExited(evt);
             }
         });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnVehiculos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnVehiculosActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(248, 242, 206));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/ClientesBoton.png"))); // NOI18N
-        jButton2.setBorderPainted(false);
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnClientes.setBackground(new java.awt.Color(248, 242, 206));
+        btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/ClientesBoton.png"))); // NOI18N
+        btnClientes.setBorderPainted(false);
+        btnClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton2MouseEntered(evt);
+                btnClientesMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton2MouseExited(evt);
+                btnClientesMouseExited(evt);
             }
         });
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnClientesActionPerformed(evt);
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(248, 242, 206));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/ReparacionesBoton.png"))); // NOI18N
-        jButton3.setBorderPainted(false);
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnReparaciones.setBackground(new java.awt.Color(248, 242, 206));
+        btnReparaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/ReparacionesBoton.png"))); // NOI18N
+        btnReparaciones.setBorderPainted(false);
+        btnReparaciones.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton3MouseEntered(evt);
+                btnReparacionesMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton3MouseExited(evt);
+                btnReparacionesMouseExited(evt);
             }
         });
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnReparaciones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnReparacionesActionPerformed(evt);
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(248, 242, 206));
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/PagosBoton.png"))); // NOI18N
-        jButton4.setBorderPainted(false);
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnPagos.setBackground(new java.awt.Color(248, 242, 206));
+        btnPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/PagosBoton.png"))); // NOI18N
+        btnPagos.setBorderPainted(false);
+        btnPagos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton4MouseEntered(evt);
+                btnPagosMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton4MouseExited(evt);
+                btnPagosMouseExited(evt);
             }
         });
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnPagos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnPagosActionPerformed(evt);
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(248, 242, 206));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBoton.png"))); // NOI18N
-        jButton5.setBorderPainted(false);
-        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnRecordatorios.setBackground(new java.awt.Color(248, 242, 206));
+        btnRecordatorios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBoton.png"))); // NOI18N
+        btnRecordatorios.setBorderPainted(false);
+        btnRecordatorios.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton5MouseEntered(evt);
+                btnRecordatoriosMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton5MouseExited(evt);
+                btnRecordatoriosMouseExited(evt);
             }
         });
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnRecordatorios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnRecordatoriosActionPerformed(evt);
             }
         });
 
@@ -171,11 +171,11 @@ public class MenuVista extends javax.swing.JFrame {
                 .addContainerGap(46, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRecordatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPagos, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReparaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(61, 61, 61))
         );
         jPanel1Layout.setVerticalGroup(
@@ -184,15 +184,15 @@ public class MenuVista extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jLabel1)
                 .addGap(33, 33, 33)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnReparaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnPagos, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnRecordatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(73, Short.MAX_VALUE))
@@ -203,70 +203,71 @@ public class MenuVista extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVehiculosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnVehiculosActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        new ClientesVista().setVisible(true);
+    private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
+        new ClienteVista().setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnClientesActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnReparacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReparacionesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnReparacionesActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnPagosActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnRecordatoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordatoriosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnRecordatoriosActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jButton2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseEntered
-        jButton2.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ClientesBotonHover.png")));
-    }//GEN-LAST:event_jButton2MouseEntered
+    private void btnClientesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseEntered
+        btnClientes.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ClientesBotonHover.png")));
+        
+    }//GEN-LAST:event_btnClientesMouseEntered
 
-    private void jButton2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseExited
-        jButton2.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ClientesBoton.png")));
-    }//GEN-LAST:event_jButton2MouseExited
+    private void btnClientesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseExited
+        btnClientes.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ClientesBoton.png")));
+    }//GEN-LAST:event_btnClientesMouseExited
 
-    private void jButton1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseEntered
-        jButton1.setIcon(new ImageIcon(getClass().getResource("/Imagenes/VehiculosBotonHover.png")));
-    }//GEN-LAST:event_jButton1MouseEntered
+    private void btnVehiculosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseEntered
+        btnVehiculos.setIcon(new ImageIcon(getClass().getResource("/Imagenes/VehiculosBotonHover.png")));
+    }//GEN-LAST:event_btnVehiculosMouseEntered
 
-    private void jButton1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseExited
-        jButton1.setIcon(new ImageIcon(getClass().getResource("/Imagenes/VehiculosBoton.png")));
-    }//GEN-LAST:event_jButton1MouseExited
+    private void btnVehiculosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseExited
+        btnVehiculos.setIcon(new ImageIcon(getClass().getResource("/Imagenes/VehiculosBoton.png")));
+    }//GEN-LAST:event_btnVehiculosMouseExited
 
-    private void jButton3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseEntered
-        jButton3.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ReparacionesBotonHover.png")));
-    }//GEN-LAST:event_jButton3MouseEntered
+    private void btnReparacionesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReparacionesMouseEntered
+        btnReparaciones.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ReparacionesBotonHover.png")));
+    }//GEN-LAST:event_btnReparacionesMouseEntered
 
-    private void jButton3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseExited
-        jButton3.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ReparacionesBoton.png")));
-    }//GEN-LAST:event_jButton3MouseExited
+    private void btnReparacionesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReparacionesMouseExited
+        btnReparaciones.setIcon(new ImageIcon(getClass().getResource("/Imagenes/ReparacionesBoton.png")));
+    }//GEN-LAST:event_btnReparacionesMouseExited
 
-    private void jButton4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseEntered
-        jButton4.setIcon(new ImageIcon(getClass().getResource("/Imagenes/PagosBotonHover.png")));
-    }//GEN-LAST:event_jButton4MouseEntered
+    private void btnPagosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPagosMouseEntered
+        btnPagos.setIcon(new ImageIcon(getClass().getResource("/Imagenes/PagosBotonHover.png")));
+    }//GEN-LAST:event_btnPagosMouseEntered
 
-    private void jButton4MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseExited
-        jButton4.setIcon(new ImageIcon(getClass().getResource("/Imagenes/PagosBoton.png")));
-    }//GEN-LAST:event_jButton4MouseExited
+    private void btnPagosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPagosMouseExited
+        btnPagos.setIcon(new ImageIcon(getClass().getResource("/Imagenes/PagosBoton.png")));
+    }//GEN-LAST:event_btnPagosMouseExited
 
-    private void jButton5MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseEntered
-        jButton5.setIcon(new ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBotonHover.png")));
-    }//GEN-LAST:event_jButton5MouseEntered
+    private void btnRecordatoriosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRecordatoriosMouseEntered
+        btnRecordatorios.setIcon(new ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBotonHover.png")));
+    }//GEN-LAST:event_btnRecordatoriosMouseEntered
 
-    private void jButton5MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseExited
-        jButton5.setIcon(new ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBoton.png")));
-    }//GEN-LAST:event_jButton5MouseExited
+    private void btnRecordatoriosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRecordatoriosMouseExited
+        btnRecordatorios.setIcon(new ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBoton.png")));
+    }//GEN-LAST:event_btnRecordatoriosMouseExited
 
     private void jButton6MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseEntered
         jButton6.setIcon(new ImageIcon(getClass().getResource("/Imagenes/CostosBotonHover.png")));
@@ -313,11 +314,11 @@ public class MenuVista extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton btnClientes;
+    private javax.swing.JButton btnPagos;
+    private javax.swing.JButton btnRecordatorios;
+    private javax.swing.JButton btnReparaciones;
+    private javax.swing.JButton btnVehiculos;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

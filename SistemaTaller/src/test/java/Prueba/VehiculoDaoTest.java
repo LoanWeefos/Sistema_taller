@@ -51,7 +51,7 @@ class VehiculoDaoTest {
     @Test
     void testAgregarVehiculo() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
         Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
         clienteDAO.agregar(cliente);
@@ -71,7 +71,7 @@ class VehiculoDaoTest {
     @Test
     void testActualizarVehiculo() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
         Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
         clienteDAO.agregar(cliente);
@@ -94,7 +94,7 @@ class VehiculoDaoTest {
     @Test
     void testEliminarVehiculo() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
         Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
         clienteDAO.agregar(cliente);
@@ -113,7 +113,7 @@ class VehiculoDaoTest {
     @Test
     void testObtenerVehiculoPorPlaca() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
         Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
         clienteDAO.agregar(cliente);
