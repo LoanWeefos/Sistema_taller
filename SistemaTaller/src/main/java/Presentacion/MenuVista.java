@@ -18,7 +18,7 @@ public class MenuVista extends javax.swing.JFrame {
     public MenuVista() {
         initComponents();
         setLocationRelativeTo(null);
-        
+
     }
 
     /**
@@ -208,7 +208,7 @@ public class MenuVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVehiculosActionPerformed
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-        ClienteVista clienteVista= new ClienteVista();
+        ClienteVista clienteVista = new ClienteVista();
         clienteVista.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnClientesActionPerformed
@@ -230,52 +230,52 @@ public class MenuVista extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnClientesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseEntered
-        btnClientes.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/ClientesBotonHover.png")));
-        
+        btnClientes.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/ClientesBotonHover.png")));
     }//GEN-LAST:event_btnClientesMouseEntered
 
     private void btnClientesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseExited
-        btnClientes.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/ClientesBoton.png")));
+        btnClientes.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/ClientesBoton.png")));
     }//GEN-LAST:event_btnClientesMouseExited
 
     private void btnVehiculosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseEntered
-        btnVehiculos.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/VehiculosBotonHover.png")));
+        btnVehiculos.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/VehiculosBotonHover.png")));
     }//GEN-LAST:event_btnVehiculosMouseEntered
 
     private void btnVehiculosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseExited
-        btnVehiculos.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/VehiculosBoton.png")));
+        btnVehiculos.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/VehiculosBoton.png")));
     }//GEN-LAST:event_btnVehiculosMouseExited
 
     private void btnReparacionesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReparacionesMouseEntered
-        btnReparaciones.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/ReparacionesBotonHover.png")));
+        btnReparaciones.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/ReparacionesBotonHover.png")));
     }//GEN-LAST:event_btnReparacionesMouseEntered
 
     private void btnReparacionesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReparacionesMouseExited
-        btnReparaciones.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/ReparacionesBoton.png")));
+        btnReparaciones.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/ReparacionesBoton.png")));
     }//GEN-LAST:event_btnReparacionesMouseExited
 
     private void btnPagosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPagosMouseEntered
-        btnPagos.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/PagosBotonHover.png")));
+        btnPagos.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/PagosBotonHover.png")));
     }//GEN-LAST:event_btnPagosMouseEntered
 
     private void btnPagosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPagosMouseExited
-        btnPagos.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/PagosBoton.png")));
+        btnPagos.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/PagosBoton.png")));
     }//GEN-LAST:event_btnPagosMouseExited
 
     private void btnRecordatoriosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRecordatoriosMouseEntered
-        btnRecordatorios.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/RecordatoriosBotonHover.png")));
+        btnRecordatorios.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/RecordatoriosBotonHover.png")));
     }//GEN-LAST:event_btnRecordatoriosMouseEntered
 
-    private void btnRecordatoriosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRecordatoriosMouseExited
-    }//GEN-LAST:event_btnRecordatoriosMouseExited
-
     private void jButton6MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseEntered
-        jButton6.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/CostosBotonHover.png")));
+        jButton6.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/CostosBotonHover.png")));
     }//GEN-LAST:event_jButton6MouseEntered
 
     private void jButton6MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseExited
-        jButton6.setIcon(new ImageIcon(getClass().getResource("/Imagenes.Menu/CostosBoton.png")));
+        jButton6.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/CostosBoton.png")));
     }//GEN-LAST:event_jButton6MouseExited
+
+    private void btnRecordatoriosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRecordatoriosMouseExited
+        btnRecordatorios.setIcon(new ImageIcon(getClass().getResource("/ImagenesMenu/RecordatoriosBoton.png")));
+    }//GEN-LAST:event_btnRecordatoriosMouseExited
 
     /**
      * @param args the command line arguments
