@@ -50,7 +50,7 @@ class ControlClienteTest {
     @Test
     void testAgregarCliente() {
         // Crear un cliente para agregar
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"), new ArrayList<>());
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"),"644415095", new ArrayList<>());
         
         // Agregar cliente
         controlCliente.agregarCliente(cliente);
@@ -64,7 +64,7 @@ class ControlClienteTest {
     @Test
     void testActualizarCliente() {
         // Crear un cliente y agregarlo
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"), new ArrayList<>());
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"),"644415095",  new ArrayList<>());
         controlCliente.agregarCliente(cliente);
         
         // Actualizar los datos del cliente
@@ -79,7 +79,7 @@ class ControlClienteTest {
     @Test
     void testEliminarCliente() {
         // Crear y agregar un cliente
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"), new ArrayList<>());
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"),"644415095", new ArrayList<>());
         controlCliente.agregarCliente(cliente);
         
         // Eliminar el cliente
@@ -93,7 +93,7 @@ class ControlClienteTest {
     @Test
     void testObtenerClientePorRfc() {
         // Crear y agregar un cliente
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"), new ArrayList<>());
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), new Domicilio("Calle Test", "Colonia Test", "123"),"644415095", new ArrayList<>());
         controlCliente.agregarCliente(cliente);
         
         // Obtener el cliente por RFC
@@ -105,8 +105,8 @@ class ControlClienteTest {
     @Test
     void testObtenerTodosLosClientes() {
         // Agregar varios clientes
-        controlCliente.agregarCliente(new Cliente("RFC1", "Cliente 1", "cliente1@test.com", new Date(), new Domicilio("Calle 1", "Colonia 1", "123"), new ArrayList<>()));
-        controlCliente.agregarCliente(new Cliente("RFC2", "Cliente 2", "cliente2@test.com", new Date(), new Domicilio("Calle 2", "Colonia 2", "123"), new ArrayList<>()));
+        controlCliente.agregarCliente(new Cliente("RFC1", "Cliente 1", "cliente1@test.com", new Date(), new Domicilio("Calle 1", "Colonia 1", "123"),"644415095", new ArrayList<>()));
+        controlCliente.agregarCliente(new Cliente("RFC2", "Cliente 2", "cliente2@test.com", new Date(), new Domicilio("Calle 2", "Colonia 2", "123"),"644415095", new ArrayList<>()));
         
         // Obtener todos los clientes
         List<Cliente> clientes = controlCliente.obtenerTodosLosClientes();

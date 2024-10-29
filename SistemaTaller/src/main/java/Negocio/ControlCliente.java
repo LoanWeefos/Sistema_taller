@@ -42,6 +42,22 @@ public class ControlCliente {
         System.out.println("El cliente ha sido agregado correctamente");
         return true; // Retornamos true si se agregó correctamente
     }
+    
+    public boolean editarCliente(Cliente cliente) {
+    if (cliente == null) {
+        throw new IllegalArgumentException("El cliente no puede ser nulo");
+    }
+
+    // Validaciones adicionales de negocio antes de actualizar (si es necesario)
+    if (cliente.getRfc() == null || cliente.getRfc().isEmpty()) {
+        throw new IllegalArgumentException("El RFC del cliente es requerido");
+    }
+
+    clienteDAO.actualizar(cliente); // Asegúrate de implementar el método en ClienteDAO
+    System.out.println("El cliente ha sido editado correctamente");
+    return true;
+}
+
 
     // Método para actualizar un cliente
     public void actualizarCliente(Cliente cliente) {
