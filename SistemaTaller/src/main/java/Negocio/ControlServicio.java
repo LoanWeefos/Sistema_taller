@@ -6,7 +6,9 @@ package Negocio;
 
 import Dominio.ReparacionServicio;
 import Dominio.Servicio;
+import Persistencia.Conexion;
 import Persistencia.ServicioDAO;
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -16,8 +18,8 @@ import java.util.List;
 public class ControlServicio {
      private ServicioDAO servicioDAO;
 
-    public ControlServicio(ServicioDAO servicioDAO) {
-        this.servicioDAO = servicioDAO;
+    public ControlServicio(Connection connection) {
+        this.servicioDAO = new ServicioDAO(connection);
     }
 
     // Método para agregar un nuevo servicio

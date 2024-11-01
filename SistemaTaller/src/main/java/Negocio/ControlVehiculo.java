@@ -15,7 +15,7 @@ import java.sql.Connection;
  * @author Oscar
  */
 public class ControlVehiculo {
-     private VehiculoDAO vehiculoDAO;
+    private VehiculoDAO vehiculoDAO;
     private ClienteDAO clienteDAO;
 
     // Constructor que acepta la conexión y crea instancias de los DAOs

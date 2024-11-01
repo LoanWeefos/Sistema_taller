@@ -5,7 +5,9 @@
 package Negocio;
 
 import Dominio.ReparacionServicio;
+import Persistencia.Conexion;
 import Persistencia.ReparacionServicioDAO;
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -15,8 +17,8 @@ import java.util.List;
 public class ControlReparacionServicio {
      private ReparacionServicioDAO reparacionServicioDAO;
 
-    public ControlReparacionServicio(ReparacionServicioDAO reparacionServicioDAO) {
-        this.reparacionServicioDAO = reparacionServicioDAO;
+    public ControlReparacionServicio(Connection connection) {
+        this.reparacionServicioDAO = new ReparacionServicioDAO(connection);
     }
 
     // Método para agregar una nueva relación de ReparacionServicio

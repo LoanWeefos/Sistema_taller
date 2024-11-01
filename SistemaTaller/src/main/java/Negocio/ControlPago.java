@@ -6,7 +6,9 @@ package Negocio;
 
 import Dominio.Pago;
 import Dominio.Reparacion;
+import Persistencia.Conexion;
 import Persistencia.PagoDAO;
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,8 +20,8 @@ public class ControlPago {
     
     private PagoDAO pagoDAO;
 
-    public ControlPago(PagoDAO pagoDAO) {
-        this.pagoDAO = pagoDAO;
+    public ControlPago(Connection connection) {
+        this.pagoDAO = new PagoDAO(connection);
     }
 
     // Método para agregar un nuevo pago

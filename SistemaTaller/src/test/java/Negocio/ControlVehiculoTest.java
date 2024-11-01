@@ -31,11 +31,6 @@ public class ControlVehiculoTest {
         connection = Conexion.getConnection();
     }
 
-    @AfterAll
-    public static void tearDownClass() {
-        // Si necesitas limpiar algo después de todos los tests
-
-    }
 
     @BeforeEach
     public void setUp() {
@@ -129,5 +124,11 @@ public class ControlVehiculoTest {
         assertDoesNotThrow(() -> controlVehiculo.eliminarVehiculo("ABC1"));
 
         // Verificar que el vehículo ha sido eliminado
+    }
+    
+     @AfterAll
+    static void tearDownAfterClass() throws SQLException {
+        // Cerrar la conexión después de ejecutar todas las pruebas
+        Conexion.closeConnection();
     }
 }
