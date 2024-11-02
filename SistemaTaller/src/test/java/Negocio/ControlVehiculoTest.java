@@ -39,7 +39,7 @@ public class ControlVehiculoTest {
 
     @BeforeEach
     public void setUp() {
-        controlcliente = new ControlCliente(connection);
+        controlcliente = new ControlCliente();
         controlVehiculo = new ControlVehiculo(connection);
         // Agregar un cliente para usar en los tests
 
@@ -66,7 +66,7 @@ public class ControlVehiculoTest {
 
         // Preparar un vehículo para agregar
         Cliente cliente = new Cliente("RFC1", "Esteban Duran", "duran@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
 
@@ -80,7 +80,7 @@ public class ControlVehiculoTest {
 
         // Preparar y agregar un vehículo
         Cliente cliente = new Cliente("RFC1", "Michell Cedano", "michell@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
 
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
@@ -98,7 +98,7 @@ public class ControlVehiculoTest {
 
         // Preparar y agregar un vehículo
         Cliente cliente = new Cliente("RFC1", "Ania Servin", "servin@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
 
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
@@ -119,7 +119,7 @@ public class ControlVehiculoTest {
 
         // Preparar y agregar un vehículo
         Cliente cliente = new Cliente("RFC1", "Abril snow", "snowmhyk@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
 
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);

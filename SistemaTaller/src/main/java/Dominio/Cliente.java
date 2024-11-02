@@ -18,6 +18,7 @@ public class Cliente implements Serializable {
 
     private String nombre;
     private String correo;
+    private String telefono;
 
     @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
@@ -31,13 +32,25 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
-    public Cliente(String rfc, String nombre, String correo, Date fechaNacimiento, Domicilio domicilio, List<Vehiculo> vehiculos) {
+    public Cliente(String rfc, String nombre, String correo, Date fechaNacimiento, Domicilio domicilio, String telefono, List<Vehiculo> vehiculos) {
         this.rfc = rfc;
         this.nombre = nombre;
         this.correo = correo;
         this.fechaNacimiento = fechaNacimiento;
-        this.domicilio = domicilio;
+        this.domicilio = domicilio != null ? domicilio : new Domicilio(); // Inicializa si es null
+
+        this.telefono = telefono;
         this.vehiculos = vehiculos;
+    }
+
+    public Cliente(String rfc, String nombre, String correo, Date fechaNacimiento, String telefono, Domicilio domicilio) {
+        this.rfc = rfc;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.fechaNacimiento = fechaNacimiento;
+        this.domicilio = domicilio != null ? domicilio : new Domicilio(); // Inicializa si es null
+
+        this.telefono = telefono;
     }
 
     // Getters y setters
@@ -79,6 +92,14 @@ public class Cliente implements Serializable {
 
     public void setDomicilio(Domicilio domicilio) {
         this.domicilio = domicilio;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public List<Vehiculo> getVehiculos() {

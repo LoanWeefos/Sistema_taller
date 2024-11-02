@@ -70,8 +70,16 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
-       
-        
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE230</version>
+        </dependency>
+        <dependency>
+            <groupId>com.toedter</groupId>
+            <artifactId>jcalendar</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
