@@ -11,12 +11,12 @@ public class Domicilio {
 
     private String calle;
     private String colonia;
-    private int numero;
+    private String numero;
 
     public Domicilio() {
     }
 
-    public Domicilio(String calle, String colonia, int numero) {
+    public Domicilio(String calle, String colonia, String numero) {
         this.calle = calle;
         this.colonia = colonia;
         this.numero = numero;
@@ -39,11 +39,11 @@ public class Domicilio {
         this.colonia = colonia;
     }
 
-    public int getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-    public void setNumero(int numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
 }
