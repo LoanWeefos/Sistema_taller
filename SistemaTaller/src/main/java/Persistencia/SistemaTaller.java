@@ -13,7 +13,7 @@ import java.sql.Statement;
  *
  * @author Oscar
  */
-public class main {
+public class SistemaTaller {
      public static void main(String[] args) {
         Connection conn = null;
         try {
