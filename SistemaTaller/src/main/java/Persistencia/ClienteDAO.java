@@ -18,13 +18,11 @@ public class ClienteDAO implements IPersistencia<Cliente> {
     public ClienteDAO() {
     }
 
-    // Método para agregar un cliente
+    @Override
     public void agregar(Cliente cliente) {
         String sqlCliente = "INSERT INTO Clientes (rfc, nombre, correo, fecha_nacimiento, telefono, calle, colonia, numero) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conexion = Conexion.getConnection(); // Obtener una nueva conexión
-                 PreparedStatement statement = conexion.prepareStatement(sqlCliente)) {
-
+        try (PreparedStatement statement = conexion.prepareStatement(sqlCliente)) {
             statement.setString(1, cliente.getRfc());
             statement.setString(2, cliente.getNombre());
             statement.setString(3, cliente.getCorreo());
@@ -37,7 +35,7 @@ public class ClienteDAO implements IPersistencia<Cliente> {
             statement.executeUpdate();
             System.out.println("Cliente agregado exitosamente: " + cliente);
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Manejar la excepción adecuadamente
         }
     }
 
@@ -93,10 +91,14 @@ public class ClienteDAO implements IPersistencia<Cliente> {
 
         try (PreparedStatement psEliminarCliente = conexion.prepareStatement(sqlEliminarCliente)) {
             psEliminarCliente.setString(1, rfc);
-            psEliminarCliente.executeUpdate();
-            System.out.println("Cliente eliminado exitosamente: " + rfc);
+            int rowsAffected = psEliminarCliente.executeUpdate(); // Obtén el número de filas afectadas
+            if (rowsAffected > 0) {
+                System.out.println("Cliente eliminado exitosamente: " + rfc);
+            } else {
+                System.out.println("No se encontró ningún cliente con el RFC: " + rfc);
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Manejo de errores
         }
     }
 
