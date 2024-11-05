@@ -15,7 +15,8 @@ import java.util.List;
  * @author Oscar
  */
 public class ControlReparacion {
-     private ReparacionDAO reparacionDAO;
+
+    private ReparacionDAO reparacionDAO;
 
     // Constructor que recibe una conexión y pasa al DAO
     public ControlReparacion() {
@@ -72,7 +73,7 @@ public class ControlReparacion {
 
         return reparaciones; // Devuelve la lista de reparaciones
     }
-    
+
     // Método para agregar una nueva reparación
     public int agregarReparacionK(Reparacion reparacion) {
         if (reparacion == null || reparacion.getVehiculo() == null) {
@@ -83,4 +84,17 @@ public class ControlReparacion {
         System.out.println("Reparación agregada exitosamente para el vehículo con placa: " + reparacion.getVehiculo().getPlaca());
         return keyRep;
     }
+
+    public Reparacion obtenerReparacionPorPlaca(String placa) {
+        // Llamamos al DAO para obtener todas las reparaciones asociadas a la placa
+        List<Reparacion> reparaciones = reparacionDAO.obtenerPorPlaca(placa);
+
+        // Retornamos la primera reparación encontrada, si existe
+        if (reparaciones != null && !reparaciones.isEmpty()) {
+            return reparaciones.get(0); // Puedes ajustar este comportamiento si quieres obtener todas las reparaciones asociadas a la placa
+        }
+
+        return null; // Retorna null si no encuentra ninguna reparación con la placa indicada
+    }
+
 }

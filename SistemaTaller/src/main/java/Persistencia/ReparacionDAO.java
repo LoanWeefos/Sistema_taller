@@ -7,18 +7,21 @@ package Persistencia;
 import IPersistencia.IPersistencia;
 import Dominio.Reparacion;
 import Dominio.ReparacionServicio;
+import Dominio.Vehiculo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReparacionDAO implements IPersistencia<Reparacion> {
+
     private Connection conexion;
+    Vehiculo vehiculoDAO;
 
     public ReparacionDAO(Connection conexion) {
         this.conexion = conexion;
+        vehiculoDAO = new Vehiculo();
     }
 
-    
     @Override
     public void agregar(Reparacion entity) {
         String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
@@ -33,7 +36,7 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
             if (generatedKeys.next()) {
                 int reparacionId = generatedKeys.getInt(1);
                 entity.setId(reparacionId);
-               
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,13 +60,20 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
                 stmtDeleteReparacionServicio.executeUpdate();
             }
 
-            
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    
+    private Vehiculo obtenerVehiculo(String placa) {
+        Vehiculo vehiculo = null;
+        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion);
+
+        vehiculo = vehiculoDAO.obtenerPorId(placa);
+
+        return vehiculo;
+    }
+
     @Override
     public List<Reparacion> obtenerTodos() {
         String sqlReparacion = "SELECT * FROM Reparaciones";
@@ -71,10 +81,13 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
 
         try (Statement stmt = conexion.createStatement()) {
             ResultSet rsReparacion = stmt.executeQuery(sqlReparacion);
+            String placaVehiculo = rsReparacion.getString("placa_vehiculo");
+            Vehiculo vehiculo = obtenerVehiculo(placaVehiculo);
             while (rsReparacion.next()) {
                 Reparacion reparacion = new Reparacion();
                 reparacion.setId(rsReparacion.getInt("id"));
                 reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
+                reparacion.setVehiculo(vehiculo);
                 reparaciones.add(reparacion);
             }
         } catch (SQLException e) {
@@ -105,7 +118,7 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
 
     @Override
     public Reparacion obtenerPorId(Long id) {
-         String sqlReparacion = "SELECT * FROM Reparaciones WHERE id = ?";
+        String sqlReparacion = "SELECT * FROM Reparaciones WHERE id = ?";
         String sqlReparacionServicio = "SELECT * FROM Reparaciones_Servicios WHERE id_reparacion = ?";
         Reparacion reparacion = null;
 
@@ -117,15 +130,13 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
                 reparacion.setId(rsReparacion.getInt("id"));
                 reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
 
-                
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return reparacion;
     }
-    
-    
+
     public int agregarRepKey(Reparacion entity) {
         String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
         String sqlReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
@@ -140,13 +151,38 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
                 int reparacionId = generatedKeys.getInt(1);
                 entity.setId(reparacionId);
                 return reparacionId;
-               
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
-    
-}
 
+    public List<Reparacion> obtenerPorPlaca(String placa) {
+        String sqlReparacion = "SELECT * FROM Reparaciones WHERE placa_vehiculo = ?";
+        List<Reparacion> reparaciones = new ArrayList<>();
+
+        try (PreparedStatement stmt = conexion.prepareStatement(sqlReparacion)) {
+            stmt.setString(1, placa);
+            ResultSet rsReparacion = stmt.executeQuery();
+
+            while (rsReparacion.next()) {
+                Reparacion reparacion = new Reparacion();
+                reparacion.setId(rsReparacion.getInt("id"));
+                reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
+
+                // Obtener el vehículo asociado a la placa
+                Vehiculo vehiculo = obtenerVehiculo(placa); // Método ya existente
+                reparacion.setVehiculo(vehiculo);
+
+                reparaciones.add(reparacion);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reparaciones;
+    }
+
+}

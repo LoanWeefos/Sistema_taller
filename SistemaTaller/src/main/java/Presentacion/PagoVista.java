@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
@@ -28,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
  * @author hoshi
  */
 public class PagoVista extends javax.swing.JFrame {
-    
+
     Connection conexion;
     private ControlPago controlPago = new ControlPago();
     private ControlReparacion controlReparacion = new ControlReparacion();
@@ -38,7 +39,7 @@ public class PagoVista extends javax.swing.JFrame {
      */
     public PagoVista() {
         initComponents();
-        
+
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
@@ -49,27 +50,26 @@ public class PagoVista extends javax.swing.JFrame {
                 tablaPagosMouseClicked(evt);
             }
 
-            
         });
-        
+
     }
-    
+
     private void cargarDatosPagos() {
         // Modelo de la tabla con columnas Nombre y RFC
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Id", "Placa","RFC"}, 0);
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Id", "Fecha", "Total"}, 0);
 
         try {
             // Usa la conexión existente
-            String consultaSQL = "SELECT ID, Placa ,RFC FROM pagos";
+            String consultaSQL = "SELECT ID, Fecha ,Total FROM pagos";
             PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
             ResultSet rs = ps.executeQuery();
 
             // Agrega cada fila de la base de datos al modelo de la tabla
             while (rs.next()) {
                 int ID = rs.getInt("ID");
-                String placa = rs.getString("Placa");
-                String rfc = rs.getString("RFC");
-                modeloTabla.addRow(new Object[]{ID,placa, rfc});
+                Date fecha = rs.getDate("Fecha");
+                double total = rs.getDouble("Total");
+                modeloTabla.addRow(new Object[]{ID, fecha, total});
             }
 
             // Cierra el ResultSet y el PreparedStatement
@@ -83,7 +83,7 @@ public class PagoVista extends javax.swing.JFrame {
 
         // Asigna el modelo a la tabla
         tblPagos.setModel(modeloTabla);
-    
+
     }
 
     private void tablaPagosMouseClicked(MouseEvent evt) {
@@ -108,8 +108,8 @@ public class PagoVista extends javax.swing.JFrame {
 //            }
 //        }
     }
-    
-     public void closeConnection() {
+
+    public void closeConnection() {
         try {
             if (conexion != null && !conexion.isClosed()) {
                 conexion.close();
@@ -118,78 +118,50 @@ public class PagoVista extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-     
-     private void limpiarCampos() {
+
+    private void limpiarCampos() {
         txtServicios.setText("");
         txtTotal.setText("");
         cmbMetodoPago.getItemAt(0);
         txtAnio.setDate(null);
     }
-     
-     private void registrarPago() {
+
+    private void registrarPago() {
         String servicios = txtServicios.getText();
         String total = txtTotal.getText();
         String metodoPago = String.valueOf(cmbMetodoPago.getSelectedIndex());
         LocalDateTime anio = txtAnio.getDate().toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDateTime();
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
 
-        String placa = txtPlaca.getText();
-
-        // Validación básica de campos vacíos
-        if (servicios.isEmpty() || total.isEmpty() || anio == null || placa.isEmpty()) {
+        if (servicios.isEmpty() || total.isEmpty() || anio == null || txtPlaca.getText().trim().isEmpty()) {
             System.out.println("Por favor, complete todos los campos.");
             return;
         }
 
-        List<Reparacion> listaReparacion = controlReparacion.obtenerTodasLasReparaciones();
-        Reparacion reparacionesEncontradas = null;
+        // Utiliza el nuevo método para obtener la reparación por placa
+        System.out.println("Placa ingresada: " + txtPlaca.getText().trim());
 
-        for (Reparacion reparacion : listaReparacion) {
-            if (reparacion.getVehiculo().getPlaca().equalsIgnoreCase(placa)) {
-                reparacionesEncontradas = reparacion;
-                break; // Salir del bucle al encontrar el cliente
-            }
-        }
+        Reparacion reparacionEncontrada = controlReparacion.obtenerReparacionPorPlaca(txtPlaca.getText());
 
-        // Verificar si el cliente fue encontrado
-        if (reparacionesEncontradas == null) {
+        if (reparacionEncontrada == null) {
             System.out.println("Servicios no encontrados con el especificado.");
             return;
-            }
+        }
+
+        // Crear el objeto Pago con la reparación encontrada
+        Pago pago = new Pago(Double.parseDouble(total), metodoPago, anio, reparacionEncontrada);
         
-         
 
-            // Crear el objeto Vehiculo y asignar el cliente encontrado
-            Pago pago = new Pago(Double.parseDouble(total), metodoPago, anio, reparacionesEncontradas);
-
-            try {
-                // Intentar agregar el vehículo
-                controlPago.agregarPago(pago);
-
-                // Mensaje de éxito si no hay excepción
-                System.out.println("Pago registrado exitosamente.");
-                limpiarCampos(); // Limpia los campos tras la inserción
-                cargarDatosPagos(); // Actualiza la tabla con los nuevos datos
-            } catch (Exception e) {
-                // Manejo de error en caso de fallo
-                System.out.println("Error al registrar el Pago: " + e.getMessage());
-            }
-
-//            // Intentar registrar el vehículo
-//            boolean exito = controlVehiculo.agregarVehiculo(vehiculo);
-//
-//            if (exito) {
-//                System.out.println("Vehículo registrado exitosamente.");
-//                limpiarCampos(); // Limpia los campos tras inserción exitosa
-//                cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
-//            } else {
-//                System.out.println("Error al registrar el vehículo.");
-//            }
-
+        try {
+            controlPago.agregarPago(pago);
+            System.out.println("Pago registrado exitosamente.");
+            limpiarCampos();
+            cargarDatosPagos();
+        } catch (Exception e) {
+            System.out.println("Error al registrar el Pago: " + e.getMessage());
+        }
     }
-
-   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -364,7 +336,6 @@ public class PagoVista extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnPagar))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
@@ -372,7 +343,7 @@ public class PagoVista extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(btnRegresar)
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(128, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -77,7 +77,7 @@ public class ControlPagoTest {
         String metodo = "tarjeta";
         
         Pago pago = new Pago(total, metodo, LocalDateTime.now(), reparacion);
-        controlPago.agregarPago(pago.getTotal(), pago.getMetodo(), LocalDateTime.now(), reparacion);
+        controlPago.agregarPago(pago);
 
         Pago pagoObtenido = controlPago.obtenerPagoPorIdReparacion(keyRep);
         assertNotNull(pagoObtenido, "El pago debería haberse agregado y existir en la base de datos");
@@ -102,7 +102,7 @@ public class ControlPagoTest {
         int keyRep = controlReparacion.agregarReparacionK(reparacion);
 
         Pago pago = new Pago(1000.0, "tarjeta", LocalDateTime.now(), reparacion);
-        controlPago.agregarPago(pago.getTotal(), pago.getMetodo(), LocalDateTime.now(), reparacion);
+        controlPago.agregarPago(pago);
 
         // Obtener el ID del pago recién agregado
         int idPago = controlPago.obtenerPagoPorIdReparacion(keyRep).getId();
@@ -135,10 +135,11 @@ public class ControlPagoTest {
         Reparacion reparacion = new Reparacion("tilin", nuevoVehiculo);
         int keyRep = controlReparacion.agregarReparacionK(reparacion);
 
-        double total = 1000.0;
-        String metodo = "tarjeta";
         
-        controlPago.agregarPago(total, metodo, LocalDateTime.now(), reparacion);
+        
+        Pago pago = new Pago(1000.0, "tarjeta", LocalDateTime.now(), reparacion);
+        controlPago.agregarPago(pago);
+        
 
         int idPago = controlPago.obtenerPagoPorIdReparacion(keyRep).getId();
         controlPago.eliminarPago(idPago);
@@ -165,7 +166,9 @@ public class ControlPagoTest {
         double total = 1000.0;
         String metodo = "tarjeta";
 
-        controlPago.agregarPago(total, metodo, LocalDateTime.now(), reparacion);
+        Pago pago = new Pago(1000.0, "tarjeta", LocalDateTime.now(), reparacion);
+        controlPago.agregarPago(pago);
+        
 
         Pago pagoObtenido = controlPago.obtenerPagoPorIdReparacion(keyRep);
         assertNotNull(pagoObtenido, "El pago debería haberse encontrado");
@@ -191,11 +194,14 @@ public class ControlPagoTest {
         controlReparacion.agregarReparacion(reparacion1);
         controlReparacion.agregarReparacion(reparacion2);
 
-        double total = 1000.0;
-        String metodo = "tarjeta";
+        
 
-        controlPago.agregarPago(total, metodo, LocalDateTime.now(), reparacion1);
-        controlPago.agregarPago(1200.0, "Efectivo", LocalDateTime.now(), reparacion2);
+        Pago pago = new Pago(1200.0, "Efectivo", LocalDateTime.now(), reparacion1);
+        controlPago.agregarPago(pago);
+        
+        Pago pago2 = new Pago(1200.0, "Efectivo", LocalDateTime.now(), reparacion2);
+        controlPago.agregarPago(pago2);
+        
 
         List<Pago> listaPagos = controlPago.listarPagos();
         assertNotNull(listaPagos, "La lista de pagos no debería ser nula");
