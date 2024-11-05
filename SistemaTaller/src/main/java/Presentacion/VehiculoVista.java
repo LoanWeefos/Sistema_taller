@@ -25,9 +25,9 @@ import javax.swing.table.DefaultTableModel;
  * @author hoshi
  */
 public class VehiculoVista extends javax.swing.JFrame {
-    
+
     Connection conexion;
-    private ControlVehiculo controlVehiculo = new ControlVehiculo(conexion);
+    private ControlVehiculo controlVehiculo = new ControlVehiculo();
     private ControlCliente controlCliente = new ControlCliente();
 
     /**
@@ -45,12 +45,10 @@ public class VehiculoVista extends javax.swing.JFrame {
                 tablaVehiculosMouseClicked(evt);
             }
 
-            
         });
     }
-    
-    
-        private void registrarVehiculo() {
+
+    private void registrarVehiculo() {
         String placa = txtPlaca.getText();
         String rfc = txtRfc.getText();
         String marca = txtMarca.getText();
@@ -79,51 +77,60 @@ public class VehiculoVista extends javax.swing.JFrame {
         if (clienteEncontrado == null) {
             System.out.println("Cliente no encontrado con el RFC especificado.");
             return;
-            }
+        }
 
-            // Crear el objeto Vehiculo y asignar el cliente encontrado
-            Vehiculo vehiculo = new Vehiculo(placa, marca, modelo, color, clienteEncontrado);
+        // Crear el objeto Vehiculo y asignar el cliente encontrado
+        Vehiculo vehiculo = new Vehiculo(placa, color, marca, modelo, clienteEncontrado);
 
-            try {
-                // Intentar agregar el vehículo
-                controlVehiculo.agregarVehiculo(vehiculo);
+        try {
+            // Intentar agregar el vehículo
+            controlVehiculo.agregarVehiculo(vehiculo);
 
-                // Mensaje de éxito si no hay excepción
-                System.out.println("Vehículo registrado exitosamente.");
-                limpiarCampos(); // Limpia los campos tras la inserción
-                cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
-            } catch (Exception e) {
-                // Manejo de error en caso de fallo
-                System.out.println("Error al registrar el vehículo: " + e.getMessage());
-            }
+            // Mensaje de éxito si no hay excepción
+            System.out.println("Vehículo registrado exitosamente.");
+            limpiarCampos(); // Limpia los campos tras la inserción
+            cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
+        } catch (Exception e) {
+            // Manejo de error en caso de fallo
+            System.out.println("Error al registrar el vehículo: " + e.getMessage());
+        }
+ }
 
-//            // Intentar registrar el vehículo
-//            boolean exito = controlVehiculo.agregarVehiculo(vehiculo);
-//
-//            if (exito) {
-//                System.out.println("Vehículo registrado exitosamente.");
-//                limpiarCampos(); // Limpia los campos tras inserción exitosa
-//                cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
-//            } else {
-//                System.out.println("Error al registrar el vehículo.");
-//            }
-
-    }
 
     private void tablaVehiculosMouseClicked(MouseEvent evt) {
-         // Modelo de la tabla con columnas Nombre y RFC
+
+        int filaSeleccionada = tblVehiculos.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String placa = tblVehiculos.getValueAt(filaSeleccionada, 0).toString(); // Asumiendo que el RFC está en la segunda columna
+            Vehiculo vehiculo = controlVehiculo.obtenerVehiculoPorPlaca(placa); // Método que debes implementar
+
+            if (vehiculo != null) {
+                txtPlaca.setText(vehiculo.getPlaca());
+                txtRfc.setText(vehiculo.getCliente().getRfc());
+                txtMarca.setText(vehiculo.getMarca());
+                txtModelo.setText(vehiculo.getModelo());
+                txtColor.setText(vehiculo.getColor());
+            } else {
+                System.out.println("Vehiculo no encontrado con Placa: " + placa);
+                limpiarCampos(); // Limpiar campos si no se encuentra cliente
+            }
+        }
+    }
+
+    private void cargarDatosVehiculos() {
+        // Modelo de la tabla con columnas Nombre y RFC
         DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Placa", "RFC"}, 0);
 
         try {
             // Usa la conexión existente
-            String consultaSQL = "SELECT Placa, RFC FROM vehiculos";
+            String consultaSQL = "SELECT Placa, rfc_cliente FROM vehiculos";
             PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
             ResultSet rs = ps.executeQuery();
 
             // Agrega cada fila de la base de datos al modelo de la tabla
             while (rs.next()) {
                 String placa = rs.getString("Placa");
-                String rfc = rs.getString("RFC");
+                String rfc = rs.getString("rfc_cliente");
                 modeloTabla.addRow(new Object[]{placa, rfc});
             }
 
@@ -140,26 +147,7 @@ public class VehiculoVista extends javax.swing.JFrame {
         tblVehiculos.setModel(modeloTabla);
     }
 
-    private void cargarDatosVehiculos() {
-        int filaSeleccionada = tblVehiculos.getSelectedRow();
-        if (filaSeleccionada >= 0) {
-            String placa = tblVehiculos.getValueAt(filaSeleccionada, 1).toString(); // Asumiendo que el RFC está en la segunda columna
-            Vehiculo vehiculo = controlVehiculo.obtenerVehiculoPorPlaca(placa); // Método que debes implementar
-
-            if (vehiculo != null) {
-                txtPlaca.setText(vehiculo.getPlaca());
-                txtRfc.setText(vehiculo.getCliente().getRfc());
-                txtMarca.setText(vehiculo.getMarca());
-                txtModelo.setText(vehiculo.getModelo());
-                txtColor.setText(vehiculo.getColor());
-            } else {
-                System.out.println("Vehiculo no encontrado con Placa: " + placa);
-                limpiarCampos(); // Limpiar campos si no se encuentra cliente
-            }
-        }
-    }
-    
-     public void closeConnection() {
+    public void closeConnection() {
         try {
             if (conexion != null && !conexion.isClosed()) {
                 conexion.close();
@@ -533,7 +521,4 @@ public class VehiculoVista extends javax.swing.JFrame {
     private javax.swing.JTextField txtRfc;
     // End of variables declaration//GEN-END:variables
 
-    
-
-    
 }

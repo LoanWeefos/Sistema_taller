@@ -7,6 +7,7 @@ package Negocio;
 import Dominio.Cliente;
 import Dominio.Vehiculo;
 import Persistencia.ClienteDAO;
+import Persistencia.Conexion;
 import Persistencia.VehiculoDAO;
 import java.sql.Connection;
 
@@ -19,9 +20,9 @@ public class ControlVehiculo {
     private ClienteDAO clienteDAO;
 
     // Constructor que acepta la conexión y crea instancias de los DAOs
-    public ControlVehiculo(Connection connection) {
-        this.vehiculoDAO = new VehiculoDAO(connection);
-        this.clienteDAO = new ClienteDAO(connection);  // También necesitamos acceso al ClienteDAO
+    public ControlVehiculo() {
+        this.vehiculoDAO = new VehiculoDAO(Conexion.getConnection());
+        this.clienteDAO = new ClienteDAO(Conexion.getConnection());  // También necesitamos acceso al ClienteDAO
     }
 
     // Método para agregar un vehículo con validación de existencia previa

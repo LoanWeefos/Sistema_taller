@@ -24,23 +24,19 @@ public class Servicio implements Serializable {
     private String descripcion;
     private Double costo;
     
-    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL)
-    private List<ReparacionServicio> reparacionServicios;
-
+    
     public Servicio() {
     }
 
-    public Servicio(int id_servicio, String descripcion, Double costo, List<ReparacionServicio> reparacionServicios) {
+    public Servicio(int id_servicio, String descripcion, Double costo) {
         this.id_servicio = id_servicio;
         this.descripcion = descripcion;
         this.costo = costo;
-        this.reparacionServicios = reparacionServicios;
     }
 
-    public Servicio(String descripcion, Double costo, List<ReparacionServicio> reparacionServicios) {
+    public Servicio(String descripcion, Double costo) {
         this.descripcion = descripcion;
         this.costo = costo;
-        this.reparacionServicios = reparacionServicios;
     }
 
     // Getters y Setters
@@ -69,13 +65,7 @@ public class Servicio implements Serializable {
         this.costo = costo;
     }
 
-    public List<ReparacionServicio> getReparacionServicios() {
-        return reparacionServicios;
-    }
-
-    public void setReparacionServicios(List<ReparacionServicio> reparacionServicios) {
-        this.reparacionServicios = reparacionServicios;
-    }
+    
 
     @Override
     public int hashCode() {

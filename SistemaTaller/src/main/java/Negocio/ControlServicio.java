@@ -22,29 +22,24 @@ public class ControlServicio {
         this.servicioDAO = new ServicioDAO(Conexion.getConnection());
     }
 
-    // Método para agregar un nuevo servicio
-    public void agregarServicio(String descripcion, double costo, List<ReparacionServicio> reparacionServicios) {
-        Servicio servicio = new Servicio();
-        servicio.setDescripcion(descripcion);
-        servicio.setCosto(costo);
-        servicio.setReparacionServicios(reparacionServicios);
-
-        try {
-            servicioDAO.agregar(servicio);
-            System.out.println("Servicio agregado correctamente.");
-        } catch (RuntimeException e) {
-            System.err.println("Error al agregar el servicio: " + e.getMessage());
+    // Método para agregar una nueva reparación
+    public void agregarServicio(Servicio servicio) {
+        if (servicio == null) {
+            throw new IllegalArgumentException("El servicio no puede ser nulos");
         }
+
+        servicioDAO.agregar(servicio); // Llama al DAO para agregar la reparación
+        System.out.println("Servicio agregada exitosamente");
     }
 
     // Método para actualizar un servicio existente
-    public void actualizarServicio(int id, String descripcion, double costo, List<ReparacionServicio> reparacionServicios) {
+    public void actualizarServicio(int id, String descripcion, double costo) {
         try {
             Servicio servicio = servicioDAO.obtenerPorId(id);
             if (servicio != null) {
                 servicio.setDescripcion(descripcion);
                 servicio.setCosto(costo);
-                servicio.setReparacionServicios(reparacionServicios);
+                
 
                 servicioDAO.actualizar(servicio);
                 System.out.println("Servicio actualizado correctamente.");
