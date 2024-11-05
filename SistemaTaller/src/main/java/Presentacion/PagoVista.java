@@ -4,11 +4,23 @@
  */
 package Presentacion;
 
+import Dominio.Pago;
+import Negocio.ControlPago;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author hoshi
  */
 public class PagoVista extends javax.swing.JFrame {
+    
+    Connection conexion;
+    //private ControlPago controlPago = new ControlPago();
 
     /**
      * Creates new form PagoVista
@@ -16,6 +28,61 @@ public class PagoVista extends javax.swing.JFrame {
     public PagoVista() {
         initComponents();
     }
+    
+    private void cargarDatosClientes() {
+        // Modelo de la tabla con columnas Nombre y RFC
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Nombre", "RFC"}, 0);
+
+        try {
+            // Usa la conexión existente
+            String consultaSQL = "SELECT Nombre, RFC FROM clientes";
+            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
+            ResultSet rs = ps.executeQuery();
+
+            // Agrega cada fila de la base de datos al modelo de la tabla
+            while (rs.next()) {
+                String nombre = rs.getString("Nombre");
+                String rfc = rs.getString("RFC");
+                modeloTabla.addRow(new Object[]{nombre, rfc});
+            }
+
+            // Cierra el ResultSet y el PreparedStatement
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar los datos de clientes");
+        }
+
+        // Asigna el modelo a la tabla
+        tblPagos.setModel(modeloTabla);
+    }
+
+    private void tablaClientesMouseClicked(MouseEvent evt) {
+//        int filaSeleccionada = tblPagos.getSelectedRow();
+//        if (filaSeleccionada >= 0) {
+//            String rfc = tblPagos.getValueAt(filaSeleccionada, 1).toString(); // Asumiendo que el RFC está en la segunda columna
+//            Pago pago = controlPago.obtenerClientePorRfc(rfc); // Método que debes implementar
+//
+//            if (cliente != null) {
+//                // Cargar los datos del cliente en los campos de texto
+//                txtRFC.setText(cliente.getRfc());
+//                txtNombre.setText(cliente.getNombre());
+//                txtCorreo.setText(cliente.getCorreo());
+//                txtTelefono.setText(cliente.getTelefono());
+//                txtCalle.setText(cliente.getDomicilio().getCalle());
+//                txtColonia.setText(cliente.getDomicilio().getColonia());
+//                txtNumero.setText(cliente.getDomicilio().getNumero());
+//                txtFechaN.setDate(cliente.getFechaNacimiento());
+//            } else {
+//                System.out.println("Cliente no encontrado con RFC: " + rfc);
+//                limpiarCampos(); // Limpiar campos si no se encuentra cliente
+//            }
+//        }
+    }
+
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,7 +96,7 @@ public class PagoVista extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lblPagos = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblPagos = new javax.swing.JTable();
         btnRegresar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
@@ -49,7 +116,7 @@ public class PagoVista extends javax.swing.JFrame {
 
         lblPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Pagos.png"))); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblPagos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -60,12 +127,11 @@ public class PagoVista extends javax.swing.JFrame {
                 "Orden", "Placa", "Cliente"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblPagos);
 
         btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
         btnRegresar.setBorderPainted(false);
         btnRegresar.setContentAreaFilled(false);
-        btnRegresar.setLabel("");
 
         jPanel2.setOpaque(false);
 
@@ -122,6 +188,11 @@ public class PagoVista extends javax.swing.JFrame {
         btnPagar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/PagosBoton.png"))); // NOI18N
         btnPagar.setBorderPainted(false);
         btnPagar.setContentAreaFilled(false);
+        btnPagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPagarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -178,6 +249,11 @@ public class PagoVista extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnPagarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -220,7 +296,6 @@ public class PagoVista extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblFecha;
@@ -228,6 +303,7 @@ public class PagoVista extends javax.swing.JFrame {
     private javax.swing.JLabel lblPagos;
     private javax.swing.JLabel lblServicios;
     private javax.swing.JLabel lblTotal;
+    private javax.swing.JTable tblPagos;
     private com.toedter.calendar.JDateChooser txtFechaN;
     // End of variables declaration//GEN-END:variables
 }
