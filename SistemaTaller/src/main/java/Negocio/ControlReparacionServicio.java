@@ -17,8 +17,8 @@ import java.util.List;
 public class ControlReparacionServicio {
      private ReparacionServicioDAO reparacionServicioDAO;
 
-    public ControlReparacionServicio(Connection connection) {
-        this.reparacionServicioDAO = new ReparacionServicioDAO(connection);
+    public ControlReparacionServicio() {
+        this.reparacionServicioDAO = new ReparacionServicioDAO(Conexion.getConnection());
     }
 
     // Método para agregar una nueva relación de ReparacionServicio

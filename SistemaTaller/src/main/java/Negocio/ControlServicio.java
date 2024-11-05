@@ -18,8 +18,8 @@ import java.util.List;
 public class ControlServicio {
      private ServicioDAO servicioDAO;
 
-    public ControlServicio(Connection connection) {
-        this.servicioDAO = new ServicioDAO(connection);
+    public ControlServicio() {
+        this.servicioDAO = new ServicioDAO(Conexion.getConnection());
     }
 
     // Método para agregar un nuevo servicio
@@ -72,7 +72,7 @@ public class ControlServicio {
     }
 
     // Método para obtener un servicio por su ID
-    public void obtenerServicioPorId(int id) {
+    public Servicio obtenerServicioPorId(int id) {
         try {
             Servicio servicio = servicioDAO.obtenerPorId(id);
             if (servicio != null) {
@@ -83,10 +83,11 @@ public class ControlServicio {
         } catch (RuntimeException e) {
             System.err.println("Error al obtener el servicio: " + e.getMessage());
         }
+        return null;
     }
 
     // Método para listar todos los servicios
-    public void listarServicios() {
+    public List<Servicio> listarServicios() {
         try {
             List<Servicio> servicios = servicioDAO.obtenerTodos();
             if (servicios.isEmpty()) {
@@ -99,5 +100,6 @@ public class ControlServicio {
         } catch (RuntimeException e) {
             System.err.println("Error al listar los servicios: " + e.getMessage());
         }
+        return null;
     }
 }

@@ -7,13 +7,18 @@ package Presentacion;
 import Dominio.Cliente;
 import Dominio.Domicilio;
 import Dominio.Vehiculo;
+import Negocio.ControlCliente;
 import Persistencia.Conexion;
 import java.awt.event.MouseAdapter;
 import Negocio.ControlVehiculo;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,6 +28,7 @@ public class VehiculoVista extends javax.swing.JFrame {
     
     Connection conexion;
     private ControlVehiculo controlVehiculo = new ControlVehiculo(conexion);
+    private ControlCliente controlCliente = new ControlCliente();
 
     /**
      * Creates new form VehiculoVista
@@ -42,8 +48,10 @@ public class VehiculoVista extends javax.swing.JFrame {
             
         });
     }
-    private void registrarVehiculo() {
-       String placa = txtPlaca.getText();
+    
+    
+        private void registrarVehiculo() {
+        String placa = txtPlaca.getText();
         String rfc = txtRfc.getText();
         String marca = txtMarca.getText();
         java.util.Date anio = txtAnio.getDate();
@@ -57,33 +65,98 @@ public class VehiculoVista extends javax.swing.JFrame {
             return;
         }
 
-//            if () {
-//            // Convertir la fecha a java.sql.Date
-//            java.sql.Date fechaSQL = new java.sql.Date(anio.getTime());
-//
-//            Vehiculo vehiculo = new Vehiculo(placa, marca, modelo, color);
-//
-//            // Llamar al método agregarCliente en ControlCliente
+        List<Cliente> listaClientes = controlCliente.obtenerTodosLosClientes();
+        Cliente clienteEncontrado = null;
+
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getRfc().equalsIgnoreCase(rfc)) {
+                clienteEncontrado = cliente;
+                break; // Salir del bucle al encontrar el cliente
+            }
+        }
+
+        // Verificar si el cliente fue encontrado
+        if (clienteEncontrado == null) {
+            System.out.println("Cliente no encontrado con el RFC especificado.");
+            return;
+            }
+
+            // Crear el objeto Vehiculo y asignar el cliente encontrado
+            Vehiculo vehiculo = new Vehiculo(placa, marca, modelo, color, clienteEncontrado);
+
+            try {
+                // Intentar agregar el vehículo
+                controlVehiculo.agregarVehiculo(vehiculo);
+
+                // Mensaje de éxito si no hay excepción
+                System.out.println("Vehículo registrado exitosamente.");
+                limpiarCampos(); // Limpia los campos tras la inserción
+                cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
+            } catch (Exception e) {
+                // Manejo de error en caso de fallo
+                System.out.println("Error al registrar el vehículo: " + e.getMessage());
+            }
+
+//            // Intentar registrar el vehículo
 //            boolean exito = controlVehiculo.agregarVehiculo(vehiculo);
 //
 //            if (exito) {
-//                System.out.println("Cliente registrado exitosamente.");
-//                limpiarCampos(); // Limpia los campos después de la inserción exitosa
+//                System.out.println("Vehículo registrado exitosamente.");
+//                limpiarCampos(); // Limpia los campos tras inserción exitosa
 //                cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
 //            } else {
-//                System.out.println("Error al registrar el cliente.");
+//                System.out.println("Error al registrar el vehículo.");
 //            }
-//
-//        }
 
     }
 
     private void tablaVehiculosMouseClicked(MouseEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         // Modelo de la tabla con columnas Nombre y RFC
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Placa", "RFC"}, 0);
+
+        try {
+            // Usa la conexión existente
+            String consultaSQL = "SELECT Placa, RFC FROM vehiculos";
+            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
+            ResultSet rs = ps.executeQuery();
+
+            // Agrega cada fila de la base de datos al modelo de la tabla
+            while (rs.next()) {
+                String placa = rs.getString("Placa");
+                String rfc = rs.getString("RFC");
+                modeloTabla.addRow(new Object[]{placa, rfc});
+            }
+
+            // Cierra el ResultSet y el PreparedStatement
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar los datos de vehiculos");
+        }
+
+        // Asigna el modelo a la tabla
+        tblVehiculos.setModel(modeloTabla);
     }
 
     private void cargarDatosVehiculos() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int filaSeleccionada = tblVehiculos.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String placa = tblVehiculos.getValueAt(filaSeleccionada, 1).toString(); // Asumiendo que el RFC está en la segunda columna
+            Vehiculo vehiculo = controlVehiculo.obtenerVehiculoPorPlaca(placa); // Método que debes implementar
+
+            if (vehiculo != null) {
+                txtPlaca.setText(vehiculo.getPlaca());
+                txtRfc.setText(vehiculo.getCliente().getRfc());
+                txtMarca.setText(vehiculo.getMarca());
+                txtModelo.setText(vehiculo.getModelo());
+                txtColor.setText(vehiculo.getColor());
+            } else {
+                System.out.println("Vehiculo no encontrado con Placa: " + placa);
+                limpiarCampos(); // Limpiar campos si no se encuentra cliente
+            }
+        }
     }
     
      public void closeConnection() {
@@ -127,6 +200,7 @@ public class VehiculoVista extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         txtRfc = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -141,7 +215,7 @@ public class VehiculoVista extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(248, 242, 206));
-        setPreferredSize(new java.awt.Dimension(985, 680));
+        setPreferredSize(new java.awt.Dimension(1050, 680));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(248, 242, 206));
@@ -220,6 +294,8 @@ public class VehiculoVista extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RFC.png"))); // NOI18N
 
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Rfc.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -227,12 +303,16 @@ public class VehiculoVista extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(41, 41, 41)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(txtRfc, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7)
+                        .addGap(491, 491, 491))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,6 +321,8 @@ public class VehiculoVista extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addComponent(txtRfc, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -285,9 +367,9 @@ public class VehiculoVista extends javax.swing.JFrame {
                             .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(283, Short.MAX_VALUE))
+                        .addGap(23, 23, 23)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(422, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -318,7 +400,7 @@ public class VehiculoVista extends javax.swing.JFrame {
                         .addComponent(jLabel6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -354,14 +436,14 @@ public class VehiculoVista extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 985, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1025, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -434,6 +516,7 @@ public class VehiculoVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
