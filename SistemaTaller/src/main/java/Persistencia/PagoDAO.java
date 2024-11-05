@@ -20,6 +20,7 @@ import java.util.ArrayList;
  * @author hoshi
  */
 public class PagoDAO implements IPersistencia<Pago> {
+
     private Connection conexion;
 
     public PagoDAO(Connection conexion) {
@@ -28,13 +29,13 @@ public class PagoDAO implements IPersistencia<Pago> {
 
     @Override
     public void agregar(Pago pago) {
-        String sqlPago = "INSERT INTO Pagos (total, metodo, fecha, reparacion_id) VALUES (?, ?, ?, ?)";
+        String sqlPago = "INSERT INTO Pagos (fecha, metodo, total, reparacion_id) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement psPago = conexion.prepareStatement(sqlPago, Statement.RETURN_GENERATED_KEYS)) {
-            psPago.setDouble(1, pago.getTotal());
+            psPago.setTimestamp(1, java.sql.Timestamp.valueOf(pago.getFecha())); // Cambiado a Timestamp
             psPago.setString(2, pago.getMetodo());
-            psPago.setTimestamp(3, java.sql.Timestamp.valueOf(pago.getFecha())); // Cambiado a Timestamp
-            psPago.setInt(4, pago.getReparacion().getId()); // Cambiado a setInt
+            psPago.setDouble(3, pago.getTotal());
+            psPago.setLong(4, pago.getReparacion().getId()); // Cambiado a setInt
 
             int affectedRows = psPago.executeUpdate();
             if (affectedRows > 0) {
@@ -51,13 +52,13 @@ public class PagoDAO implements IPersistencia<Pago> {
 
     @Override
     public void actualizar(Pago pago) {
-        String sqlPago = "UPDATE Pagos SET total = ?, metodo = ?, fecha = ?, reparacion_id = ? WHERE id = ?";
+        String sqlPago = "UPDATE Pagos SET  fecha = ?, metodo = ?, total = ?, reparacion_id = ? WHERE id = ?";
 
         try (PreparedStatement psPago = conexion.prepareStatement(sqlPago)) {
-            psPago.setDouble(1, pago.getTotal());
+            psPago.setTimestamp(1, java.sql.Timestamp.valueOf(pago.getFecha())); // Cambiado a Timestamp
             psPago.setString(2, pago.getMetodo());
-            psPago.setTimestamp(3, java.sql.Timestamp.valueOf(pago.getFecha())); // Cambiado a Timestamp
-            psPago.setInt(4, pago.getReparacion().getId()); // Cambiado a setInt
+            psPago.setDouble(3, pago.getTotal());
+            psPago.setLong(4, pago.getReparacion().getId()); // Cambiado a setInt
             psPago.setInt(5, pago.getId()); // Cambiado a setInt
 
             psPago.executeUpdate();
@@ -107,8 +108,7 @@ public class PagoDAO implements IPersistencia<Pago> {
         String sqlPago = "SELECT * FROM Pagos";
         List<Pago> pagos = new ArrayList<>();
 
-        try (Statement stmtPago = conexion.createStatement();
-             ResultSet rsPago = stmtPago.executeQuery(sqlPago)) {
+        try (Statement stmtPago = conexion.createStatement(); ResultSet rsPago = stmtPago.executeQuery(sqlPago)) {
 
             while (rsPago.next()) {
                 Pago pago = new Pago();
@@ -138,4 +138,3 @@ public class PagoDAO implements IPersistencia<Pago> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
-

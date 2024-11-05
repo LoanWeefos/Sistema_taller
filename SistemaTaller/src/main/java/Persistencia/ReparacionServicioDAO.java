@@ -25,7 +25,7 @@ public class ReparacionServicioDAO {
         String sql = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, reparacionServicio.getReparacion().getId());
+            ps.setLong(1, reparacionServicio.getReparacion().getId());
             ps.setInt(2, reparacionServicio.getServicio().getId_servicio());
 
             int affectedRows = ps.executeUpdate();
@@ -45,7 +45,7 @@ public class ReparacionServicioDAO {
         String sql = "UPDATE Reparaciones_Servicios SET id_reparacion = ?, id_servicio = ? WHERE id_repserv = ?";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setInt(1, reparacionServicio.getReparacion().getId());
+            ps.setLong(1, reparacionServicio.getReparacion().getId());
             ps.setInt(2, reparacionServicio.getServicio().getId_servicio());
             ps.setInt(3, reparacionServicio.getId_repserv());
 

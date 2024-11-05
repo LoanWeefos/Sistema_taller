@@ -1,4 +1,4 @@
-package Prueba;
+package Persistencia;
 
 import Dominio.Cliente;
 import Dominio.Domicilio;

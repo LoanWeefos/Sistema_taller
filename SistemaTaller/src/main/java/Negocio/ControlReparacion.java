@@ -5,6 +5,7 @@
 package Negocio;
 
 import Dominio.Reparacion;
+import Persistencia.Conexion;
 import Persistencia.ReparacionDAO;
 import java.sql.Connection;
 import java.util.List;
@@ -17,8 +18,8 @@ public class ControlReparacion {
      private ReparacionDAO reparacionDAO;
 
     // Constructor que recibe una conexión y pasa al DAO
-    public ControlReparacion(Connection conexion) {
-        this.reparacionDAO = new ReparacionDAO(conexion);
+    public ControlReparacion() {
+        this.reparacionDAO = new ReparacionDAO(Conexion.getConnection());
     }
 
     // Método para agregar una nueva reparación

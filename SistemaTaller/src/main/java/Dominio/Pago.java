@@ -21,7 +21,7 @@ public class Pago implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Cambiado a IDENTITY para reflejar la base de datos
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; // Cambiado a int
 
     private Double total;

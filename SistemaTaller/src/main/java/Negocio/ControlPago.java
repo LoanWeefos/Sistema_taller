@@ -6,7 +6,9 @@ package Negocio;
 
 import Dominio.Pago;
 import Dominio.Reparacion;
+import Persistencia.Conexion;
 import Persistencia.PagoDAO;
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,8 +20,8 @@ public class ControlPago {
     
     private PagoDAO pagoDAO;
 
-    public ControlPago(PagoDAO pagoDAO) {
-        this.pagoDAO = pagoDAO;
+    public ControlPago() {
+        this.pagoDAO = new PagoDAO(Conexion.getConnection());
     }
 
     // Método para agregar un nuevo pago
@@ -74,7 +76,7 @@ public class ControlPago {
     }
 
     // Método para obtener un pago por su ID
-    public void obtenerPagoPorId(int id) {
+    public Pago obtenerPagoPorId(int id) {
         try {
             Pago pago = pagoDAO.obtenerPorId(id);
             if (pago != null) {
@@ -85,14 +87,16 @@ public class ControlPago {
         } catch (RuntimeException e) {
             System.err.println("Error al obtener el pago: " + e.getMessage());
         }
+        return null;
     }
 
     // Método para listar todos los pagos
-    public void listarPagos() {
+    public List<Pago> listarPagos() {
         try {
             List<Pago> pagos = pagoDAO.obtenerTodos();
             if (pagos.isEmpty()) {
                 System.out.println("No hay pagos registrados.");
+                return pagos;
             } else {
                 for (Pago pago : pagos) {
                     System.out.println(pago);
@@ -101,6 +105,7 @@ public class ControlPago {
         } catch (RuntimeException e) {
             System.err.println("Error al listar los pagos: " + e.getMessage());
         }
+        return null;
     }
 
 }
