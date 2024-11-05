@@ -37,7 +37,6 @@ public class ControlPagoTest {
     void setUp() {
         // Inicializar ControlPago y una reparación de prueba antes de cada prueba
         controlPago = new ControlPago();
-        reparacionPrueba = new Reparacion(); // Asume que Reparacion tiene un constructor sin parámetros
     }
 
     @AfterEach
@@ -52,12 +51,13 @@ public class ControlPagoTest {
         double total = 100.0;
         String metodo = "Efectivo";
         LocalDateTime fecha = LocalDateTime.now();
+        reparacionPrueba = new Reparacion();
 
         // Agregar el pago de prueba
         controlPago.agregarPago(total, metodo, fecha, reparacionPrueba);
 
         // Verificar que el pago se haya agregado correctamente
-        Pago pagoObtenido = controlPago.obtenerPagoPorId(1); // Cambia el ID según corresponda
+        Pago pagoObtenido = controlPago.obtenerPagoPorId(1);
         assertNotNull(pagoObtenido, "El pago debería haberse agregado y existir en la base de datos");
         assertEquals(total, pagoObtenido.getTotal(), "El total debería ser el esperado");
         assertEquals(metodo, pagoObtenido.getMetodo(), "El método de pago debería ser el esperado");

@@ -1,4 +1,4 @@
-package Prueba;
+package Persistencia;
 
 import Dominio.Vehiculo;
 import Dominio.Cliente;

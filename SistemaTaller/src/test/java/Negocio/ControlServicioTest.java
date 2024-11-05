@@ -63,7 +63,7 @@ public class ControlServicioTest {
         // Crear y agregar una reparación para el vehículo
         Reparacion reparacion = new Reparacion(1, "Carmen", vehiculo);
         controlReparacion.agregarReparacion(reparacion);
-
+        
         // Crear un nuevo servicio
         Servicio servicio = new Servicio(1, "Cambio de aceite", 1500.0); // Sin ID, será asignado por la BD
 
