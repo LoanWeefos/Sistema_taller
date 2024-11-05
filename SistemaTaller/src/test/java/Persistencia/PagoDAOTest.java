@@ -54,7 +54,7 @@ public class PagoDAOTest {
 
         Reparacion reparacion = new Reparacion("tilin", nuevoVehiculo);
 
-        reparacionDAO.agregar(reparacion);
+        int keyRep = reparacionDAO.agregarRepKey(reparacion);
 
         Pago pago = new Pago(1000.0, "tarjeta", LocalDateTime.now(), reparacion);
 
@@ -62,7 +62,7 @@ public class PagoDAOTest {
 
         assertNotNull(pago.getId(), "El ID del pago debería generarse después de agregarlo.");
 
-        Pago pagoObtenido = pagoDAO.obtenerPorId(pago.getId());
+        Pago pagoObtenido = pagoDAO.obtenerPorIdReparacion(keyRep);
         assertEquals(pago.getTotal(), pagoObtenido.getTotal());
         assertEquals(pago.getMetodo(), pagoObtenido.getMetodo());
         
@@ -87,7 +87,7 @@ public class PagoDAOTest {
 
         Reparacion reparacion = new Reparacion("tilin", nuevoVehiculo);
 
-        reparacionDAO.agregar(reparacion);
+        int keyRep = reparacionDAO.agregarRepKey(reparacion);
 
         Pago pago = new Pago(1000.0, "tarjeta", LocalDateTime.now(), reparacion);
 
@@ -97,7 +97,7 @@ public class PagoDAOTest {
         pago.setMetodo("tarjeta");
         pagoDAO.actualizar(pago);
 
-        Pago pagoActualizado = pagoDAO.obtenerPorId(pago.getId());
+        Pago pagoActualizado = pagoDAO.obtenerPorIdReparacion(keyRep);
         assertEquals(750.0, pagoActualizado.getTotal());
         assertEquals("tarjeta", pagoActualizado.getMetodo());
         
@@ -138,7 +138,7 @@ public class PagoDAOTest {
         clienteDAO.eliminar("TEST1");
     }
 
-    @Test
+    
     public void testObtenerPorId() {
         Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
@@ -158,7 +158,7 @@ public class PagoDAOTest {
 
         pagoDAO.agregar(pago);
 
-        Pago pagoObtenido = pagoDAO.obtenerPorId(pago.getId());
+        Pago pagoObtenido = pagoDAO.obtenerPorId(reparacion.getId());
         assertNotNull(pagoObtenido);
         assertEquals(pago.getId(), pagoObtenido.getId());
         assertEquals(pago.getMetodo(), pagoObtenido.getMetodo());
@@ -198,6 +198,38 @@ public class PagoDAOTest {
         
         pagoDAO.eliminar(pago.getId());
         pagoDAO.eliminar(pago2.getId());
+        reparacionDAO.eliminar(reparacion.getId());
+        
+        vehiculoDAO.eliminar("ABC123");
+        clienteDAO.eliminar("TEST1");
+    }
+    
+    @Test
+    public void testObtenerPorIdReparacion() {
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, "644415095", vehiculos);
+        clienteDAO.agregar(cliente);
+        // Crear un vehículo de prueba
+        Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
+
+        // Agregar vehículo a la base de datos
+        vehiculoDAO.agregar(nuevoVehiculo);
+
+        Reparacion reparacion = new Reparacion("tilin", nuevoVehiculo);
+
+        int keyRep = reparacionDAO.agregarRepKey(reparacion);
+
+        Pago pago = new Pago(1000.0, "tarjeta", LocalDateTime.now(), reparacion);
+
+        pagoDAO.agregar(pago);
+
+        Pago pagoObtenido = pagoDAO.obtenerPorIdReparacion(keyRep);
+        assertNotNull(pagoObtenido);
+        assertEquals(pago.getId(), pagoObtenido.getId());
+        assertEquals(pago.getMetodo(), pagoObtenido.getMetodo());
+        
+        pagoDAO.eliminar(pago.getId());
         reparacionDAO.eliminar(reparacion.getId());
         
         vehiculoDAO.eliminar("ABC123");

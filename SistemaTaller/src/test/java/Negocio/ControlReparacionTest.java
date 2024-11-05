@@ -56,12 +56,12 @@ public class ControlReparacionTest {
         // Limpiar los datos de prueba después de cada prueba
 
         // Aquí puedes agregar la lógica para eliminar clientes de prueba si es necesario
-        conexion.createStatement().executeUpdate("DELETE FROM Reparaciones WHERE id = 1");
-        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion);
-        vehiculoDAO.eliminar("ABC1");
-
-        ClienteDAO cliente = new ClienteDAO(conexion);
-        cliente.eliminar("RFC1");
+//        conexion.createStatement().executeUpdate("DELETE FROM Reparaciones WHERE id = 1");
+//        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion);
+//        vehiculoDAO.eliminar("ABC1");
+//
+//        ClienteDAO cliente = new ClienteDAO(conexion);
+//        cliente.eliminar("RFC1");
 
     }
 

@@ -31,7 +31,7 @@ public class Pago implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "reparacion_id")
-    private Reparacion reparacion;
+    private Reparacion reparacion; 
 
     public Pago() {
     }

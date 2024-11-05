@@ -127,6 +127,31 @@ public class PagoDAO implements IPersistencia<Pago> {
 
         return pagos;
     }
+    
+    public Pago obtenerPorIdReparacion(int id) { // Cambiado a int
+        String sqlPago = "SELECT * FROM Pagos WHERE reparacion_id = ?";
+        Pago pago = null;
+
+        try (PreparedStatement psPago = conexion.prepareStatement(sqlPago)) {
+            psPago.setInt(1, id); // Cambiado a setInt
+            try (ResultSet rsPago = psPago.executeQuery()) {
+                if (rsPago.next()) {
+                    pago = new Pago();
+                    pago.setId(rsPago.getInt("id")); // Cambiado a getInt
+                    pago.setTotal(rsPago.getDouble("total"));
+                    pago.setMetodo(rsPago.getString("metodo"));
+                    pago.setFecha(rsPago.getTimestamp("fecha").toLocalDateTime()); // Convertir a LocalDateTime
+                    Reparacion reparacion = new Reparacion();
+                    reparacion.setId(rsPago.getInt("reparacion_id")); // Cambiado a getInt
+                    pago.setReparacion(reparacion);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return pago;
+    }
 
     @Override
     public void eliminar(Long id) {

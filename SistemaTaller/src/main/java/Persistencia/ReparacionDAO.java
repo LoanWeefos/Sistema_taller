@@ -18,6 +18,7 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
         this.conexion = conexion;
     }
 
+    
     @Override
     public void agregar(Reparacion entity) {
         String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
@@ -32,7 +33,6 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
             if (generatedKeys.next()) {
                 int reparacionId = generatedKeys.getInt(1);
                 entity.setId(reparacionId);
-
                
             }
         } catch (SQLException e) {
@@ -124,5 +124,29 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
         }
         return reparacion;
     }
+    
+    
+    public int agregarRepKey(Reparacion entity) {
+        String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
+        String sqlReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
+
+        try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion, Statement.RETURN_GENERATED_KEYS)) {
+            stmtReparacion.setString(1, entity.getNombre_empleado());
+            stmtReparacion.setString(2, entity.getVehiculo().getPlaca());
+            stmtReparacion.executeUpdate();
+
+            ResultSet generatedKeys = stmtReparacion.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int reparacionId = generatedKeys.getInt(1);
+                entity.setId(reparacionId);
+                return reparacionId;
+               
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
 }
 
