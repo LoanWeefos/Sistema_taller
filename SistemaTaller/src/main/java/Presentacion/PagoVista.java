@@ -22,6 +22,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -155,7 +156,7 @@ public class PagoVista extends javax.swing.JFrame {
 
         try {
             controlPago.agregarPago(pago);
-            System.out.println("Pago registrado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Pago registrado exitosamente.");
             limpiarCampos();
             cargarDatosPagos();
         } catch (Exception e) {

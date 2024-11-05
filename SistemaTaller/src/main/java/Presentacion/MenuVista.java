@@ -216,10 +216,14 @@ public class MenuVista extends javax.swing.JFrame {
 
     private void btnReparacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReparacionesActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnReparacionesActionPerformed
 
     private void btnPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagosActionPerformed
         // TODO add your handling code here:
+        PagoVista pagoVista= new PagoVista();
+        pagoVista.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnPagosActionPerformed
 
     private void btnRecordatoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordatoriosActionPerformed
