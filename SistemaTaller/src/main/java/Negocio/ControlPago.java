@@ -10,6 +10,7 @@ import Persistencia.Conexion;
 import Persistencia.PagoDAO;
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,31 +82,52 @@ public class ControlPago {
             Pago pago = pagoDAO.obtenerPorId(id);
             if (pago != null) {
                 System.out.println("Pago encontrado: " + pago);
+                return pago; // Retornar el pago encontrado
             } else {
                 System.err.println("El pago con ID " + id + " no existe.");
             }
         } catch (RuntimeException e) {
             System.err.println("Error al obtener el pago: " + e.getMessage());
         }
-        return null;
+        return null; // Retornar null solo si el pago no existe o hubo una excepción
     }
 
-    // Método para listar todos los pagos
+    
+    // Método para obtener un pago por su ID
+    public Pago obtenerPagoPorIdReparacion(int id) {
+        try {
+            Pago pago = pagoDAO.obtenerPorIdReparacion(id);
+            if (pago != null) {
+                System.out.println("Pago encontrado: " + pago);
+                return pago; // Retornar el pago encontrado
+            } else {
+                System.err.println("El pago con el ID de reparación " + id + " no existe.");
+            }
+        } catch (RuntimeException e) {
+            System.err.println("Error al obtener el pago: " + e.getMessage());
+        }
+        return null; // Retornar null solo si el pago no existe o hubo una excepción
+    }
+
+
+   // Método para listar todos los pagos
     public List<Pago> listarPagos() {
         try {
             List<Pago> pagos = pagoDAO.obtenerTodos();
-            if (pagos.isEmpty()) {
+            if (pagos == null || pagos.isEmpty()) {
                 System.out.println("No hay pagos registrados.");
-                return pagos;
+                return new ArrayList<>(); // Devolver una lista vacía en lugar de null
             } else {
                 for (Pago pago : pagos) {
                     System.out.println(pago);
                 }
+                return pagos;
             }
         } catch (RuntimeException e) {
             System.err.println("Error al listar los pagos: " + e.getMessage());
+            return new ArrayList<>(); // En caso de error, devolver una lista vacía en lugar de null
         }
-        return null;
     }
+
 
 }

@@ -115,7 +115,13 @@ public class ClienteVista extends javax.swing.JFrame {
         // Validación básica de campos vacíos
         if (nombre.isEmpty() || rfc.isEmpty() || correo.isEmpty() || colonia.isEmpty()
                 || numero.isEmpty() || telefono.isEmpty() || calle.isEmpty() || fechaNac == null) {
-            System.out.println("Por favor, complete todos los campos.");
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+            return;
+        }
+
+        // Verificar si el RFC ya está registrado
+        if (existeClienteConRfc(rfc)) {
+            JOptionPane.showMessageDialog(this, "Ya existe un cliente registrado con el mismo RFC.");
             return;
         }
 
@@ -129,12 +135,18 @@ public class ClienteVista extends javax.swing.JFrame {
         boolean exito = controlCliente.agregarCliente(cliente);
 
         if (exito) {
-            System.out.println("Cliente registrado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Cliente registrado exitosamente.");
             limpiarCampos(); // Limpia los campos después de la inserción exitosa
             cargarDatosClientes(); // Actualiza la tabla con los nuevos datos
         } else {
-            System.out.println("Error al registrar el cliente.");
+            JOptionPane.showMessageDialog(this, "Error al registrar el cliente");
         }
+    }
+
+    // Método auxiliar para verificar si existe un cliente con el mismo RFC
+    private boolean existeClienteConRfc(String rfc) {
+        Cliente cliente = controlCliente.obtenerClientePorRfc(rfc);
+        return cliente != null; // Devuelve true si el cliente ya existe
     }
 
     private void editarCliente() {
@@ -149,7 +161,7 @@ public class ClienteVista extends javax.swing.JFrame {
         Cliente cliente = new Cliente(rfc, nombre, correo, new java.sql.Date(fechaNac.getTime()), telefono, domicilio);
 
         // Llamar al método en ControlCliente para editar el cliente
-        boolean exito = controlCliente.editarCliente(cliente); // Necesitas implementar este método en ControlCliente
+        boolean exito = controlCliente.editarCliente(cliente);
 
         if (exito) {
             JOptionPane.showMessageDialog(this, "Cliente editado exitosamente.");
@@ -160,13 +172,34 @@ public class ClienteVista extends javax.swing.JFrame {
         }
     }
 
-    public void closeConnection() {
-        try {
-            if (conexion != null && !conexion.isClosed()) {
-                conexion.close();
+    private void eliminarCliente() {
+        int filaSeleccionada = tblClientes.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un cliente de la tabla.");
+            return; // Salir del método si no hay fila seleccionada
+        }
+
+        // Obtener el RFC del cliente seleccionado
+        String rfcCliente = tblClientes.getValueAt(filaSeleccionada, 1).toString();
+
+        // Mostrar un JOptionPane de confirmación
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas eliminar al cliente con RFC: " + rfcCliente + "?",
+                "Confirmar Eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            // Llamar al método en ControlCliente para eliminar el cliente
+            boolean exito = controlCliente.eliminarCliente(rfcCliente); // Implementa este método en ControlCliente
+
+            if (exito) {
+                JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente.");
+                cargarDatosClientes(); // Actualiza la tabla después de eliminar
+                limpiarCampos(); // Limpia los campos después de la eliminación
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar el cliente.");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -229,10 +262,10 @@ public class ClienteVista extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(655, 817));
         jPanel1.setRequestFocusEnabled(false);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/TextoCliente.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/TextoCliente.png"))); // NOI18N
 
         btnVehiculos.setBackground(new java.awt.Color(248, 242, 206));
-        btnVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Registrar.png"))); // NOI18N
+        btnVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Registrar.png"))); // NOI18N
         btnVehiculos.setBorderPainted(false);
         btnVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -248,7 +281,7 @@ public class ClienteVista extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/RegistrarCliente.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/RegistrarCliente.png"))); // NOI18N
 
         txtRFC.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -269,7 +302,7 @@ public class ClienteVista extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblClientes);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Nombre.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Nombre.png"))); // NOI18N
 
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -277,9 +310,9 @@ public class ClienteVista extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/RFC.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/RFC.png"))); // NOI18N
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/FechaN.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/FechaN.png"))); // NOI18N
 
         txtCorreo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,6 +337,11 @@ public class ClienteVista extends javax.swing.JFrame {
                 txtTelefonoActionPerformed(evt);
             }
         });
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyTyped(evt);
+            }
+        });
 
         txtCalle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,19 +349,19 @@ public class ClienteVista extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Correo.png"))); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Correo.png"))); // NOI18N
         jLabel6.setToolTipText("");
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Telefono.png"))); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Telefono.png"))); // NOI18N
 
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Calle.png"))); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Calle.png"))); // NOI18N
 
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/NumCasa.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/NumCasa.png"))); // NOI18N
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Colonia .png"))); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Colonia .png"))); // NOI18N
 
         btnEditar.setBackground(new java.awt.Color(248, 242, 206));
-        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Editar.png"))); // NOI18N
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Editar.png"))); // NOI18N
         btnEditar.setBorderPainted(false);
         btnEditar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -340,7 +378,7 @@ public class ClienteVista extends javax.swing.JFrame {
         });
 
         btnEliminar.setBackground(new java.awt.Color(248, 242, 206));
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Eliminar.png"))); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Eliminar.png"))); // NOI18N
         btnEliminar.setBorderPainted(false);
         btnEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -357,7 +395,7 @@ public class ClienteVista extends javax.swing.JFrame {
         });
 
         btnRegresar.setBackground(new java.awt.Color(248, 242, 206));
-        btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cliente/Regresar.png"))); // NOI18N
+        btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
         btnRegresar.setBorderPainted(false);
         btnRegresar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -382,49 +420,48 @@ public class ClienteVista extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
+                .addContainerGap(9, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(192, 192, 192)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(txtFechaN, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8)
-                                    .addComponent(txtCalle, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel7)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10)
-                                    .addComponent(txtColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(67, 67, 67)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel2)
+                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel4))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel5)
+                                .addComponent(txtFechaN, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel8)
+                                .addComponent(txtCalle, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel7)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel9))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel10)
+                                .addComponent(txtColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnEditar)
                         .addGap(18, 18, 18)
                         .addComponent(btnVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -486,6 +523,65 @@ public class ClienteVista extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        // TODO add your handling code here:
+        ClienteVista clienteVista = new ClienteVista();
+        clienteVista.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnRegresarActionPerformed
+
+    private void btnRegresarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresarMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRegresarMouseExited
+
+    private void btnRegresarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresarMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRegresarMouseEntered
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        this.eliminarCliente();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarMouseExited
+
+    private void btnEliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarMouseEntered
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        this.editarCliente();
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEditarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditarMouseExited
+
+    }//GEN-LAST:event_btnEditarMouseExited
+
+    private void btnEditarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditarMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditarMouseEntered
+
+    private void txtCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCalleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCalleActionPerformed
+
+    private void txtTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTelefonoActionPerformed
+
+    private void txtNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumeroActionPerformed
+
+    private void txtColoniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtColoniaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtColoniaActionPerformed
+
+    private void txtCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCorreoActionPerformed
+
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
@@ -500,70 +596,26 @@ public class ClienteVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVehiculosActionPerformed
 
     private void btnVehiculosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseExited
+
     }//GEN-LAST:event_btnVehiculosMouseExited
 
     private void btnVehiculosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseEntered
+
     }//GEN-LAST:event_btnVehiculosMouseEntered
 
-    private void txtCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCorreoActionPerformed
+    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCorreoActionPerformed
+         // TODO add your handling code here:
+         char c = evt.getKeyChar();
 
-    private void txtColoniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtColoniaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtColoniaActionPerformed
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
 
-    private void txtNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNumeroActionPerformed
-
-    private void txtTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelefonoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTelefonoActionPerformed
-
-    private void txtCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCalleActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCalleActionPerformed
-
-    private void btnEditarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditarMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEditarMouseEntered
-
-    private void btnEditarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditarMouseExited
-
-    }//GEN-LAST:event_btnEditarMouseExited
-
-    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        this.editarCliente();
-    }//GEN-LAST:event_btnEditarActionPerformed
-
-    private void btnEliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEliminarMouseEntered
-
-    private void btnEliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseExited
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEliminarMouseExited
-
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEliminarActionPerformed
-
-    private void btnRegresarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresarMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRegresarMouseEntered
-
-    private void btnRegresarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresarMouseExited
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRegresarMouseExited
-
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        // TODO add your handling code here:
-        MenuVista menuVista = new MenuVista();
-        menuVista.setVisible(true);
-        this.dispose();
-
-    }//GEN-LAST:event_btnRegresarActionPerformed
+        if (txtTelefono.getText().length() == 4) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTelefonoKeyTyped
 
     /**
      * @param args the command line arguments

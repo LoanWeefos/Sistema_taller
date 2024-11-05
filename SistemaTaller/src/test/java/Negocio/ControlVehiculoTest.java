@@ -35,7 +35,7 @@ public class ControlVehiculoTest {
     @BeforeEach
     public void setUp() {
         controlcliente = new ControlCliente();
-        controlVehiculo = new ControlVehiculo(connection);
+        controlVehiculo = new ControlVehiculo();
         // Agregar un cliente para usar en los tests
 
     }

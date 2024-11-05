@@ -20,7 +20,7 @@ public class VehiculoDAO {
 
     // Método para agregar un vehículo
     public void agregar(Vehiculo vehiculo) {
-        String sql = "INSERT INTO Vehiculos (placa, marca, modelo, color, rfc_cliente) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Vehiculos (placa, color, marca, modelo, rfc_cliente) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, vehiculo.getPlaca());

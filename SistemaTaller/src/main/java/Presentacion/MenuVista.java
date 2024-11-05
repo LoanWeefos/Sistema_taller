@@ -53,10 +53,10 @@ public class MenuVista extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(655, 817));
         jPanel1.setRequestFocusEnabled(false);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Logo.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/Logo.png"))); // NOI18N
 
         btnVehiculos.setBackground(new java.awt.Color(248, 242, 206));
-        btnVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/VehiculosBoton.png"))); // NOI18N
+        btnVehiculos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/VehiculosBoton.png"))); // NOI18N
         btnVehiculos.setBorderPainted(false);
         btnVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -73,7 +73,7 @@ public class MenuVista extends javax.swing.JFrame {
         });
 
         btnClientes.setBackground(new java.awt.Color(248, 242, 206));
-        btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/ClientesBoton.png"))); // NOI18N
+        btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/ClientesBoton.png"))); // NOI18N
         btnClientes.setBorderPainted(false);
         btnClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -90,7 +90,7 @@ public class MenuVista extends javax.swing.JFrame {
         });
 
         btnReparaciones.setBackground(new java.awt.Color(248, 242, 206));
-        btnReparaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/ReparacionesBoton.png"))); // NOI18N
+        btnReparaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/ReparacionesBoton.png"))); // NOI18N
         btnReparaciones.setBorderPainted(false);
         btnReparaciones.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -107,7 +107,7 @@ public class MenuVista extends javax.swing.JFrame {
         });
 
         btnPagos.setBackground(new java.awt.Color(248, 242, 206));
-        btnPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/PagosBoton.png"))); // NOI18N
+        btnPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/PagosBoton.png"))); // NOI18N
         btnPagos.setBorderPainted(false);
         btnPagos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -124,7 +124,7 @@ public class MenuVista extends javax.swing.JFrame {
         });
 
         btnRecordatorios.setBackground(new java.awt.Color(248, 242, 206));
-        btnRecordatorios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/RecordatoriosBoton.png"))); // NOI18N
+        btnRecordatorios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/RecordatoriosBoton.png"))); // NOI18N
         btnRecordatorios.setBorderPainted(false);
         btnRecordatorios.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -141,7 +141,7 @@ public class MenuVista extends javax.swing.JFrame {
         });
 
         jButton6.setBackground(new java.awt.Color(248, 242, 206));
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/CotosBoton.png"))); // NOI18N
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/CostosBoton.png"))); // NOI18N
         jButton6.setBorderPainted(false);
         jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -203,6 +203,9 @@ public class MenuVista extends javax.swing.JFrame {
 
     private void btnVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVehiculosActionPerformed
         // TODO add your handling code here:
+        VehiculoVista vehiculoVista=new VehiculoVista();
+        vehiculoVista.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnVehiculosActionPerformed
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed

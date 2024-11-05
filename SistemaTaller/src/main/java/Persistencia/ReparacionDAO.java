@@ -18,10 +18,11 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
         this.conexion = conexion;
     }
 
+    
     @Override
     public void agregar(Reparacion entity) {
         String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
-        String sqlReparacionServicio = "INSERT INTO ReparacionServicio (reparacion_id, servicio_id) VALUES (?, ?)";
+        String sqlReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion, Statement.RETURN_GENERATED_KEYS)) {
             stmtReparacion.setString(1, entity.getNombre_empleado());
@@ -32,14 +33,7 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
             if (generatedKeys.next()) {
                 int reparacionId = generatedKeys.getInt(1);
                 entity.setId(reparacionId);
-
-                try (PreparedStatement stmtReparacionServicio = conexion.prepareStatement(sqlReparacionServicio)) {
-                    for (ReparacionServicio reparacionServicio : entity.getReparacionServicios()) {
-                        stmtReparacionServicio.setInt(1, reparacionId);
-                        stmtReparacionServicio.setInt(2, reparacionServicio.getServicio().getId_servicio());
-                        stmtReparacionServicio.executeUpdate();
-                    }
-                }
+               
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -49,27 +43,21 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
     @Override
     public void actualizar(Reparacion entity) {
         String sqlReparacion = "UPDATE Reparaciones SET nombre_empleado = ?, placa_vehiculo = ? WHERE id = ?";
-        String sqlDeleteReparacionServicio = "DELETE FROM ReparacionServicio WHERE reparacion_id = ?";
-        String sqlInsertReparacionServicio = "INSERT INTO ReparacionServicio (reparacion_id, servicio_id) VALUES (?, ?)";
+        String sqlDeleteReparacionServicio = "DELETE FROM Reparaciones_Servicios WHERE id_reparacion = ?";
+        String sqlInsertReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion)) {
             stmtReparacion.setString(1, entity.getNombre_empleado());
             stmtReparacion.setString(2, entity.getVehiculo().getPlaca());
-            stmtReparacion.setInt(3, entity.getId());
+            stmtReparacion.setLong(3, entity.getId());
             stmtReparacion.executeUpdate();
 
             try (PreparedStatement stmtDeleteReparacionServicio = conexion.prepareStatement(sqlDeleteReparacionServicio)) {
-                stmtDeleteReparacionServicio.setInt(1, entity.getId());
+                stmtDeleteReparacionServicio.setLong(1, entity.getId());
                 stmtDeleteReparacionServicio.executeUpdate();
             }
 
-            try (PreparedStatement stmtInsertReparacionServicio = conexion.prepareStatement(sqlInsertReparacionServicio)) {
-                for (ReparacionServicio reparacionServicio : entity.getReparacionServicios()) {
-                    stmtInsertReparacionServicio.setInt(1, entity.getId());
-                    stmtInsertReparacionServicio.setInt(2, reparacionServicio.getServicio().getId_servicio());
-                    stmtInsertReparacionServicio.executeUpdate();
-                }
-            }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -97,7 +85,7 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
 
     @Override
     public void eliminar(Long id) {
-        String sqlReparacionServicio = "DELETE FROM ReparacionServicio WHERE reparacion_id = ?";
+        String sqlReparacionServicio = "DELETE FROM Reparaciones_Servicios WHERE id_reparacion = ?";
         String sqlReparacion = "DELETE FROM Reparaciones WHERE id = ?";
 
         try {
@@ -118,7 +106,7 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
     @Override
     public Reparacion obtenerPorId(Long id) {
          String sqlReparacion = "SELECT * FROM Reparaciones WHERE id = ?";
-        String sqlReparacionServicio = "SELECT * FROM ReparacionServicio WHERE reparacion_id = ?";
+        String sqlReparacionServicio = "SELECT * FROM Reparaciones_Servicios WHERE id_reparacion = ?";
         Reparacion reparacion = null;
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion)) {
@@ -129,22 +117,36 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
                 reparacion.setId(rsReparacion.getInt("id"));
                 reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
 
-                try (PreparedStatement stmtReparacionServicio = conexion.prepareStatement(sqlReparacionServicio)) {
-                    stmtReparacionServicio.setLong(1, id);
-                    ResultSet rsReparacionServicio = stmtReparacionServicio.executeQuery();
-                    List<ReparacionServicio> reparacionesServicios = new ArrayList<>();
-                    while (rsReparacionServicio.next()) {
-                        ReparacionServicio reparacionServicio = new ReparacionServicio();
-                        reparacionServicio.setServicio(new ServicioDAO(conexion).obtenerPorId(rsReparacionServicio.getInt("servicio_id")));
-                        reparacionesServicios.add(reparacionServicio);
-                    }
-                    reparacion.setReparacionServicios(reparacionesServicios);
-                }
+                
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return reparacion;
     }
+    
+    
+    public int agregarRepKey(Reparacion entity) {
+        String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
+        String sqlReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
+
+        try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion, Statement.RETURN_GENERATED_KEYS)) {
+            stmtReparacion.setString(1, entity.getNombre_empleado());
+            stmtReparacion.setString(2, entity.getVehiculo().getPlaca());
+            stmtReparacion.executeUpdate();
+
+            ResultSet generatedKeys = stmtReparacion.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int reparacionId = generatedKeys.getInt(1);
+                entity.setId(reparacionId);
+                return reparacionId;
+               
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
 }
 

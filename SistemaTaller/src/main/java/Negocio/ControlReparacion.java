@@ -72,4 +72,15 @@ public class ControlReparacion {
 
         return reparaciones; // Devuelve la lista de reparaciones
     }
+    
+    // Método para agregar una nueva reparación
+    public int agregarReparacionK(Reparacion reparacion) {
+        if (reparacion == null || reparacion.getVehiculo() == null) {
+            throw new IllegalArgumentException("La reparación y el vehículo asociado no pueden ser nulos");
+        }
+        int keyRep;
+        keyRep = reparacionDAO.agregarRepKey(reparacion); // Llama al DAO para agregar la reparación
+        System.out.println("Reparación agregada exitosamente para el vehículo con placa: " + reparacion.getVehiculo().getPlaca());
+        return keyRep;
+    }
 }
