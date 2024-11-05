@@ -25,12 +25,12 @@ public class ControlPago {
     }
 
     // Método para agregar un nuevo pago
-    public void agregarPago(double total, String metodo, LocalDateTime fecha, Reparacion reparacion) {
-        Pago pago = new Pago();
-        pago.setTotal(total);
-        pago.setMetodo(metodo);
-        pago.setFecha(fecha);
-        pago.setReparacion(reparacion);
+    public void agregarPago(Pago pago) {
+//        Pago pago = new Pago();
+//        pago.setTotal(total);
+//        pago.setMetodo(metodo);
+//        pago.setFecha(fecha);
+//        pago.setReparacion(reparacion);
 
         try {
             pagoDAO.agregar(pago);
