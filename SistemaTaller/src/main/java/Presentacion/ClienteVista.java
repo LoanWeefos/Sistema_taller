@@ -115,7 +115,13 @@ public class ClienteVista extends javax.swing.JFrame {
         // Validación básica de campos vacíos
         if (nombre.isEmpty() || rfc.isEmpty() || correo.isEmpty() || colonia.isEmpty()
                 || numero.isEmpty() || telefono.isEmpty() || calle.isEmpty() || fechaNac == null) {
-            System.out.println("Por favor, complete todos los campos.");
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+            return;
+        }
+
+        // Verificar si el RFC ya está registrado
+        if (existeClienteConRfc(rfc)) {
+            JOptionPane.showMessageDialog(this, "Ya existe un cliente registrado con el mismo RFC.");
             return;
         }
 
@@ -129,12 +135,18 @@ public class ClienteVista extends javax.swing.JFrame {
         boolean exito = controlCliente.agregarCliente(cliente);
 
         if (exito) {
-            System.out.println("Cliente registrado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Cliente registrado exitosamente.");
             limpiarCampos(); // Limpia los campos después de la inserción exitosa
             cargarDatosClientes(); // Actualiza la tabla con los nuevos datos
         } else {
-            System.out.println("Error al registrar el cliente.");
+            JOptionPane.showMessageDialog(this, "Error al registrar el cliente");
         }
+    }
+
+    // Método auxiliar para verificar si existe un cliente con el mismo RFC
+    private boolean existeClienteConRfc(String rfc) {
+        Cliente cliente = controlCliente.obtenerClientePorRfc(rfc);
+        return cliente != null; // Devuelve true si el cliente ya existe
     }
 
     private void editarCliente() {
@@ -323,6 +335,11 @@ public class ClienteVista extends javax.swing.JFrame {
         txtTelefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTelefonoActionPerformed(evt);
+            }
+        });
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyTyped(evt);
             }
         });
 
@@ -585,6 +602,20 @@ public class ClienteVista extends javax.swing.JFrame {
     private void btnVehiculosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseEntered
 
     }//GEN-LAST:event_btnVehiculosMouseEntered
+
+    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
+        // TODO add your handling code here:
+         // TODO add your handling code here:
+         char c = evt.getKeyChar();
+
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
+
+        if (txtTelefono.getText().length() == 4) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTelefonoKeyTyped
 
     /**
      * @param args the command line arguments

@@ -106,7 +106,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/Logo.png"/>
+              <Image iconType="3" name="/ImagenesMenu/Logo.png"/>
             </Property>
           </Properties>
         </Component>
@@ -116,7 +116,7 @@
               <Color blue="ce" green="f2" red="f8" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/VehiculosBoton.png"/>
+              <Image iconType="3" name="/ImagenesMenu/VehiculosBoton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
@@ -132,7 +132,7 @@
               <Color blue="ce" green="f2" red="f8" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/ClientesBoton.png"/>
+              <Image iconType="3" name="/ImagenesMenu/ClientesBoton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
@@ -148,7 +148,7 @@
               <Color blue="ce" green="f2" red="f8" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/ReparacionesBoton.png"/>
+              <Image iconType="3" name="/ImagenesMenu/ReparacionesBoton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
@@ -164,7 +164,7 @@
               <Color blue="ce" green="f2" red="f8" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/PagosBoton.png"/>
+              <Image iconType="3" name="/ImagenesMenu/PagosBoton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
@@ -180,7 +180,7 @@
               <Color blue="ce" green="f2" red="f8" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/RecordatoriosBoton.png"/>
+              <Image iconType="3" name="/ImagenesMenu/RecordatoriosBoton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
@@ -196,7 +196,7 @@
               <Color blue="ce" green="f2" red="f8" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Imagenes/CotosBoton.png"/>
+              <Image iconType="3" name="/ImagenesMenu/CostosBoton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
