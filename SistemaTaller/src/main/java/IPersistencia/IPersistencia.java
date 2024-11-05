@@ -9,7 +9,7 @@ import java.util.List;
  * @author Oscar
  */
 public interface IPersistencia <T>{
-     void agregar(T entity);  
+    void agregar(T entity);  
     void actualizar(T entity);  
     void eliminar(Long id);  
     T obtenerPorId(Long id);  
