@@ -1,4 +1,4 @@
-package Prueba;
+package Persistencia;
 
 import Dominio.Vehiculo;
 import Dominio.Cliente;
@@ -51,9 +51,9 @@ class VehiculoDaoTest {
     @Test
     void testAgregarVehiculo() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio,"644415095", vehiculos);
         clienteDAO.agregar(cliente);
         // Crear un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
@@ -71,9 +71,9 @@ class VehiculoDaoTest {
     @Test
     void testActualizarVehiculo() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio,"644415095", vehiculos);
         clienteDAO.agregar(cliente);
         // Crear y agregar un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
@@ -94,9 +94,9 @@ class VehiculoDaoTest {
     @Test
     void testEliminarVehiculo() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio,"644415095", vehiculos);
         clienteDAO.agregar(cliente);
         // Crear y agregar un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
@@ -113,9 +113,9 @@ class VehiculoDaoTest {
     @Test
     void testObtenerVehiculoPorPlaca() {
         // Crear un cliente para asociar al vehículo
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
         List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, vehiculos);
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio,"644415095", vehiculos);
         clienteDAO.agregar(cliente);
         // Crear y agregar un vehículo de prueba
         Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);

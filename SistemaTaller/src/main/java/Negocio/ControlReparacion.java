@@ -5,6 +5,7 @@
 package Negocio;
 
 import Dominio.Reparacion;
+import Persistencia.Conexion;
 import Persistencia.ReparacionDAO;
 import java.sql.Connection;
 import java.util.List;
@@ -14,11 +15,12 @@ import java.util.List;
  * @author Oscar
  */
 public class ControlReparacion {
-     private ReparacionDAO reparacionDAO;
+
+    private ReparacionDAO reparacionDAO;
 
     // Constructor que recibe una conexión y pasa al DAO
-    public ControlReparacion(Connection conexion) {
-        this.reparacionDAO = new ReparacionDAO(conexion);
+    public ControlReparacion() {
+        this.reparacionDAO = new ReparacionDAO(Conexion.getConnection());
     }
 
     // Método para agregar una nueva reparación
@@ -71,4 +73,28 @@ public class ControlReparacion {
 
         return reparaciones; // Devuelve la lista de reparaciones
     }
+
+    // Método para agregar una nueva reparación
+    public int agregarReparacionK(Reparacion reparacion) {
+        if (reparacion == null || reparacion.getVehiculo() == null) {
+            throw new IllegalArgumentException("La reparación y el vehículo asociado no pueden ser nulos");
+        }
+        int keyRep;
+        keyRep = reparacionDAO.agregarRepKey(reparacion); // Llama al DAO para agregar la reparación
+        System.out.println("Reparación agregada exitosamente para el vehículo con placa: " + reparacion.getVehiculo().getPlaca());
+        return keyRep;
+    }
+
+    public Reparacion obtenerReparacionPorPlaca(String placa) {
+        // Llamamos al DAO para obtener todas las reparaciones asociadas a la placa
+        List<Reparacion> reparaciones = reparacionDAO.obtenerPorPlaca(placa);
+
+        // Retornamos la primera reparación encontrada, si existe
+        if (reparaciones != null && !reparaciones.isEmpty()) {
+            return reparaciones.get(0); // Puedes ajustar este comportamiento si quieres obtener todas las reparaciones asociadas a la placa
+        }
+
+        return null; // Retorna null si no encuentra ninguna reparación con la placa indicada
+    }
+
 }

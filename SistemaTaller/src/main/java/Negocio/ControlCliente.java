@@ -8,7 +8,9 @@ import Dominio.Cliente;
 import Dominio.Vehiculo;
 import Persistencia.ClienteDAO;
 import IPersistencia.IPersistencia;
+import Persistencia.Conexion;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,27 +19,43 @@ import java.util.List;
  * @author Oscar
  */
 public class ControlCliente {
-    private ClienteDAO clienteDAO;
 
-    // Constructor que recibe una conexión y pasa al DAO
-    public ControlCliente(Connection conexion) {
-        this.clienteDAO = new ClienteDAO(conexion);  // Se inicializa el DAO con la conexión
+    private ClienteDAO clienteDAO;
+    private Connection conexion;
+
+    public ControlCliente() {
+        this.clienteDAO = new ClienteDAO(Conexion.getConnection());  // Usamos la conexión de Conexion
     }
 
-    // Método para agregar un cliente
-    public void agregarCliente(Cliente cliente) {
+    public boolean agregarCliente(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("El cliente no puede ser nulo");
         }
-        
+
         // Validaciones adicionales de negocio antes de insertar (si es necesario)
-        // Por ejemplo: Validar que el RFC no esté vacío
         if (cliente.getRfc() == null || cliente.getRfc().isEmpty()) {
             throw new IllegalArgumentException("El RFC del cliente es requerido");
         }
 
-        clienteDAO.agregar(cliente);
+        // Agregar el cliente usando el método del DAO
+        clienteDAO.agregar(cliente); // No se lanzará SQLException aquí
         System.out.println("El cliente ha sido agregado correctamente");
+        return true; // Retornamos true si se agregó correctamente
+    }
+
+    public boolean editarCliente(Cliente cliente) {
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente no puede ser nulo");
+        }
+
+        // Validaciones adicionales de negocio antes de actualizar (si es necesario)
+        if (cliente.getRfc() == null || cliente.getRfc().isEmpty()) {
+            throw new IllegalArgumentException("El RFC del cliente es requerido");
+        }
+
+        clienteDAO.actualizar(cliente); // Asegúrate de implementar el método en ClienteDAO
+        System.out.println("El cliente ha sido editado correctamente");
+        return true;
     }
 
     // Método para actualizar un cliente
@@ -51,28 +69,14 @@ public class ControlCliente {
         System.out.println("El cliente ha sido actualizado correctamente");
     }
 
-    // Método para eliminar un cliente
-    public void eliminarCliente(String rfc) {
-        if (rfc == null || rfc.isEmpty()) {
-            throw new IllegalArgumentException("El RFC del cliente es requerido para eliminar");
-        }
-
-        Cliente cliente = clienteDAO.obtenerPorId(rfc);
-        if (cliente == null) {
-            System.out.println("El cliente con RFC " + rfc + " no existe");
-            return;
-        }
-
-        try {
-            // Elimina primero los vehículos asociados si hay alguno
-            clienteDAO.eliminarVehiculosDeCliente(cliente);
-            // Luego elimina el cliente
-            clienteDAO.eliminar(rfc);
-            System.out.println("Cliente y sus vehículos han sido eliminados");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public boolean eliminarCliente(String rfc) {
+    if (rfc == null || rfc.isEmpty()) {
+        throw new IllegalArgumentException("El RFC no puede ser nulo o vacío.");
     }
+    clienteDAO.eliminar(rfc);
+    return true; // Retorna true si la eliminación fue llamada correctamente
+}
+
 
     // Método para obtener un cliente por su RFC
     public Cliente obtenerClientePorRfc(String rfc) {

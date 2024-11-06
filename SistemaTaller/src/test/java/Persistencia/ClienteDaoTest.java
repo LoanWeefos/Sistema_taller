@@ -1,4 +1,4 @@
-package Prueba;
+package Persistencia;
 
 import Dominio.Cliente;
 import Dominio.Domicilio;
@@ -37,8 +37,8 @@ class ClienteDaoTest {
 
     @Test
     void testAgregarCliente() {
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio, null);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio,"644415095", null);
 
         clienteDAO.agregar(cliente);
 
@@ -52,8 +52,8 @@ class ClienteDaoTest {
 
     @Test
     void testActualizarCliente() {
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio, null);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio,"644415095", null);
         clienteDAO.agregar(cliente);
 
         cliente.setNombre("Cliente Actualizado");
@@ -66,8 +66,8 @@ class ClienteDaoTest {
 
     @Test
     void testEliminarCliente() {
-        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", 123);
-        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio, null);
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio,"644415095", null);
         clienteDAO.agregar(cliente);
 
         clienteDAO.eliminar("TEST1");
@@ -77,12 +77,12 @@ class ClienteDaoTest {
 
     @Test
     void testObtenerTodosLosClientes() {
-        Domicilio domicilio1 = new Domicilio("Calle 1", "Colonia 1", 111);
-        Cliente cliente1 = new Cliente("TEST1", "Cliente 1", "cliente1@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio1, null);
+        Domicilio domicilio1 = new Domicilio("Calle 1", "Colonia 1", "123");
+        Cliente cliente1 = new Cliente("TEST1", "Cliente 1", "cliente1@test.com", Date.valueOf(LocalDate.of(2003, 11, 2)), domicilio1,"644415095", null);
         clienteDAO.agregar(cliente1);
 
-        Domicilio domicilio2 = new Domicilio("Calle 2", "Colonia 2", 222);
-        Cliente cliente2 = new Cliente("TEST2", "Cliente 2", "cliente2@test.com", Date.valueOf(LocalDate.of(2003, 11, 1)), domicilio2, null);
+        Domicilio domicilio2 = new Domicilio("Calle 2", "Colonia 2", "123");
+        Cliente cliente2 = new Cliente("TEST2", "Cliente 2", "cliente2@test.com", Date.valueOf(LocalDate.of(2003, 11, 1)), domicilio2,"644415095", null);
         clienteDAO.agregar(cliente2);
 
         List<Cliente> clientes = clienteDAO.obtenerTodos();

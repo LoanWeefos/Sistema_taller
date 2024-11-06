@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import Presentacion.MenuVista;
 
 /**
  *
@@ -28,6 +29,7 @@ public class SistemaTaller {
         // se crearán automáticamente si la configuración de persistence.xml está correcta.
 
         System.out.println("Las tablas se han creado correctamente.");
+        new MenuVista().setVisible(true);
     } catch (Exception e) {
         e.printStackTrace();
     } finally {

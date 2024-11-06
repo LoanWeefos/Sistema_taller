@@ -24,7 +24,7 @@ public class Reparacion implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Se cambia a IDENTITY para reflejar la base de datos
-    private int id;
+    private long id;
 
     private String nombre_empleado; // Se cambia el nombre del atributo
 
@@ -32,34 +32,34 @@ public class Reparacion implements Serializable {
     @JoinColumn(name = "placa_vehiculo") // Se cambia el nombre de la columna a placa_vehiculo
     private Vehiculo vehiculo;
     
-    @OneToMany(mappedBy = "reparacion", cascade = CascadeType.ALL)
-    private List<ReparacionServicio> reparacionServicios;
-
+   
     // Se elimina la relación con Pago si no está en tu esquema
 
     public Reparacion() {
     }
 
-    public Reparacion(int id, String nombre_empleado, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios) {
+    public Reparacion(long id, String nombre_empleado, Vehiculo vehiculo) {
         this.id = id;
         this.nombre_empleado = nombre_empleado;
         this.vehiculo = vehiculo;
-        this.reparacionServicios = reparacionServicios;
+        
     }
 
-    public Reparacion(String nombre_empleado, Vehiculo vehiculo, List<ReparacionServicio> reparacionServicios) {
+    public Reparacion(String nombre_empleado, Vehiculo vehiculo) {
         this.nombre_empleado = nombre_empleado;
         this.vehiculo = vehiculo;
-        this.reparacionServicios = reparacionServicios;
     }
+
+   
+    
 
     // Getters y Setters
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -79,14 +79,7 @@ public class Reparacion implements Serializable {
         this.vehiculo = vehiculo;
     }
 
-    public List<ReparacionServicio> getReparacionServicios() {
-        return reparacionServicios;
-    }
-
-    public void setReparacionServicios(List<ReparacionServicio> reparacionServicios) {
-        this.reparacionServicios = reparacionServicios;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

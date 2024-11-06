@@ -31,16 +31,11 @@ public class ControlVehiculoTest {
         connection = Conexion.getConnection();
     }
 
-    @AfterAll
-    public static void tearDownClass() {
-        // Si necesitas limpiar algo después de todos los tests
-
-    }
 
     @BeforeEach
     public void setUp() {
-        controlcliente = new ControlCliente(connection);
-        controlVehiculo = new ControlVehiculo(connection);
+        controlcliente = new ControlCliente();
+        controlVehiculo = new ControlVehiculo();
         // Agregar un cliente para usar en los tests
 
     }
@@ -66,7 +61,7 @@ public class ControlVehiculoTest {
 
         // Preparar un vehículo para agregar
         Cliente cliente = new Cliente("RFC1", "Esteban Duran", "duran@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
 
@@ -80,7 +75,7 @@ public class ControlVehiculoTest {
 
         // Preparar y agregar un vehículo
         Cliente cliente = new Cliente("RFC1", "Michell Cedano", "michell@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
 
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
@@ -98,7 +93,7 @@ public class ControlVehiculoTest {
 
         // Preparar y agregar un vehículo
         Cliente cliente = new Cliente("RFC1", "Ania Servin", "servin@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
 
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
@@ -119,7 +114,7 @@ public class ControlVehiculoTest {
 
         // Preparar y agregar un vehículo
         Cliente cliente = new Cliente("RFC1", "Abril snow", "snowmhyk@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", 123), null);
+                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"),"644415095", null);
         controlcliente.agregarCliente(cliente);
 
         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
@@ -129,5 +124,11 @@ public class ControlVehiculoTest {
         assertDoesNotThrow(() -> controlVehiculo.eliminarVehiculo("ABC1"));
 
         // Verificar que el vehículo ha sido eliminado
+    }
+    
+     @AfterAll
+    static void tearDownAfterClass() throws SQLException {
+        // Cerrar la conexión después de ejecutar todas las pruebas
+        Conexion.closeConnection();
     }
 }
