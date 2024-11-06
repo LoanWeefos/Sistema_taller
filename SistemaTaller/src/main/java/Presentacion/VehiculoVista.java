@@ -36,7 +36,8 @@ public class VehiculoVista extends javax.swing.JFrame {
      */
     public VehiculoVista() {
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLocationRelativeTo(null);
+
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
         cargarDatosVehiculos();
@@ -47,6 +48,18 @@ public class VehiculoVista extends javax.swing.JFrame {
             }
 
         });
+
+        txtColor.setVisible(false);
+        txtMarca.setVisible(false);
+        txtModelo.setVisible(false);
+        txtPlaca.setVisible(false);
+        txtRfc.setVisible(false);
+
+        jLabel2.setVisible(false);
+        jLabel3.setVisible(false);
+        jLabel4.setVisible(false);
+        jLabel5.setVisible(false);
+        jLabel6.setVisible(false);
     }
 
     private void registrarVehiculo() {
@@ -129,6 +142,18 @@ public class VehiculoVista extends javax.swing.JFrame {
                 txtMarca.setText(vehiculo.getMarca());
                 txtModelo.setText(vehiculo.getModelo());
                 txtColor.setText(vehiculo.getColor());
+
+                txtColor.setVisible(true);
+                txtMarca.setVisible(true);
+                txtModelo.setVisible(true);
+                txtPlaca.setVisible(true);
+                txtRfc.setVisible(true);
+
+                jLabel2.setVisible(true);
+                jLabel3.setVisible(true);
+                jLabel4.setVisible(true);
+                jLabel5.setVisible(true);
+                jLabel6.setVisible(true);
             } else {
                 System.out.println("Vehiculo no encontrado con Placa: " + placa);
                 limpiarCampos(); // Limpiar campos si no se encuentra cliente
@@ -195,46 +220,48 @@ public class VehiculoVista extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
-        btnRegistrarVehiculo = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        btnRegresar1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblVehiculos = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
-        btnRegresar = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         txtPlaca = new javax.swing.JTextField();
         txtMarca = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         txtModelo = new javax.swing.JTextField();
         txtColor = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        txtRfc = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtRfc = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(248, 242, 206));
-        setPreferredSize(new java.awt.Dimension(1050, 680));
+        setMaximumSize(new java.awt.Dimension(1230, 700));
+        setMinimumSize(new java.awt.Dimension(1230, 700));
+        setPreferredSize(new java.awt.Dimension(1230, 700));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(248, 242, 206));
         jPanel1.setPreferredSize(new java.awt.Dimension(900, 743));
+        jPanel1.setLayout(null);
 
         lblTitulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Vehiculos.png"))); // NOI18N
+        jPanel1.add(lblTitulo);
+        lblTitulo.setBounds(50, 24, 416, 54);
 
-        btnRegistrarVehiculo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RegistrarVehiculoBoton.png"))); // NOI18N
-        btnRegistrarVehiculo.setBorderPainted(false);
-        btnRegistrarVehiculo.setContentAreaFilled(false);
-        btnRegistrarVehiculo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegistrarVehiculoActionPerformed(evt);
+        btnRegresar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
+        btnRegresar1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRegresar1MouseClicked(evt);
             }
         });
+        jPanel1.add(btnRegresar1);
+        btnRegresar1.setBounds(1102, 24, 70, 70);
 
-        jPanel2.setOpaque(false);
-
+        tblVehiculos.setBackground(new java.awt.Color(216, 217, 137));
         tblVehiculos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -248,39 +275,52 @@ public class VehiculoVista extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblVehiculos);
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Rfc.png"))); // NOI18N
-
-        btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setContentAreaFilled(false);
-        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarActionPerformed(evt);
-            }
-        });
-
-        jPanel3.setOpaque(false);
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Placa.png"))); // NOI18N
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Marca.png"))); // NOI18N
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Rfc.png"))); // NOI18N
-
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Color.png"))); // NOI18N
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(50, 124, 319, 500);
 
         txtPlaca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPlacaActionPerformed(evt);
             }
         });
+        jPanel1.add(txtPlaca);
+        txtPlaca.setBounds(472, 124, 340, 48);
+        jPanel1.add(txtMarca);
+        txtMarca.setBounds(832, 124, 340, 48);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Placa.png"))); // NOI18N
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(472, 178, 84, 28);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Marca.png"))); // NOI18N
+        jPanel1.add(jLabel3);
+        jLabel3.setBounds(832, 178, 94, 28);
 
         txtModelo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtModeloKeyTyped(evt);
             }
         });
+        jPanel1.add(txtModelo);
+        txtModelo.setBounds(472, 236, 340, 48);
+        jPanel1.add(txtColor);
+        txtColor.setBounds(832, 236, 340, 48);
 
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Modelo.png"))); // NOI18N
+        jPanel1.add(jLabel5);
+        jLabel5.setBounds(472, 290, 105, 28);
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Color.png"))); // NOI18N
+        jPanel1.add(jLabel6);
+        jLabel6.setBounds(832, 290, 87, 28);
+        jPanel1.add(txtRfc);
+        txtRfc.setBounds(472, 348, 340, 48);
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Rfc.png"))); // NOI18N
+        jPanel1.add(jLabel4);
+        jLabel4.setBounds(472, 405, 201, 35);
+
+        jButton2.setBackground(new java.awt.Color(248, 242, 206));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RegistrarBoton.png"))); // NOI18N
         jButton2.setBorderPainted(false);
         jButton2.setContentAreaFilled(false);
@@ -289,156 +329,39 @@ public class VehiculoVista extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
+        jPanel1.add(jButton2);
+        jButton2.setBounds(892, 500, 280, 69);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Modelo.png"))); // NOI18N
+        jLabel1.setBackground(new java.awt.Color(248, 242, 206));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RegistrarVehiculoBoton.png"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jLabel1);
+        jLabel1.setBounds(548, 24, 548, 70);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)
-                            .addComponent(txtRfc, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(27, 27, 27)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel3)
-                            .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(24, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(55, 55, 55)
-                    .addComponent(jLabel5)
-                    .addContainerGap(380, Short.MAX_VALUE)))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addGap(28, 28, 28)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtRfc, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addContainerGap(105, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(197, 197, 197)
-                    .addComponent(jLabel5)
-                    .addContainerGap(205, Short.MAX_VALUE)))
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegresar))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(1336, 1336, 1336)
-                        .addComponent(jLabel7))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRegresar))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(851, 851, 851)
-                        .addComponent(jLabel7)))
-                .addContainerGap(16, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(lblTitulo)
-                        .addGap(150, 150, 150)
-                        .addComponent(btnRegistrarVehiculo))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 873, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegistrarVehiculo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
+        jPanel1.add(jLabel11);
+        jLabel11.setBounds(260, 0, 740, 720);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 885, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 2172, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 225, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        // TODO add your handling code here:
-        MenuVista menuVista = new MenuVista();
-        menuVista.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnRegresarActionPerformed
-
-    private void btnRegistrarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarVehiculoActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_btnRegistrarVehiculoActionPerformed
 
     private void txtPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPlacaActionPerformed
         // TODO add your handling code here:
@@ -450,8 +373,28 @@ public class VehiculoVista extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtModeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloKeyTyped
-       
+
     }//GEN-LAST:event_txtModeloKeyTyped
+
+    private void btnRegresar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresar1MouseClicked
+        MenuVista clienteVista = new MenuVista();
+        clienteVista.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnRegresar1MouseClicked
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        txtColor.setVisible(true);
+        txtMarca.setVisible(true);
+        txtModelo.setVisible(true);
+        txtPlaca.setVisible(true);
+        txtRfc.setVisible(true);
+
+        jLabel2.setVisible(true);
+        jLabel3.setVisible(true);
+        jLabel4.setVisible(true);
+        jLabel5.setVisible(true);
+        jLabel6.setVisible(true);
+    }//GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -489,18 +432,16 @@ public class VehiculoVista extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnRegistrarVehiculo;
-    private javax.swing.JButton btnRegresar;
+    private javax.swing.JLabel btnRegresar1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tblVehiculos;

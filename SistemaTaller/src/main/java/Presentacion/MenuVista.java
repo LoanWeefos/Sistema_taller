@@ -42,15 +42,16 @@ public class MenuVista extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bienvenido a Talleres Osman!");
         setBackground(new java.awt.Color(248, 242, 206));
-        setMinimumSize(new java.awt.Dimension(655, 817));
+        setMaximumSize(new java.awt.Dimension(655, 750));
+        setMinimumSize(new java.awt.Dimension(655, 750));
         setResizable(false);
-        setSize(new java.awt.Dimension(655, 817));
+        setSize(new java.awt.Dimension(655, 750));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(248, 242, 206));
-        jPanel1.setMaximumSize(new java.awt.Dimension(655, 817));
-        jPanel1.setMinimumSize(new java.awt.Dimension(655, 817));
-        jPanel1.setPreferredSize(new java.awt.Dimension(655, 817));
+        jPanel1.setMaximumSize(new java.awt.Dimension(655, 750));
+        jPanel1.setMinimumSize(new java.awt.Dimension(655, 750));
+        jPanel1.setPreferredSize(new java.awt.Dimension(655, 750));
         jPanel1.setRequestFocusEnabled(false);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesMenu/Logo.png"))); // NOI18N
@@ -179,24 +180,24 @@ public class MenuVista extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(15, 15, 15)
                 .addComponent(jLabel1)
-                .addGap(33, 33, 33)
+                .addGap(15, 15, 15)
                 .addComponent(btnClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addComponent(btnVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addComponent(btnReparaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addComponent(btnPagos, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addComponent(btnRecordatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(30, 30, 30)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 655, 817));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 655, 750));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

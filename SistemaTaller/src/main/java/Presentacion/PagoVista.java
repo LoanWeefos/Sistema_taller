@@ -40,8 +40,8 @@ public class PagoVista extends javax.swing.JFrame {
      */
     public PagoVista() {
         initComponents();
+        setLocationRelativeTo(null);
 
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
         cargarDatosPagos();
@@ -178,30 +178,38 @@ public class PagoVista extends javax.swing.JFrame {
         lblPagos = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPagos = new javax.swing.JTable();
-        btnRegresar = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        txtServicios = new javax.swing.JTextField();
-        lblServicios = new javax.swing.JLabel();
-        lblTotal = new javax.swing.JLabel();
-        lblMetodoDePago = new javax.swing.JLabel();
-        lblFecha = new javax.swing.JLabel();
-        txtTotal = new javax.swing.JTextField();
-        cmbMetodoPago = new javax.swing.JComboBox<>();
-        txtAnio = new com.toedter.calendar.JDateChooser();
         btnPagar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         txtPlaca = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        btnRegresar1 = new javax.swing.JLabel();
+        txtServicios = new javax.swing.JTextField();
+        lblServicios = new javax.swing.JLabel();
+        txtTotal = new javax.swing.JTextField();
+        cmbMetodoPago = new javax.swing.JComboBox<>();
+        lblTotal = new javax.swing.JLabel();
+        lblMetodoDePago = new javax.swing.JLabel();
+        txtAnio = new com.toedter.calendar.JDateChooser();
+        lblFecha = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1221, 687));
+        setMaximumSize(new java.awt.Dimension(1221, 850));
+        setMinimumSize(new java.awt.Dimension(1221, 850));
+        setPreferredSize(new java.awt.Dimension(1221, 850));
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(248, 242, 206));
+        jPanel1.setLayout(null);
 
         lblPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Pagos.png"))); // NOI18N
+        jPanel1.add(lblPagos);
+        lblPagos.setBounds(50, 24, 251, 44);
 
+        tblPagos.setBackground(new java.awt.Color(216, 217, 137));
+        tblPagos.setForeground(new java.awt.Color(73, 61, 63));
         tblPagos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -215,66 +223,8 @@ public class PagoVista extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblPagos);
 
-        btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setContentAreaFilled(false);
-        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegresarActionPerformed(evt);
-            }
-        });
-
-        jPanel2.setOpaque(false);
-
-        lblServicios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Servicios.png"))); // NOI18N
-
-        lblTotal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Total.png"))); // NOI18N
-
-        lblMetodoDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/MetodoDePago.png"))); // NOI18N
-
-        lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Fecha.png"))); // NOI18N
-
-        cmbMetodoPago.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(42, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblFecha)
-                    .addComponent(lblMetodoDePago)
-                    .addComponent(lblTotal)
-                    .addComponent(lblServicios)
-                    .addComponent(txtServicios)
-                    .addComponent(txtTotal)
-                    .addComponent(txtAnio, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
-                    .addComponent(cmbMetodoPago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(39, 39, 39))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblServicios)
-                .addGap(18, 18, 18)
-                .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTotal)
-                .addGap(18, 18, 18)
-                .addComponent(cmbMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblMetodoDePago)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblFecha)
-                .addContainerGap(87, Short.MAX_VALUE))
-        );
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(50, 99, 393, 677);
 
         btnPagar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/PagosBoton.png"))); // NOI18N
         btnPagar.setBorderPainted(false);
@@ -284,8 +234,10 @@ public class PagoVista extends javax.swing.JFrame {
                 btnPagarActionPerformed(evt);
             }
         });
+        jPanel1.add(btnPagar);
+        btnPagar.setBounds(896, 704, 280, 72);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel4.setOpaque(false);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/BuscarBoton.png"))); // NOI18N
@@ -326,51 +278,48 @@ public class PagoVista extends javax.swing.JFrame {
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(84, 84, 84)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPagos)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnPagar))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnRegresar)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(49, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(88, 88, 88)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnPagar))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addComponent(lblPagos))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(btnRegresar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(20, 20, 20))
-        );
+        jPanel1.add(jPanel4);
+        jPanel4.setBounds(578, 514, 598, 160);
+
+        btnRegresar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
+        btnRegresar1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRegresar1MouseClicked(evt);
+            }
+        });
+        jPanel1.add(btnRegresar1);
+        btnRegresar1.setBounds(1106, 24, 70, 70);
+        jPanel1.add(txtServicios);
+        txtServicios.setBounds(476, 165, 700, 40);
+
+        lblServicios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Servicios.png"))); // NOI18N
+        jPanel1.add(lblServicios);
+        lblServicios.setBounds(476, 211, 138, 28);
+        jPanel1.add(txtTotal);
+        txtTotal.setBounds(476, 269, 700, 39);
+
+        cmbMetodoPago.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
+        jPanel1.add(cmbMetodoPago);
+        cmbMetodoPago.setBounds(476, 372, 340, 40);
+
+        lblTotal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Total.png"))); // NOI18N
+        jPanel1.add(lblTotal);
+        lblTotal.setBounds(476, 314, 77, 28);
+
+        lblMetodoDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/MetodoDePago.png"))); // NOI18N
+        jPanel1.add(lblMetodoDePago);
+        lblMetodoDePago.setBounds(476, 418, 226, 36);
+        jPanel1.add(txtAnio);
+        txtAnio.setBounds(836, 372, 340, 40);
+
+        lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Fecha.png"))); // NOI18N
+        jPanel1.add(lblFecha);
+        lblFecha.setBounds(836, 426, 82, 28);
+
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
+        jPanel1.add(jLabel11);
+        jLabel11.setBounds(230, 70, 740, 720);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -391,12 +340,11 @@ public class PagoVista extends javax.swing.JFrame {
         this.registrarPago();
     }//GEN-LAST:event_btnPagarActionPerformed
 
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        // TODO add your handling code here:
-        MenuVista menuVista = new MenuVista();
-        menuVista.setVisible(true);
+    private void btnRegresar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresar1MouseClicked
+        MenuVista clienteVista = new MenuVista();
+        clienteVista.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btnRegresarActionPerformed
+    }//GEN-LAST:event_btnRegresar1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -435,13 +383,13 @@ public class PagoVista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPagar;
-    private javax.swing.JButton btnRegresar;
+    private javax.swing.JLabel btnRegresar1;
     private javax.swing.JComboBox<String> cmbMetodoPago;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFecha;
