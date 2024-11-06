@@ -146,6 +146,7 @@ public class PagoVista extends javax.swing.JFrame {
         Reparacion reparacionEncontrada = controlReparacion.obtenerReparacionPorPlaca(txtPlaca.getText());
 
         if (reparacionEncontrada == null) {
+            JOptionPane.showMessageDialog(this, "Placa inexistente");
             System.out.println("Servicios no encontrados con el especificado.");
             return;
         }

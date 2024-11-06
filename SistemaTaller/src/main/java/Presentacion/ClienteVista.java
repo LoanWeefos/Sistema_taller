@@ -612,7 +612,7 @@ public class ClienteVista extends javax.swing.JFrame {
             evt.consume();
         }
 
-        if (txtTelefono.getText().length() == 4) {
+        if (txtTelefono.getText().length() == 10) {
             evt.consume();
         }
     }//GEN-LAST:event_txtTelefonoKeyTyped
