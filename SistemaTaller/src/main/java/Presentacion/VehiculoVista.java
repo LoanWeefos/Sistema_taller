@@ -41,6 +41,7 @@ public class VehiculoVista extends javax.swing.JFrame {
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
         cargarDatosVehiculos();
+        cargarRFCClientes();
         tblVehiculos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -53,18 +54,28 @@ public class VehiculoVista extends javax.swing.JFrame {
         txtMarca.setVisible(false);
         txtModelo.setVisible(false);
         txtPlaca.setVisible(false);
-        txtRfc.setVisible(false);
+        cmbRFC.setVisible(false);
 
         jLabel2.setVisible(false);
         jLabel3.setVisible(false);
         jLabel4.setVisible(false);
         jLabel5.setVisible(false);
         jLabel6.setVisible(false);
+
+    }
+
+    private void cargarRFCClientes() {
+        List<Cliente> listaClientes = controlCliente.obtenerTodosLosClientes();
+        cmbRFC.removeAllItems();
+
+        for (Cliente cliente : listaClientes) {
+            cmbRFC.addItem(cliente.getRfc());
+        }
     }
 
     private void registrarVehiculo() {
         String placa = txtPlaca.getText();
-        String rfc = txtRfc.getText();
+        String rfc = (String) cmbRFC.getSelectedItem();
         String marca = txtMarca.getText();
         String modelo = txtModelo.getText();
         String color = txtColor.getText();
@@ -138,7 +149,7 @@ public class VehiculoVista extends javax.swing.JFrame {
 
             if (vehiculo != null) {
                 txtPlaca.setText(vehiculo.getPlaca());
-                txtRfc.setText(vehiculo.getCliente().getRfc());
+                cmbRFC.setSelectedItem(vehiculo.getCliente().getRfc());
                 txtMarca.setText(vehiculo.getMarca());
                 txtModelo.setText(vehiculo.getModelo());
                 txtColor.setText(vehiculo.getColor());
@@ -147,7 +158,7 @@ public class VehiculoVista extends javax.swing.JFrame {
                 txtMarca.setVisible(true);
                 txtModelo.setVisible(true);
                 txtPlaca.setVisible(true);
-                txtRfc.setVisible(true);
+                cmbRFC.setVisible(true);
 
                 jLabel2.setVisible(true);
                 jLabel3.setVisible(true);
@@ -206,7 +217,6 @@ public class VehiculoVista extends javax.swing.JFrame {
         txtMarca.setText("");
         txtModelo.setText("");
         txtColor.setText("");
-        txtRfc.setText("");
     }
 
     /**
@@ -231,10 +241,10 @@ public class VehiculoVista extends javax.swing.JFrame {
         txtColor = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        txtRfc = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        cmbRFC = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -313,8 +323,6 @@ public class VehiculoVista extends javax.swing.JFrame {
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Color.png"))); // NOI18N
         jPanel1.add(jLabel6);
         jLabel6.setBounds(832, 290, 87, 28);
-        jPanel1.add(txtRfc);
-        txtRfc.setBounds(472, 348, 340, 48);
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Rfc.png"))); // NOI18N
         jPanel1.add(jLabel4);
@@ -341,6 +349,10 @@ public class VehiculoVista extends javax.swing.JFrame {
         });
         jPanel1.add(jLabel1);
         jLabel1.setBounds(548, 24, 548, 70);
+
+        cmbRFC.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(cmbRFC);
+        cmbRFC.setBounds(470, 360, 340, 40);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
         jPanel1.add(jLabel11);
@@ -387,7 +399,7 @@ public class VehiculoVista extends javax.swing.JFrame {
         txtMarca.setVisible(true);
         txtModelo.setVisible(true);
         txtPlaca.setVisible(true);
-        txtRfc.setVisible(true);
+        cmbRFC.setVisible(true);
 
         jLabel2.setVisible(true);
         jLabel3.setVisible(true);
@@ -433,6 +445,7 @@ public class VehiculoVista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnRegresar1;
+    private javax.swing.JComboBox<String> cmbRFC;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
@@ -449,7 +462,6 @@ public class VehiculoVista extends javax.swing.JFrame {
     private javax.swing.JTextField txtMarca;
     private javax.swing.JTextField txtModelo;
     private javax.swing.JTextField txtPlaca;
-    private javax.swing.JTextField txtRfc;
     // End of variables declaration//GEN-END:variables
 
 }

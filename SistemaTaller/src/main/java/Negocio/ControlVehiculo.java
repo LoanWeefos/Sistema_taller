@@ -10,6 +10,7 @@ import Persistencia.ClienteDAO;
 import Persistencia.Conexion;
 import Persistencia.VehiculoDAO;
 import java.sql.Connection;
+import java.util.List;
 
 /**
  *
@@ -53,6 +54,16 @@ public class ControlVehiculo {
         }
 
         return vehiculo;
+    }
+    
+    public List<Vehiculo> obtenerTodosLosVehiculos() {
+        List<Vehiculo> vehiculos = vehiculoDAO.obtenerTodos();
+
+        if (vehiculos.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron vehículos.");
+        }
+
+        return vehiculos;
     }
 
     // Método para actualizar los datos de un vehículo

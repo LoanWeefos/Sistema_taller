@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 
  * @author MichellK
@@ -65,7 +68,37 @@ public class VehiculoDAO {
 
         return vehiculo;
     }
+    
+    // Método para obtener todos los vehículos
+    public List<Vehiculo> obtenerTodos() {
+        String sqlVehiculo = "SELECT * FROM Vehiculos";
+        List<Vehiculo> vehiculos = new ArrayList<>();
 
+        try (Statement stmtVehiculo = connection.createStatement();
+            ResultSet resultSet = stmtVehiculo.executeQuery(sqlVehiculo)) {
+
+            while (resultSet.next()) {
+                String rfcCliente = resultSet.getString("rfc_cliente");
+                Cliente cliente = obtenerClientePorRfc(rfcCliente); // Método que deberás implementar
+                
+                // Crear objeto Vehiculo
+                Vehiculo vehiculo = new Vehiculo(
+                    resultSet.getString("placa"),
+                    resultSet.getString("marca"),
+                    resultSet.getString("modelo"),
+                    resultSet.getString("color"),
+                    cliente // Asocia el cliente recuperado
+                );
+
+                vehiculos.add(vehiculo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehiculos;
+    }
+    
     // Método para obtener un Cliente por RFC
     private Cliente obtenerClientePorRfc(String rfc) {
         Cliente cliente = null;

@@ -10,6 +10,7 @@ import Dominio.Reparacion;
 import Dominio.Vehiculo;
 import Negocio.ControlPago;
 import Negocio.ControlReparacion;
+import Negocio.ControlVehiculo;
 import Persistencia.Conexion;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -34,6 +35,7 @@ public class PagoVista extends javax.swing.JFrame {
     Connection conexion;
     private ControlPago controlPago = new ControlPago();
     private ControlReparacion controlReparacion = new ControlReparacion();
+    private ControlVehiculo controlVehiculo = new ControlVehiculo();
 
     /**
      * Creates new form PagoVista
@@ -45,6 +47,7 @@ public class PagoVista extends javax.swing.JFrame {
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
         cargarDatosPagos();
+        cargarPlacas();
         tblPagos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -54,6 +57,16 @@ public class PagoVista extends javax.swing.JFrame {
         });
 
     }
+    
+    private void cargarPlacas() {
+    // Limpia el combo box antes de cargar nuevos datos
+    cmbPlaca.removeAllItems();
+    
+    List<Vehiculo> listaVehiculo = controlVehiculo.obtenerTodosLosVehiculos();
+    for (Vehiculo vehiculo : listaVehiculo) {
+        cmbPlaca.addItem(vehiculo.getPlaca());
+    }
+}
 
     private void cargarDatosPagos() {
         // Modelo de la tabla con columnas Nombre y RFC
@@ -135,15 +148,15 @@ public class PagoVista extends javax.swing.JFrame {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
 
-        if (servicios.isEmpty() || total.isEmpty() || anio == null || txtPlaca.getText().trim().isEmpty()) {
+        if (servicios.isEmpty() || total.isEmpty() || anio == null) {
             System.out.println("Por favor, complete todos los campos.");
             return;
         }
 
         // Utiliza el nuevo método para obtener la reparación por placa
-        System.out.println("Placa ingresada: " + txtPlaca.getText().trim());
+        System.out.println("Placa ingresada: " + (String) cmbPlaca.getSelectedItem());
 
-        Reparacion reparacionEncontrada = controlReparacion.obtenerReparacionPorPlaca(txtPlaca.getText());
+        Reparacion reparacionEncontrada = controlReparacion.obtenerReparacionPorPlaca((String) cmbPlaca.getSelectedItem());
 
         if (reparacionEncontrada == null) {
             JOptionPane.showMessageDialog(this, "Placa inexistente");
@@ -179,11 +192,6 @@ public class PagoVista extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPagos = new javax.swing.JTable();
         btnPagar = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        txtPlaca = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         btnRegresar1 = new javax.swing.JLabel();
         txtServicios = new javax.swing.JTextField();
         lblServicios = new javax.swing.JLabel();
@@ -192,7 +200,9 @@ public class PagoVista extends javax.swing.JFrame {
         lblTotal = new javax.swing.JLabel();
         lblMetodoDePago = new javax.swing.JLabel();
         txtAnio = new com.toedter.calendar.JDateChooser();
+        cmbPlaca = new javax.swing.JComboBox<>();
         lblFecha = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -237,50 +247,6 @@ public class PagoVista extends javax.swing.JFrame {
         jPanel1.add(btnPagar);
         btnPagar.setBounds(896, 704, 280, 72);
 
-        jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel4.setOpaque(false);
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/BuscarBoton.png"))); // NOI18N
-        jButton1.setBorderPainted(false);
-        jButton1.setContentAreaFilled(false);
-
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Placa.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel7)
-                        .addGap(491, 491, 491))))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
-
-        jPanel1.add(jPanel4);
-        jPanel4.setBounds(578, 514, 598, 160);
-
         btnRegresar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
         btnRegresar1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -313,9 +279,17 @@ public class PagoVista extends javax.swing.JFrame {
         jPanel1.add(txtAnio);
         txtAnio.setBounds(836, 372, 340, 40);
 
+        cmbPlaca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(cmbPlaca);
+        cmbPlaca.setBounds(480, 500, 330, 40);
+
         lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Fecha.png"))); // NOI18N
         jPanel1.add(lblFecha);
         lblFecha.setBounds(836, 426, 82, 28);
+
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Placa.png"))); // NOI18N
+        jPanel1.add(jLabel7);
+        jLabel7.setBounds(480, 550, 84, 28);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
         jPanel1.add(jLabel11);
@@ -325,11 +299,11 @@ public class PagoVista extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1267, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)
         );
 
         pack();
@@ -385,12 +359,10 @@ public class PagoVista extends javax.swing.JFrame {
     private javax.swing.JButton btnPagar;
     private javax.swing.JLabel btnRegresar1;
     private javax.swing.JComboBox<String> cmbMetodoPago;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> cmbPlaca;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblMetodoDePago;
@@ -399,7 +371,6 @@ public class PagoVista extends javax.swing.JFrame {
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tblPagos;
     private com.toedter.calendar.JDateChooser txtAnio;
-    private javax.swing.JTextField txtPlaca;
     private javax.swing.JTextField txtServicios;
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
