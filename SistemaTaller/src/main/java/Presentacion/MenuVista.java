@@ -216,8 +216,9 @@ public class MenuVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnClientesActionPerformed
 
     private void btnReparacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReparacionesActionPerformed
-        // TODO add your handling code here:
-        
+        ReparacionesVista reparacionesVista = new ReparacionesVista();
+        reparacionesVista.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnReparacionesActionPerformed
 
     private void btnPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagosActionPerformed
@@ -228,11 +229,14 @@ public class MenuVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPagosActionPerformed
 
     private void btnRecordatoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordatoriosActionPerformed
-        // TODO add your handling code here:
+        RecordatoriosVista recordatorioVista= new RecordatoriosVista();
+        recordatorioVista.setVisible(true);
     }//GEN-LAST:event_btnRecordatoriosActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        CostosVista costosVista= new CostosVista();
+        costosVista.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnClientesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseEntered
