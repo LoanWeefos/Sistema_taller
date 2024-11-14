@@ -98,7 +98,7 @@ public class Reparacion implements Serializable {
 
     @Override
     public String toString() {
-        return "Dominio.Reparacion[ id=" + id + " ]";
+        return "Reparacion{" + "id=" + id + ", nombre_empleado=" + nombre_empleado + ", vehiculo=" + vehiculo + '}';
     }
 }
 

@@ -129,6 +129,9 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
                 reparacion = new Reparacion();
                 reparacion.setId(rsReparacion.getInt("id"));
                 reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
+                Vehiculo vehiculo = new Vehiculo();
+                vehiculo.setPlaca(rsReparacion.getString("placa_vehiculo"));
+                reparacion.setVehiculo(vehiculo);
 
             }
         } catch (SQLException e) {

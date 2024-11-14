@@ -118,9 +118,9 @@ public class ControlPago {
                 System.out.println("No hay pagos registrados.");
                 return new ArrayList<>(); // Devolver una lista vacía en lugar de null
             } else {
-                for (Pago pago : pagos) {
-                    System.out.println(pago);
-                }
+//                for (Pago pago : pagos) {
+//                    System.out.println(pago);
+//                }
                 return pagos;
             }
         } catch (RuntimeException e) {
