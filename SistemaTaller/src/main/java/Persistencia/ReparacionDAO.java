@@ -81,15 +81,19 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
 
         try (Statement stmt = conexion.createStatement()) {
             ResultSet rsReparacion = stmt.executeQuery(sqlReparacion);
-            String placaVehiculo = rsReparacion.getString("placa_vehiculo");
-            Vehiculo vehiculo = obtenerVehiculo(placaVehiculo);
             while (rsReparacion.next()) {
                 Reparacion reparacion = new Reparacion();
                 reparacion.setId(rsReparacion.getInt("id"));
                 reparacion.setNombre_empleado(rsReparacion.getString("nombre_empleado"));
+
+                // Obtener la placa del vehículo y asociarlo al objeto Reparacion
+                String placaVehiculo = rsReparacion.getString("placa_vehiculo");
+                Vehiculo vehiculo = obtenerVehiculo(placaVehiculo); // Asegúrate de que obtenerVehiculo esté bien implementado
                 reparacion.setVehiculo(vehiculo);
+
                 reparaciones.add(reparacion);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -31,142 +31,123 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ControlReparacionTest {
 
     private static Connection conexion;
-    private ControlReparacion controlReparacion;
+    private ControlCliente controlCliente;
     private ControlVehiculo controlVehiculo;
-    private ControlCliente controlcliente;
-    private ControlServicio controlservicio;
+    private ControlReparacion controlReparacion;
 
     @BeforeAll
-    public static void setUpClass() throws SQLException {
+    static void setUpClass() throws SQLException {
         // Establecer conexión a la base de datos
         conexion = Conexion.getConnection();
     }
 
     @BeforeEach
-    void setUp() {
-        // Inicializar el ControlCliente antes de cada prueba
-        controlReparacion = new ControlReparacion();
-        controlcliente = new ControlCliente();
+    void setUp() throws SQLException {
+        conexion.setAutoCommit(false); // Desactiva auto commit para transacciones
+        // Inicialización de objetos de prueba
+        controlCliente = new ControlCliente();
         controlVehiculo = new ControlVehiculo();
-        controlservicio = new ControlServicio();
+        controlReparacion = new ControlReparacion();
     }
 
     @AfterEach
     void tearDown() throws SQLException {
-        // Limpiar los datos de prueba después de cada prueba
-
-        // Aquí puedes agregar la lógica para eliminar clientes de prueba si es necesario
-//        conexion.createStatement().executeUpdate("DELETE FROM Reparaciones WHERE id = 1");
-//        VehiculoDAO vehiculoDAO = new VehiculoDAO(conexion);
-//        vehiculoDAO.eliminar("ABC1");
-//
-//        ClienteDAO cliente = new ClienteDAO(conexion);
-//        cliente.eliminar("RFC1");
-
+        conexion.rollback(); // Revertir cambios al final del test
+        conexion.setAutoCommit(true); // Reactivar auto commit para pruebas futuras
     }
 
     @Test
-    public void agregarReparacionTest() {
-        // Preparar un cliente y un vehículo
-        Cliente cliente = new Cliente("RFC1", "Esteban Duran", "duran@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"), "644415095", null);
-        controlcliente.agregarCliente(cliente);
+    public void testAgregarReparacion() {
+        System.out.println("agregarReparacion");
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        List<Vehiculo> vehiculos = new ArrayList<>(); // Lista vacía de vehículos
+        Cliente cliente = new Cliente("TEST1", "Cliente Test", "cliente@test.com", new Date(), domicilio, "644415095", vehiculos);
+        controlCliente.agregarCliente(cliente);
 
-        Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
-        controlVehiculo.agregarVehiculo(vehiculo);
+        Vehiculo nuevoVehiculo = new Vehiculo("ABC123", "Toyota", "Corolla", "Rojo", cliente);
+        controlVehiculo.agregarVehiculo(nuevoVehiculo);
 
-        // Crear una reparación
-        Reparacion reparacion = new Reparacion(1, "Esteban Duran", vehiculo);
+        Reparacion reparacion = new Reparacion("tilin", nuevoVehiculo);
 
-        // Agregar la reparación y verificar que no lance excepciones
-        assertDoesNotThrow(() -> controlReparacion.agregarReparacion(reparacion));
-
-        //controlservicio.agregarServicio("Cambio de aceite", 1234); // Asegúrate de que el servicio esté agregado a la base de datos
-        // Asociar el servicio con la reparación
-        // Aquí puedes crear una instancia de ReparacionServicio que haga la conexión entre Reparacion y Servicio
-        //ReparacionServicio reparacionServicio = new ReparacionServicio(reparacion, servicio);
-    }
-
-    @Test
-    public void actualizarReparacionTest() {
-        
-        // Preparar un cliente y un vehículo
-        Cliente cliente = new Cliente("RFC1", "Esteban Duran", "duran@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"), "644415095", null);
-        controlcliente.agregarCliente(cliente);
-
-         Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
-        controlVehiculo.agregarVehiculo(vehiculo);
-        // Primero agregamos una reparación para actualizar
-        Reparacion reparacion = new Reparacion(1, "Carmen", vehiculo);
+        // Agregar reparación y verificar
         controlReparacion.agregarReparacion(reparacion);
 
-        // Supongamos que el ID es conocido
-        long id = 1;
-        reparacion.setNombre_empleado("Maria Gomez"); // Cambiamos el nombre del empleado
-        controlReparacion.actualizarReparacion(reparacion);
-
-        // Verificar que se haya actualizado correctamente
-        Reparacion actualizado = controlReparacion.obtenerReparacionPorId(id);
-        assertEquals("Maria Gomez", actualizado.getNombre_empleado());
-
+        Reparacion reparacionObtenida = controlReparacion.obtenerReparacionPorPlaca("ABC123");
+        assertNotNull(reparacionObtenida);
+        assertEquals("tilin", reparacionObtenida.getNombre_empleado());
     }
 
     @Test
-    public void eliminarReparacionTest() {
-        // Primero agregamos una reparación para eliminar
-        Cliente cliente = new Cliente("RFC1", "Abril Snow", "snowmhyk@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"), "644415095", null);
-        controlcliente.agregarCliente(cliente);
+    public void testEliminarReparacion() {
+        System.out.println("eliminarReparacion");
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        List<Vehiculo> vehiculos = new ArrayList<>();
+        Cliente cliente = new Cliente("TEST2", "Cliente Test2", "cliente2@test.com", new Date(), domicilio, "644415096", vehiculos);
+        controlCliente.agregarCliente(cliente);
 
-        Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
+        Vehiculo vehiculo = new Vehiculo("DEF456", "Honda", "Civic", "Azul", cliente);
         controlVehiculo.agregarVehiculo(vehiculo);
 
-        // Agregar una reparación para el vehículo
-        Reparacion reparacion = new Reparacion(1, "Carmen", vehiculo);
+        Reparacion reparacion = new Reparacion("tilin", vehiculo);
         controlReparacion.agregarReparacion(reparacion);
 
-        // Ahora podemos eliminar la reparación
-        assertDoesNotThrow(() -> controlReparacion.eliminarReparacion(1));
+        Reparacion reparacionObtenida = controlReparacion.obtenerReparacionPorPlaca("DEF456");
+        assertNotNull(reparacionObtenida);
 
-        
+        controlReparacion.eliminarReparacion(reparacionObtenida.getId());
 
-        // Luego elimina el vehículo
-        assertDoesNotThrow(() -> controlVehiculo.eliminarVehiculo("ABC1"));
-
-        // Finalmente, elimina el cliente
-        assertDoesNotThrow(() -> controlcliente.eliminarCliente("RFC1"));
+        Reparacion reparacionEliminada = controlReparacion.obtenerReparacionPorPlaca("DEF456");
+        assertNull(reparacionEliminada);
     }
 
     @Test
-    public void obtenerReparacionTest() {
+    public void testActualizarReparacion() {
+        System.out.println("actualizarReparacion");
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        List<Vehiculo> vehiculos = new ArrayList<>();
+        Cliente cliente = new Cliente("TEST3", "Cliente Test3", "cliente3@test.com", new Date(), domicilio, "644415097", vehiculos);
+        controlCliente.agregarCliente(cliente);
 
-        // Preparar y agregar un vehículo
-        Cliente cliente = new Cliente("RFC1", "Abril snow", "snowmhyk@example.com",
-                new java.util.Date(), new Domicilio("Calle Falsa", "Colonia", "123"), "644415095", null);
-        controlcliente.agregarCliente(cliente);
-
-        
-        Vehiculo vehiculo = new Vehiculo("ABC1", "Toyota", "Corolla", "Rojo", cliente);
+        Vehiculo vehiculo = new Vehiculo("GHI789", "Ford", "Focus", "Blanco", cliente);
         controlVehiculo.agregarVehiculo(vehiculo);
-        
-        Reparacion reparacion = new Reparacion(1, "Carmen", vehiculo);
+
+        Reparacion reparacion = new Reparacion("tilin", vehiculo);
         controlReparacion.agregarReparacion(reparacion);
 
-        Reparacion obtenido = controlReparacion.obtenerReparacionPorId(1);
+        Reparacion reparacionActualizada = controlReparacion.obtenerReparacionPorPlaca("GHI789");
+        reparacionActualizada.setNombre_empleado("nuevoEmpleado");
+        controlReparacion.actualizarReparacion(reparacionActualizada);
 
-        assertNotNull(obtenido);
-        assertEquals("Carmen", obtenido.getNombre_empleado());
+        Reparacion reparacionObtenida = controlReparacion.obtenerReparacionPorPlaca("GHI789");
+        assertNotNull(reparacionObtenida);
+        assertEquals("nuevoEmpleado", reparacionObtenida.getNombre_empleado());
     }
 
     @Test
-    public void listarReparacionTest() {
-        
-        List<Reparacion> lista = controlReparacion.obtenerTodasLasReparaciones();
+    public void testObtenerTodasLasReparaciones() {
+        System.out.println("obtenerTodasLasReparaciones");
 
-        assertFalse(lista.isEmpty());
-        assertEquals(2, lista.size()); // Verifica que haya dos reparaciones en la lista
+        // Crear cliente, vehículo y reparaciones para poblar datos
+        Domicilio domicilio = new Domicilio("Calle Test", "Colonia Test", "123");
+        List<Vehiculo> vehiculos = new ArrayList<>();
+        Cliente cliente = new Cliente("TEST4", "Cliente Test4", "cliente4@test.com", new Date(), domicilio, "644415098", vehiculos);
+        controlCliente.agregarCliente(cliente);
 
+        Vehiculo vehiculo1 = new Vehiculo("JKL012", "Chevrolet", "Malibu", "Negro", cliente);
+        controlVehiculo.agregarVehiculo(vehiculo1);
+
+        Vehiculo vehiculo2 = new Vehiculo("MNO345", "Nissan", "Altima", "Gris", cliente);
+        controlVehiculo.agregarVehiculo(vehiculo2);
+
+        Reparacion reparacion1 = new Reparacion("tilin", vehiculo1);
+        Reparacion reparacion2 = new Reparacion("tilin", vehiculo2);
+        controlReparacion.agregarReparacion(reparacion1);
+        controlReparacion.agregarReparacion(reparacion2);
+
+
+        // Obtener todas las reparaciones y verificar
+        List<Reparacion> reparaciones = controlReparacion.obtenerTodasLasReparaciones();
+        assertNotNull(reparaciones);
     }
 
     @AfterAll

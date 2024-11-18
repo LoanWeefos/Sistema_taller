@@ -48,6 +48,7 @@ public class ControlReparacion {
         Reparacion reparacion = reparacionDAO.obtenerPorId(id);
         if (reparacion == null) {
             throw new IllegalArgumentException("No se encontró la reparación con ID: " + id);
+            
         }
 
         reparacionDAO.eliminar(id); // Llama al DAO para eliminar la reparación
@@ -69,6 +70,7 @@ public class ControlReparacion {
         List<Reparacion> reparaciones = reparacionDAO.obtenerTodos();
         if (reparaciones.isEmpty()) {
             System.out.println("No se encontraron reparaciones");
+            return null;
         }
 
         return reparaciones; // Devuelve la lista de reparaciones
