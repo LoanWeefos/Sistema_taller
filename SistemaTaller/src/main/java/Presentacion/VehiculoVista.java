@@ -201,6 +201,93 @@ public class VehiculoVista extends javax.swing.JFrame {
         // Asigna el modelo a la tabla
         tblVehiculos.setModel(modeloTabla);
     }
+    
+    private void editarVehiculo() {
+        String placa = txtPlaca.getText();
+        String rfc = (String) cmbRFC.getSelectedItem();
+        String marca = txtMarca.getText();
+        String modelo = txtModelo.getText();
+        String color = txtColor.getText();
+
+        Cliente clienteEncontrado = buscarClientePorRfc(rfc);
+        if (clienteEncontrado == null) {
+            System.out.println("Cliente no encontrado con el RFC especificado.");
+            JOptionPane.showMessageDialog(this, "Cliente no encontrado con el RFC especificado.");
+            return;
+        }
+
+        // Crear el objeto Vehiculo y asignar el cliente encontrado
+        Vehiculo vehiculo = new Vehiculo(placa, color, marca, modelo, clienteEncontrado);
+        
+         try {
+            // Intentar agregar el vehículo
+            controlVehiculo.actualizarVehiculo(vehiculo);
+
+            // Mensaje de éxito si no hay excepción
+            System.out.println("Vehículo editado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Vehículo editado exitosamente.");
+            limpiarCampos(); // Limpia los campos tras la inserción
+            cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
+        } catch (Exception e) {
+            // Manejo de error en caso de fallo
+            System.out.println("Error al editar el vehículo: " + e.getMessage());
+        }
+
+//        // Llamar al método en ControlCliente para editar el cliente
+//        boolean exito = controlCliente.editarCliente(cliente);
+//
+//        if (exito) {
+//            JOptionPane.showMessageDialog(this, "Vehiculo editado exitosamente.");
+//            cargarDatosVehiculos(); // Método para actualizar la tabla con los nuevos datos
+//            limpiarCampos(); // Limpia los campos después de la edición exitosa
+//        } else {
+//            JOptionPane.showMessageDialog(this, "Error al editar el vehiculo.");
+//        }
+    }
+
+    private void eliminarVehiculo() {
+        int filaSeleccionada = tblVehiculos.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un vehiculo de la tabla.");
+            return; // Salir del método si no hay fila seleccionada
+        }
+
+        // Obtener el RFC del cliente seleccionado
+        String placa = tblVehiculos.getValueAt(filaSeleccionada, 1).toString();
+
+        // Mostrar un JOptionPane de confirmación
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas eliminar al vehiculo con placa: " + placa + "?",
+                "Confirmar Eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            // Llamar al método en ControlCliente para eliminar el cliente
+             // Implementa este método en ControlCliente
+             try {
+            // Intentar agregar el vehículo
+            controlVehiculo.eliminarVehiculo(placa);
+
+            // Mensaje de éxito si no hay excepción
+            System.out.println("Vehículo eliminado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Vehículo eliminado exitosamente.");
+            limpiarCampos(); // Limpia los campos tras la inserción
+            cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
+        } catch (Exception e) {
+            // Manejo de error en caso de fallo
+            System.out.println("Error al registrar el vehículo: " + e.getMessage());
+        }
+//
+//            if (exito) {
+//                JOptionPane.showMessageDialog(this, "Vehiculo eliminado exitosamente.");
+//                cargarDatosVehiculos(); // Actualiza la tabla después de eliminar
+//                limpiarCampos(); // Limpia los campos después de la eliminación
+//            } else {
+//                JOptionPane.showMessageDialog(this, "Error al eliminar el vehiculo.");
+//            }
+        }
+    }
 
     public void closeConnection() {
         try {
