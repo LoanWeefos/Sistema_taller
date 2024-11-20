@@ -20,7 +20,7 @@ public class Correos {
 
     private Properties properties;
 
-    private static String password = "oknezjlcubgupsbr";
+    private static String password = "sxwolabtfnggeomo";
     private static String emailForm = "tallersosman@gmail.com";
 
     private Session session;

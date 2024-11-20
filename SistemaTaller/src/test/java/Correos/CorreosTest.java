@@ -41,6 +41,7 @@ public class CorreosTest {
     void setUp() {
         // Inicializar el ControlCliente antes de cada prueba
         controlCliente = new ControlCliente();
+        correo = new Correos();
     }
 
     @AfterEach
@@ -58,7 +59,8 @@ public class CorreosTest {
     //
     @Test
     public void probarCorreo() {
-        assertEquals("Prueba de correo", correo.sendEmail("wikiteban@gmail.com", "Prueba de correo"));
+        String texto = correo.sendEmail("michell.cedano.lopez@gmail.com", "Prueba de correo");
+        assertEquals("Prueba de correo", texto);
     }
 
     @Test
