@@ -201,7 +201,7 @@ public class VehiculoVista extends javax.swing.JFrame {
         // Asigna el modelo a la tabla
         tblVehiculos.setModel(modeloTabla);
     }
-    
+
     private void editarVehiculo() {
         String placa = txtPlaca.getText();
         String rfc = (String) cmbRFC.getSelectedItem();
@@ -218,8 +218,8 @@ public class VehiculoVista extends javax.swing.JFrame {
 
         // Crear el objeto Vehiculo y asignar el cliente encontrado
         Vehiculo vehiculo = new Vehiculo(placa, color, marca, modelo, clienteEncontrado);
-        
-         try {
+
+        try {
             // Intentar agregar el vehículo
             controlVehiculo.actualizarVehiculo(vehiculo);
 
@@ -246,48 +246,41 @@ public class VehiculoVista extends javax.swing.JFrame {
     }
 
     private void eliminarVehiculo() {
-        int filaSeleccionada = tblVehiculos.getSelectedRow();
+    // Obtener la fila seleccionada en la tabla
+    int filaSeleccionada = tblVehiculos.getSelectedRow();
 
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un vehiculo de la tabla.");
-            return; // Salir del método si no hay fila seleccionada
-        }
+    if (filaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(this, "Por favor, selecciona un vehículo de la tabla.");
+        return; // Salir del método si no hay fila seleccionada
+    }
 
-        // Obtener el RFC del cliente seleccionado
-        String placa = tblVehiculos.getValueAt(filaSeleccionada, 1).toString();
+    // Obtener la placa del vehículo seleccionado 
+    String placa = tblVehiculos.getValueAt(filaSeleccionada, 0).toString();
 
-        // Mostrar un JOptionPane de confirmación
-        int confirmacion = JOptionPane.showConfirmDialog(this,
-                "¿Estás seguro de que deseas eliminar al vehiculo con placa: " + placa + "?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION);
+    // Mostrar un JOptionPane de confirmación
+    int confirmacion = JOptionPane.showConfirmDialog(this,
+            "¿Estás seguro de que deseas eliminar el vehículo con placa: " + placa + "?",
+            "Confirmar Eliminación",
+            JOptionPane.YES_NO_OPTION);
 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            // Llamar al método en ControlCliente para eliminar el cliente
-             // Implementa este método en ControlCliente
-             try {
-            // Intentar agregar el vehículo
+    if (confirmacion == JOptionPane.YES_OPTION) {
+        try {
+            // Llamar al método en ControlVehiculo para eliminar el vehículo
             controlVehiculo.eliminarVehiculo(placa);
 
             // Mensaje de éxito si no hay excepción
-            System.out.println("Vehículo eliminado exitosamente.");
             JOptionPane.showMessageDialog(this, "Vehículo eliminado exitosamente.");
-            limpiarCampos(); // Limpia los campos tras la inserción
-            cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
+            limpiarCampos(); // Limpia los campos tras la eliminación
+            cargarDatosVehiculos(); // Actualiza la tabla con los datos más recientes
         } catch (Exception e) {
             // Manejo de error en caso de fallo
-            System.out.println("Error al registrar el vehículo: " + e.getMessage());
-        }
-//
-//            if (exito) {
-//                JOptionPane.showMessageDialog(this, "Vehiculo eliminado exitosamente.");
-//                cargarDatosVehiculos(); // Actualiza la tabla después de eliminar
-//                limpiarCampos(); // Limpia los campos después de la eliminación
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Error al eliminar el vehiculo.");
-//            }
+            JOptionPane.showMessageDialog(this, "Error al eliminar el vehículo: " + e.getMessage(), 
+                                          "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Error al eliminar el vehículo: " + e.getMessage());
         }
     }
+}
+
 
     public void closeConnection() {
         try {
@@ -329,9 +322,11 @@ public class VehiculoVista extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnRegistrar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         cmbRFC = new javax.swing.JComboBox<>();
+        btnEliminar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -415,17 +410,17 @@ public class VehiculoVista extends javax.swing.JFrame {
         jPanel1.add(jLabel4);
         jLabel4.setBounds(472, 405, 201, 35);
 
-        jButton2.setBackground(new java.awt.Color(248, 242, 206));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RegistrarBoton.png"))); // NOI18N
-        jButton2.setBorderPainted(false);
-        jButton2.setContentAreaFilled(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnRegistrar.setBackground(new java.awt.Color(248, 242, 206));
+        btnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RegistrarBoton.png"))); // NOI18N
+        btnRegistrar.setBorderPainted(false);
+        btnRegistrar.setContentAreaFilled(false);
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnRegistrarActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2);
-        jButton2.setBounds(892, 500, 280, 69);
+        jPanel1.add(btnRegistrar);
+        btnRegistrar.setBounds(890, 469, 260, 70);
 
         jLabel1.setBackground(new java.awt.Color(248, 242, 206));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/RegistrarVehiculoBoton.png"))); // NOI18N
@@ -441,9 +436,33 @@ public class VehiculoVista extends javax.swing.JFrame {
         jPanel1.add(cmbRFC);
         cmbRFC.setBounds(470, 360, 340, 40);
 
+        btnEliminar.setBackground(new java.awt.Color(248, 242, 206));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Eliminar.png"))); // NOI18N
+        btnEliminar.setBorderPainted(false);
+        btnEliminar.setContentAreaFilled(false);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEliminar);
+        btnEliminar.setBounds(690, 590, 280, 69);
+
+        btnEditar.setBackground(new java.awt.Color(248, 242, 206));
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Editar.png"))); // NOI18N
+        btnEditar.setBorderPainted(false);
+        btnEditar.setContentAreaFilled(false);
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEditar);
+        btnEditar.setBounds(490, 470, 280, 69);
+
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
         jPanel1.add(jLabel11);
-        jLabel11.setBounds(260, 0, 740, 720);
+        jLabel11.setBounds(300, -50, 740, 720);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -466,10 +485,10 @@ public class VehiculoVista extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPlacaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
         this.registrarVehiculo();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void txtModeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloKeyTyped
 
@@ -494,6 +513,16 @@ public class VehiculoVista extends javax.swing.JFrame {
         jLabel5.setVisible(true);
         jLabel6.setVisible(true);
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        this.eliminarVehiculo();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+        this.editarVehiculo();
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -531,9 +560,11 @@ public class VehiculoVista extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnRegistrar;
     private javax.swing.JLabel btnRegresar1;
     private javax.swing.JComboBox<String> cmbRFC;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;

@@ -111,7 +111,7 @@ public class VehiculoDAO {
     
     // Método para actualizar un vehículo
     public void actualizar(Vehiculo vehiculo) {
-        String sql = "UPDATE Vehiculos SET marca = ?, modelo = ?, color = ? WHERE placa = ?";
+        String sql = "UPDATE Vehiculos SET color = ?, marca = ?, modelo = ? WHERE placa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, vehiculo.getMarca());
             statement.setString(2, vehiculo.getModelo());

@@ -6,6 +6,7 @@ package Presentacion;
 
 import Dominio.Cliente;
 import Dominio.Domicilio;
+import Dominio.Servicio;
 import Persistencia.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import Negocio.ControlCliente;
+import Negocio.ControlServicio;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
@@ -25,6 +27,7 @@ public class CostosVista extends javax.swing.JFrame {
 
     Connection conexion;
     private ControlCliente controlCliente = new ControlCliente();
+    private ControlServicio controlServicio = new ControlServicio();
 
     /**
      * Creates new form MenuView
@@ -34,39 +37,38 @@ public class CostosVista extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
-        cargarDatosClientes();
+        cargarDatosServicios();
         tblClientes.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 tablaClientesMouseClicked(evt);
             }
         });
-        
-        txtDescripcion.setVisible(false);
+
         txtNombre.setVisible(false);
         txtCosto.setVisible(false);
-        
+
         jLabel3.setVisible(false);
         jLabel4.setVisible(false);
-        jLabel6.setVisible(false);
-        
+
     }
 
-    private void cargarDatosClientes() {
+    private void cargarDatosServicios() {
         // Modelo de la tabla con columnas Nombre y RFC
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Nombre", "RFC"}, 0);
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Id", "Servicio", "Costo"}, 0);
 
         try {
             // Usa la conexión existente
-            String consultaSQL = "SELECT Nombre, RFC FROM clientes";
+            String consultaSQL = "SELECT id_servicio, costo, descripcion FROM servicios";
             PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
             ResultSet rs = ps.executeQuery();
 
             // Agrega cada fila de la base de datos al modelo de la tabla
             while (rs.next()) {
-                String nombre = rs.getString("Nombre");
-                String rfc = rs.getString("RFC");
-                modeloTabla.addRow(new Object[]{nombre, rfc});
+                String id = rs.getString("id_servicio");
+                String nombre = rs.getString("descripcion");
+                String costo = rs.getString("costo");
+                modeloTabla.addRow(new Object[]{id, nombre, costo});
             }
 
             // Cierra el ResultSet y el PreparedStatement
@@ -75,7 +77,7 @@ public class CostosVista extends javax.swing.JFrame {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error al cargar los datos de clientes");
+            System.out.println("Error al cargar los datos");
         }
 
         // Asigna el modelo a la tabla
@@ -85,58 +87,59 @@ public class CostosVista extends javax.swing.JFrame {
     private void tablaClientesMouseClicked(MouseEvent evt) {
         int filaSeleccionada = tblClientes.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            String rfc = tblClientes.getValueAt(filaSeleccionada, 1).toString(); // Asumiendo que el RFC está en la segunda columna
-            Cliente cliente = controlCliente.obtenerClientePorRfc(rfc); // Método que debes implementar
+            int id = Integer.parseInt(tblClientes.getValueAt(filaSeleccionada, 0).toString());
+            Servicio servicio = controlServicio.obtenerServicioPorId(id);
 
-            if (cliente != null) {
-                txtDescripcion.setVisible(true);
+            if (servicio != null) {
+
                 txtNombre.setVisible(true);
                 txtCosto.setVisible(true);
 
                 jLabel3.setVisible(true);
                 jLabel4.setVisible(true);
-                jLabel6.setVisible(true);
-                
-                txtCosto.setText(cliente.getRfc());
-                txtNombre.setText(cliente.getNombre());
-                txtDescripcion.setText(cliente.getCorreo());
+
+                txtCosto.setText(String.valueOf(servicio.getCosto()));
+                txtNombre.setText(servicio.getDescripcion());
             } else {
-                System.out.println("Cliente no encontrado con RFC: " + rfc);
+                System.out.println("Servicio no encontrado con ID: " + id);
                 limpiarCampos();
             }
         }
     }
 
-    private void registrarCliente() {
+    private void registrarServicio() {
         String nombre = txtNombre.getText();
-        String rfc = txtCosto.getText();
-        String correo = txtDescripcion.getText();
+        String costoTexto = txtCosto.getText();
 
         // Validación básica de campos vacíos
-        if (nombre.isEmpty() || rfc.isEmpty() || correo.isEmpty()) {
+        if (nombre.isEmpty() || costoTexto.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
             return;
         }
 
-        // Verificar si el RFC ya está registrado
-        if (existeClienteConRfc(rfc)) {
-            JOptionPane.showMessageDialog(this, "Ya existe un cliente registrado con el mismo RFC.");
-            return;
+        try {
+            // Convertir el costo a double
+            double costo = Double.parseDouble(costoTexto);
+
+            // Crear el objeto Servicio
+            Servicio servicio = new Servicio(nombre, costo);
+
+            // Registrar el servicio en la base de datos
+            controlServicio.agregarServicio(servicio);
+
+            // Notificar éxito
+            JOptionPane.showMessageDialog(this, "Servicio registrado exitosamente.");
+
+            // Refrescar la tabla con los nuevos datos
+            cargarDatosServicios();
+
+            // Limpiar los campos
+            limpiarCampos();
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El campo 'Costo' debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
-
-        // Crear el objeto Cliente
-//        Cliente cliente = new Cliente(rfc, nombre, correo);
-
-        // Llamar al método agregarCliente en ControlCliente
-//        boolean exito = controlCliente.agregarCliente(cliente);
-
-//        if (exito) {
-//            JOptionPane.showMessageDialog(this, "Cliente registrado exitosamente.");
-//            limpiarCampos(); // Limpia los campos después de la inserción exitosa
-//            cargarDatosClientes(); // Actualiza la tabla con los nuevos datos
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Error al registrar el cliente");
-//        }
     }
 
     // Método auxiliar para verificar si existe un cliente con el mismo RFC
@@ -148,15 +151,12 @@ public class CostosVista extends javax.swing.JFrame {
     private void editarCliente() {
         String rfc = txtCosto.getText();
         String nombre = txtNombre.getText();
-        String correo = txtDescripcion.getText();
 
         // Crear el objeto Cliente a editar
 //        Domicilio domicilio = new Domicilio(txtCalle.getText(), txtColonia.getText(), txtNumero.getText());
 //        Cliente cliente = new Cliente(rfc, nombre, correo, new java.sql.Date(fechaNac.getTime()), telefono, domicilio);
-
         // Llamar al método en ControlCliente para editar el cliente
 //        boolean exito = controlCliente.editarCliente(cliente);
-
 //        if (exito) {
 //            JOptionPane.showMessageDialog(this, "Cliente editado exitosamente.");
 //            cargarDatosClientes(); // Método para actualizar la tabla con los nuevos datos
@@ -189,7 +189,7 @@ public class CostosVista extends javax.swing.JFrame {
 
             if (exito) {
                 JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente.");
-                cargarDatosClientes(); // Actualiza la tabla después de eliminar
+                cargarDatosServicios(); // Actualiza la tabla después de eliminar
                 limpiarCampos(); // Limpia los campos después de la eliminación
             } else {
                 JOptionPane.showMessageDialog(this, "Error al eliminar el cliente.");
@@ -200,7 +200,6 @@ public class CostosVista extends javax.swing.JFrame {
     private void limpiarCampos() {
         txtNombre.setText("");
         txtCosto.setText("");
-        txtDescripcion.setText("");
     }
 
     /**
@@ -222,8 +221,6 @@ public class CostosVista extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtDescripcion = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
@@ -286,13 +283,13 @@ public class CostosVista extends javax.swing.JFrame {
         tblClientes.setForeground(new java.awt.Color(73, 61, 63));
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Nombre", "RFC"
+                "ID", "Servicio", "Costo"
             }
         ));
         tblClientes.setFillsViewportHeight(true);
@@ -317,19 +314,6 @@ public class CostosVista extends javax.swing.JFrame {
         jPanel1.add(jLabel4);
         jLabel4.setBounds(786, 275, 100, 31);
 
-        txtDescripcion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDescripcionActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtDescripcion);
-        txtDescripcion.setBounds(786, 336, 700, 39);
-
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCostos/Descripcion.png"))); // NOI18N
-        jLabel6.setToolTipText("");
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(786, 381, 210, 40);
-
         btnRegresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
         btnRegresar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -348,10 +332,6 @@ public class CostosVista extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescripcionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDescripcionActionPerformed
-
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
@@ -362,7 +342,7 @@ public class CostosVista extends javax.swing.JFrame {
 
     private void btnVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVehiculosActionPerformed
         // TODO add your handling code here:
-        this.registrarCliente();
+        this.registrarServicio();
     }//GEN-LAST:event_btnVehiculosActionPerformed
 
     private void btnVehiculosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVehiculosMouseExited
@@ -380,14 +360,12 @@ public class CostosVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresarMouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        txtDescripcion.setVisible(true);
         txtNombre.setVisible(true);
         txtCosto.setVisible(true);
-        
+
         jLabel3.setVisible(true);
         jLabel4.setVisible(true);
-        jLabel6.setVisible(true);
-        
+
     }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
@@ -440,12 +418,10 @@ public class CostosVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblClientes;
     private javax.swing.JTextField txtCosto;
-    private javax.swing.JTextField txtDescripcion;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }

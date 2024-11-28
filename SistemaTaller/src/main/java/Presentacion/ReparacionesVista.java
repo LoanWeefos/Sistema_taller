@@ -322,6 +322,11 @@ public class ReparacionesVista extends javax.swing.JFrame {
         jLabel1.setBounds(710, 20, 548, 70);
 
         cmbServicios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbServicios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbServiciosActionPerformed(evt);
+            }
+        });
         jPanel1.add(cmbServicios);
         cmbServicios.setBounds(640, 120, 340, 40);
 
@@ -399,6 +404,10 @@ public class ReparacionesVista extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void cmbServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbServiciosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbServiciosActionPerformed
 
     /**
      * @param args the command line arguments

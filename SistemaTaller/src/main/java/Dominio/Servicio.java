@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,15 +18,13 @@ import javax.persistence.Table;
 @Table(name = "Servicios")
 public class Servicio implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
-    private int id_servicio;  // Cambiado a int y renombrado como en el esquema
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id_servicio;
 
     private String descripcion;
     private Double costo;
-    
-    
+
     public Servicio() {
     }
 
@@ -40,7 +40,6 @@ public class Servicio implements Serializable {
     }
 
     // Getters y Setters
-
     public int getId_servicio() {
         return id_servicio;
     }
@@ -65,8 +64,6 @@ public class Servicio implements Serializable {
         this.costo = costo;
     }
 
-    
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -88,4 +85,3 @@ public class Servicio implements Serializable {
         return "Dominio.Servicio[ id_servicio=" + id_servicio + " ]";
     }
 }
-

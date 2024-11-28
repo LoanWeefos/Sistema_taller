@@ -33,7 +33,7 @@ public class ClienteVista extends javax.swing.JFrame {
      */
     public ClienteVista() {
         initComponents();
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
         cargarDatosClientes();
@@ -288,9 +288,7 @@ public class ClienteVista extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bienvenido a Talleres Osman!");
         setBackground(new java.awt.Color(248, 242, 206));
-        setMaximumSize(new java.awt.Dimension(1530, 850));
         setMinimumSize(new java.awt.Dimension(1530, 850));
-        setPreferredSize(new java.awt.Dimension(1530, 850));
         setResizable(false);
         setSize(new java.awt.Dimension(1530, 850));
 
