@@ -25,7 +25,6 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
     @Override
     public void agregar(Reparacion entity) {
         String sqlReparacion = "INSERT INTO Reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
-        String sqlReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion, Statement.RETURN_GENERATED_KEYS)) {
             stmtReparacion.setString(1, entity.getNombre_empleado());
@@ -36,7 +35,6 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
             if (generatedKeys.next()) {
                 int reparacionId = generatedKeys.getInt(1);
                 entity.setId(reparacionId);
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,7 +45,6 @@ public class ReparacionDAO implements IPersistencia<Reparacion> {
     public void actualizar(Reparacion entity) {
         String sqlReparacion = "UPDATE Reparaciones SET nombre_empleado = ?, placa_vehiculo = ? WHERE id = ?";
         String sqlDeleteReparacionServicio = "DELETE FROM Reparaciones_Servicios WHERE id_reparacion = ?";
-        String sqlInsertReparacionServicio = "INSERT INTO Reparaciones_Servicios (id_reparacion, id_servicio) VALUES (?, ?)";
 
         try (PreparedStatement stmtReparacion = conexion.prepareStatement(sqlReparacion)) {
             stmtReparacion.setString(1, entity.getNombre_empleado());

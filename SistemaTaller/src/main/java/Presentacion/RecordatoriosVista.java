@@ -1,6 +1,9 @@
 package Presentacion;
 
 import Negocio.ControlCorreo;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -21,6 +24,14 @@ public class RecordatoriosVista extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         controlCorreo.enviarCorreos();
+        Timer timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        timer.setRepeats(false); // Asegura que solo se ejecute una vez
+        timer.start();
     }
 
     /**

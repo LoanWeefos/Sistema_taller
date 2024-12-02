@@ -87,18 +87,33 @@ public class ClienteDAO implements IPersistencia<Cliente> {
     }
 
     public void eliminar(String rfc) {
-        String sqlEliminarCliente = "DELETE FROM Clientes WHERE rfc = ?";
+        String sqlCliente = "UPDATE Clientes SET eliminada = 1 WHERE rfc = ?";
 
-        try (PreparedStatement psEliminarCliente = conexion.prepareStatement(sqlEliminarCliente)) {
-            psEliminarCliente.setString(1, rfc);
-            int rowsAffected = psEliminarCliente.executeUpdate(); // Obtén el número de filas afectadas
-            if (rowsAffected > 0) {
-                System.out.println("Cliente eliminado exitosamente: " + rfc);
-            } else {
-                System.out.println("No se encontró ningún cliente con el RFC: " + rfc);
+        try {
+            conexion.setAutoCommit(false);  // Comenzamos una transacción
+
+            // Aquí no necesitas abrir una nueva conexión
+            try (PreparedStatement statement = conexion.prepareStatement(sqlCliente)) {
+                statement.setString(1, rfc);
+
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("Cliente eliminado exitosamente: " + rfc);
+                } else {
+                    System.out.println("No se encontró ningún cliente con el RFC: " + rfc);
+                }
+            } catch (SQLException e) {
+                conexion.rollback();  // Revertimos la transacción en caso de error
+                throw e;
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Manejo de errores
+            e.printStackTrace();
+        } finally {
+            try {
+                conexion.setAutoCommit(true);  // Restauramos el comportamiento por defecto
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -146,6 +161,7 @@ public class ClienteDAO implements IPersistencia<Cliente> {
                 cliente.setCorreo(rsCliente.getString("correo"));
                 cliente.setFechaNacimiento(rsCliente.getDate("fecha_nacimiento"));
                 cliente.setTelefono(rsCliente.getString("telefono"));
+                cliente.setEliminada(rsCliente.getBoolean("eliminada"));
                 // Recuperar domicilio
                 Domicilio domicilio = new Domicilio();
                 domicilio.setCalle(rsCliente.getString("calle"));

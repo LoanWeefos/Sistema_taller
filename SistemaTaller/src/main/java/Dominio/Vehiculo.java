@@ -20,6 +20,7 @@ public class Vehiculo implements Serializable {
     private String marca;
     private String modelo;
     private String color;
+    private Boolean eliminada = false;
 
     @ManyToOne
     @JoinColumn(name = "rfc_cliente", nullable = false) // Relación con Cliente
@@ -34,6 +35,15 @@ public class Vehiculo implements Serializable {
         this.modelo = modelo;
         this.color = color;
         this.cliente = cliente;
+    }
+    
+    public Vehiculo(String placa, String marca, String modelo, String color, Cliente cliente, Boolean eliminada) {
+        this.placa = placa;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.color = color;
+        this.cliente = cliente;
+        this.eliminada = eliminada;
     }
 
     // Getters y setters
@@ -77,6 +87,14 @@ public class Vehiculo implements Serializable {
         this.cliente = cliente;
     }
 
+    public Boolean getEliminada() {
+        return eliminada;
+    }
+
+    public void setEliminada(Boolean eliminada) {
+        this.eliminada = eliminada;
+    } 
+
     @Override
     public int hashCode() {
         return placa != null ? placa.hashCode() : 0; // Hash por placa
@@ -93,7 +111,7 @@ public class Vehiculo implements Serializable {
 
     @Override
     public String toString() {
-        return "Dominio.Vehiculo[ placa=" + placa + ", marca=" + marca + " ]"; // Representación
+        return placa; // Representación
     }
 }
 

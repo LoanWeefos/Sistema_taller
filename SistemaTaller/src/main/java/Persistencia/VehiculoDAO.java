@@ -87,7 +87,8 @@ public class VehiculoDAO {
                     resultSet.getString("marca"),
                     resultSet.getString("modelo"),
                     resultSet.getString("color"),
-                    cliente // Asocia el cliente recuperado
+                    cliente, // Asocia el cliente recuperado
+                    resultSet.getBoolean("eliminada")
                 );
 
                 vehiculos.add(vehiculo);
@@ -126,7 +127,7 @@ public class VehiculoDAO {
 
     // Método para eliminar un vehículo
     public void eliminar(String placa) {
-        String sql = "DELETE FROM Vehiculos WHERE placa = ?";
+        String sql = "UPDATE Vehiculos SET eliminada = 1 WHERE placa = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, placa);
             statement.executeUpdate();

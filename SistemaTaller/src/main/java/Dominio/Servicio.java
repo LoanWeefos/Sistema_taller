@@ -82,6 +82,6 @@ public class Servicio implements Serializable {
 
     @Override
     public String toString() {
-        return "Dominio.Servicio[ id_servicio=" + id_servicio + " ]";
+        return descripcion;
     }
 }

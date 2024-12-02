@@ -69,7 +69,9 @@ public class VehiculoVista extends javax.swing.JFrame {
         cmbRFC.removeAllItems();
 
         for (Cliente cliente : listaClientes) {
-            cmbRFC.addItem(cliente.getRfc());
+            if (!cliente.getEliminada()) {
+                cmbRFC.addItem(cliente.getRfc());
+            }
         }
     }
 
@@ -178,15 +180,17 @@ public class VehiculoVista extends javax.swing.JFrame {
 
         try {
             // Usa la conexión existente
-            String consultaSQL = "SELECT Placa, rfc_cliente FROM vehiculos";
+            String consultaSQL = "SELECT Placa, rfc_cliente, Eliminada FROM vehiculos";
             PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
             ResultSet rs = ps.executeQuery();
 
             // Agrega cada fila de la base de datos al modelo de la tabla
             while (rs.next()) {
-                String placa = rs.getString("Placa");
-                String rfc = rs.getString("rfc_cliente");
-                modeloTabla.addRow(new Object[]{placa, rfc});
+                if (!rs.getBoolean("Eliminada")) {
+                    String placa = rs.getString("Placa");
+                    String rfc = rs.getString("rfc_cliente");
+                    modeloTabla.addRow(new Object[]{placa, rfc});
+                }
             }
 
             // Cierra el ResultSet y el PreparedStatement
@@ -246,41 +250,40 @@ public class VehiculoVista extends javax.swing.JFrame {
     }
 
     private void eliminarVehiculo() {
-    // Obtener la fila seleccionada en la tabla
-    int filaSeleccionada = tblVehiculos.getSelectedRow();
+        // Obtener la fila seleccionada en la tabla
+        int filaSeleccionada = tblVehiculos.getSelectedRow();
 
-    if (filaSeleccionada == -1) {
-        JOptionPane.showMessageDialog(this, "Por favor, selecciona un vehículo de la tabla.");
-        return; // Salir del método si no hay fila seleccionada
-    }
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un vehículo de la tabla.");
+            return; // Salir del método si no hay fila seleccionada
+        }
 
-    // Obtener la placa del vehículo seleccionado 
-    String placa = tblVehiculos.getValueAt(filaSeleccionada, 0).toString();
+        // Obtener la placa del vehículo seleccionado 
+        String placa = tblVehiculos.getValueAt(filaSeleccionada, 0).toString();
 
-    // Mostrar un JOptionPane de confirmación
-    int confirmacion = JOptionPane.showConfirmDialog(this,
-            "¿Estás seguro de que deseas eliminar el vehículo con placa: " + placa + "?",
-            "Confirmar Eliminación",
-            JOptionPane.YES_NO_OPTION);
+        // Mostrar un JOptionPane de confirmación
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de que deseas eliminar el vehículo con placa: " + placa + "?",
+                "Confirmar Eliminación",
+                JOptionPane.YES_NO_OPTION);
 
-    if (confirmacion == JOptionPane.YES_OPTION) {
-        try {
-            // Llamar al método en ControlVehiculo para eliminar el vehículo
-            controlVehiculo.eliminarVehiculo(placa);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                // Llamar al método en ControlVehiculo para eliminar el vehículo
+                controlVehiculo.eliminarVehiculo(placa);
 
-            // Mensaje de éxito si no hay excepción
-            JOptionPane.showMessageDialog(this, "Vehículo eliminado exitosamente.");
-            limpiarCampos(); // Limpia los campos tras la eliminación
-            cargarDatosVehiculos(); // Actualiza la tabla con los datos más recientes
-        } catch (Exception e) {
-            // Manejo de error en caso de fallo
-            JOptionPane.showMessageDialog(this, "Error al eliminar el vehículo: " + e.getMessage(), 
-                                          "Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println("Error al eliminar el vehículo: " + e.getMessage());
+                // Mensaje de éxito si no hay excepción
+                JOptionPane.showMessageDialog(this, "Vehículo eliminado exitosamente.");
+                limpiarCampos(); // Limpia los campos tras la eliminación
+                cargarDatosVehiculos(); // Actualiza la tabla con los datos más recientes
+            } catch (Exception e) {
+                // Manejo de error en caso de fallo
+                JOptionPane.showMessageDialog(this, "Error al eliminar el vehículo: " + e.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Error al eliminar el vehículo: " + e.getMessage());
+            }
         }
     }
-}
-
 
     public void closeConnection() {
         try {

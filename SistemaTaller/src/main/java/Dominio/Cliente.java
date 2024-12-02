@@ -19,6 +19,7 @@ public class Cliente implements Serializable {
     private String nombre;
     private String correo;
     private String telefono;
+    private Boolean eliminada = false;
 
     @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
@@ -108,6 +109,14 @@ public class Cliente implements Serializable {
 
     public void setVehiculos(List<Vehiculo> vehiculos) {
         this.vehiculos = vehiculos;
+    }
+
+    public Boolean getEliminada() {
+        return eliminada;
+    }
+
+    public void setEliminada(Boolean eliminada) {
+        this.eliminada = eliminada;
     }
 
     @Override

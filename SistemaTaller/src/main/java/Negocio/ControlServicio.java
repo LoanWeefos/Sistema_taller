@@ -72,6 +72,7 @@ public class ControlServicio {
             Servicio servicio = servicioDAO.obtenerPorId(id);
             if (servicio != null) {
                 System.out.println("Servicio encontrado: " + servicio);
+                return servicio;
             } else {
                 System.err.println("El servicio con ID " + id + " no existe.");
             }
@@ -91,6 +92,7 @@ public class ControlServicio {
                 for (Servicio servicio : servicios) {
                     System.out.println(servicio);
                 }
+                return servicios;
             }
         } catch (RuntimeException e) {
             System.err.println("Error al listar los servicios: " + e.getMessage());

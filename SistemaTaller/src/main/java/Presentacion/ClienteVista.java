@@ -11,12 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.ImageIcon;
 import javax.swing.table.DefaultTableModel;
 import Negocio.ControlCliente;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,14 +24,15 @@ import javax.swing.JOptionPane;
 public class ClienteVista extends javax.swing.JFrame {
 
     Connection conexion;
-    private ControlCliente controlCliente = new ControlCliente();
+    private ControlCliente controlCliente;
 
     /**
      * Creates new form MenuView
      */
     public ClienteVista() {
+        this.controlCliente = new ControlCliente();
         initComponents();
-        //setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
         cargarDatosClientes();
@@ -43,7 +42,7 @@ public class ClienteVista extends javax.swing.JFrame {
                 tablaClientesMouseClicked(evt);
             }
         });
-        
+
         txtCalle.setVisible(false);
         txtColonia.setVisible(false);
         txtCorreo.setVisible(false);
@@ -52,7 +51,7 @@ public class ClienteVista extends javax.swing.JFrame {
         txtNumero.setVisible(false);
         txtRFC.setVisible(false);
         txtTelefono.setVisible(false);
-        
+
         jLabel3.setVisible(false);
         jLabel4.setVisible(false);
         jLabel5.setVisible(false);
@@ -61,7 +60,7 @@ public class ClienteVista extends javax.swing.JFrame {
         jLabel8.setVisible(false);
         jLabel9.setVisible(false);
         jLabel10.setVisible(false);
-        
+
     }
 
     private void cargarDatosClientes() {
@@ -70,15 +69,17 @@ public class ClienteVista extends javax.swing.JFrame {
 
         try {
             // Usa la conexión existente
-            String consultaSQL = "SELECT Nombre, RFC FROM clientes";
+            String consultaSQL = "SELECT Nombre, RFC, Eliminada FROM clientes";
             PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
             ResultSet rs = ps.executeQuery();
 
             // Agrega cada fila de la base de datos al modelo de la tabla
             while (rs.next()) {
-                String nombre = rs.getString("Nombre");
-                String rfc = rs.getString("RFC");
-                modeloTabla.addRow(new Object[]{nombre, rfc});
+                if (!rs.getBoolean("Eliminada")) {
+                    String nombre = rs.getString("Nombre");
+                    String rfc = rs.getString("RFC");
+                    modeloTabla.addRow(new Object[]{nombre, rfc});
+                }
             }
 
             // Cierra el ResultSet y el PreparedStatement
@@ -185,6 +186,12 @@ public class ClienteVista extends javax.swing.JFrame {
     }
 
     private void editarCliente() {
+        int filaSeleccionada = tblClientes.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un cliente de la tabla.");
+            return; // Salir del método si no hay fila seleccionada
+        }
         String rfc = txtRFC.getText();
         String nombre = txtNombre.getText();
         String correo = txtCorreo.getText();
@@ -573,8 +580,8 @@ public class ClienteVista extends javax.swing.JFrame {
 
     private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
         // TODO add your handling code here:
-         // TODO add your handling code here:
-         char c = evt.getKeyChar();
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
 
         if ((c < '0' || c > '9')) {
             evt.consume();
@@ -600,7 +607,7 @@ public class ClienteVista extends javax.swing.JFrame {
         txtNumero.setVisible(true);
         txtRFC.setVisible(true);
         txtTelefono.setVisible(true);
-        
+
         jLabel3.setVisible(true);
         jLabel4.setVisible(true);
         jLabel5.setVisible(true);
@@ -609,7 +616,7 @@ public class ClienteVista extends javax.swing.JFrame {
         jLabel8.setVisible(true);
         jLabel9.setVisible(true);
         jLabel10.setVisible(true);
-        
+
     }//GEN-LAST:event_jLabel2MouseClicked
 
     /**

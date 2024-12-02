@@ -5,21 +5,32 @@
 package Presentacion;
 
 import Dominio.Cliente;
-import Dominio.Domicilio;
+import Dominio.Reparacion;
+import Dominio.ReparacionServicio;
+import Dominio.Servicio;
 import Dominio.Vehiculo;
 import Negocio.ControlCliente;
+import Negocio.ControlReparacion;
+import Negocio.ControlReparacionServicio;
+import Negocio.ControlServicio;
 import Persistencia.Conexion;
 import java.awt.event.MouseAdapter;
 import Negocio.ControlVehiculo;
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -28,8 +39,12 @@ import javax.swing.table.DefaultTableModel;
 public class ReparacionesVista extends javax.swing.JFrame {
 
     Connection conexion;
+    private ControlServicio controlServicio = new ControlServicio();
     private ControlVehiculo controlVehiculo = new ControlVehiculo();
     private ControlCliente controlCliente = new ControlCliente();
+    private ControlReparacionServicio controlReparacionServicio = new ControlReparacionServicio();
+    private ControlReparacion controlReparacion = new ControlReparacion();
+    private List<Servicio> serviciosReparacion = new ArrayList<>();
 
     /**
      * Creates new form VehiculoVista
@@ -40,9 +55,9 @@ public class ReparacionesVista extends javax.swing.JFrame {
 
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
-        cargarDatosVehiculos();
-        cargarRFCClientes();
-        tblVehiculos.addMouseListener(new MouseAdapter() {
+        cargarReparaciones();
+        cargarListas();
+        tblReparaciones.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 tablaVehiculosMouseClicked(evt);
@@ -50,108 +65,50 @@ public class ReparacionesVista extends javax.swing.JFrame {
 
         });
 
-        txtColor.setVisible(false);
-        txtModelo.setVisible(false);
+        txtEmpleado.setVisible(false);
+        txtServicios.setVisible(false);
         cmbServicios.setVisible(false);
         cmbPlaca.setVisible(false);
 
         jLabel2.setVisible(false);
         jLabel4.setVisible(false);
         jLabel6.setVisible(false);
-        lblFecha.setVisible(false);
-        txtAnio.setVisible(false);
-        
-        btnAgregar.setVisible(false);
+
+        btnAgregarServicio.setVisible(false);
     }
 
-    private void cargarRFCClientes() {
-        List<Cliente> listaClientes = controlCliente.obtenerTodosLosClientes();
+    private void cargarListas() {
+        List<Servicio> listarServicios = controlServicio.listarServicios();
         cmbServicios.removeAllItems();
 
-        for (Cliente cliente : listaClientes) {
-            cmbServicios.addItem(cliente.getRfc());
-        }
-    }
-
-    private void registrarVehiculo() {
-        String rfc = (String) cmbServicios.getSelectedItem();
-        String modelo = txtModelo.getText();
-        String color = txtColor.getText();
-
-        // Validación básica de campos vacíos
-        if (rfc.isEmpty() || modelo.isEmpty() || color.isEmpty()) {
-
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
-            return;
+        for (Servicio servicio : listarServicios) {
+            cmbServicios.addItem(servicio);
         }
 
-        // Verificar si la placa ya está registrada
-//        if (existeVehiculoConPlaca(placa)) {
-//            JOptionPane.showMessageDialog(this, "Ya existe un vehículo registrado con la misma placa.");
-//            return;
-//        }
+        List<Vehiculo> listarPlacas = controlVehiculo.obtenerTodosLosVehiculos();
+        cmbPlaca.removeAllItems();
 
-        // Validar si el RFC del cliente existe
-        Cliente clienteEncontrado = buscarClientePorRfc(rfc);
-        if (clienteEncontrado == null) {
-            System.out.println("Cliente no encontrado con el RFC especificado.");
-            JOptionPane.showMessageDialog(this, "Cliente no encontrado con el RFC especificado.");
-            return;
-        }
-
-        // Crear el objeto Vehiculo y asignar el cliente encontrado
-//        Vehiculo vehiculo = new Vehiculo(placa, color, marca, modelo, clienteEncontrado);
-
-        try {
-            // Intentar agregar el vehículo
-//            controlVehiculo.agregarVehiculo(vehiculo);
-
-            // Mensaje de éxito si no hay excepción
-            System.out.println("Vehículo registrado exitosamente.");
-            JOptionPane.showMessageDialog(this, "Vehículo registrado exitosamente.");
-            limpiarCampos(); // Limpia los campos tras la inserción
-            cargarDatosVehiculos(); // Actualiza la tabla con los nuevos datos
-        } catch (Exception e) {
-            // Manejo de error en caso de fallo
-            System.out.println("Error al registrar el vehículo: " + e.getMessage());
-        }
-    }
-
-// Método auxiliar para buscar un cliente por RFC
-    private Cliente buscarClientePorRfc(String rfc) {
-        List<Cliente> listaClientes = controlCliente.obtenerTodosLosClientes();
-        for (Cliente cliente : listaClientes) {
-            if (cliente.getRfc().equalsIgnoreCase(rfc)) {
-                return cliente; // Cliente encontrado
+        for (Vehiculo vehiculo : listarPlacas) {
+            if (!vehiculo.getEliminada()) {
+                cmbPlaca.addItem(vehiculo);
             }
-        }
-        return null; // Cliente no encontrado
-    }
-
-// Método auxiliar para verificar si existe un vehículo con la misma placa
-    private boolean existeVehiculoConPlaca(String placa) {
-        try {
-            Vehiculo vehiculo = controlVehiculo.obtenerVehiculoPorPlaca(placa);
-            return vehiculo != null; // Si el vehículo existe, devuelve true
-        } catch (IllegalArgumentException e) {
-            return false; // Si lanza excepción, el vehículo no existe
         }
     }
 
     private void tablaVehiculosMouseClicked(MouseEvent evt) {
 
-        int filaSeleccionada = tblVehiculos.getSelectedRow();
+        int filaSeleccionada = tblReparaciones.getSelectedRow();
         if (filaSeleccionada >= 0) {
-            String placa = tblVehiculos.getValueAt(filaSeleccionada, 0).toString(); // Asumiendo que el RFC está en la segunda columna
+            String placa = tblReparaciones.getValueAt(filaSeleccionada, 0).toString(); // Asumiendo que el RFC está en la segunda columna
             Vehiculo vehiculo = controlVehiculo.obtenerVehiculoPorPlaca(placa); // Método que debes implementar
 
             if (vehiculo != null) {
                 cmbServicios.setSelectedItem(vehiculo.getCliente().getRfc());
-                txtModelo.setText(vehiculo.getModelo());
-                txtColor.setText(vehiculo.getColor());
+                txtServicios.setText(vehiculo.getModelo());
+                txtEmpleado.setText(vehiculo.getColor());
 
-                txtColor.setVisible(true);
-                txtModelo.setVisible(true);
+                txtEmpleado.setVisible(true);
+                txtServicios.setVisible(true);
                 cmbServicios.setVisible(true);
 
                 jLabel2.setVisible(true);
@@ -164,34 +121,71 @@ public class ReparacionesVista extends javax.swing.JFrame {
         }
     }
 
-    private void cargarDatosVehiculos() {
-        // Modelo de la tabla con columnas Nombre y RFC
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Placa", "RFC"}, 0);
+    private void cargarReparaciones() {
+        // Crear el modelo de la tabla con las columnas adecuadas
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Id", "Placa", "Descripción"}, 0);
+        String descripcion = "";
 
         try {
-            // Usa la conexión existente
-            String consultaSQL = "SELECT Placa, rfc_cliente FROM vehiculos";
-            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
+            // Consulta SQL para obtener las reparaciones activas
+            String consultaSQL = "SELECT id, placa_vehiculo FROM reparaciones";
+            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL);
             ResultSet rs = ps.executeQuery();
 
-            // Agrega cada fila de la base de datos al modelo de la tabla
+            // Recorrer los resultados y agregarlos al modelo de la tabla
             while (rs.next()) {
-                String placa = rs.getString("Placa");
-                String rfc = rs.getString("rfc_cliente");
-                modeloTabla.addRow(new Object[]{placa, rfc});
+                int id = rs.getInt("id");
+                String placa = rs.getString("placa_vehiculo");
+
+                for (ReparacionServicio reparacionServicio : controlReparacionServicio.obtenerTodasLasReparacionesServicios()) {
+                    if (id == reparacionServicio.getReparacion().getId()) {
+                        Servicio temp = controlServicio.obtenerServicioPorId(reparacionServicio.getServicio().getId_servicio());
+                        if (!descripcion.equals("")) {
+                            descripcion = descripcion + ", " + temp.getDescripcion();
+                        } else {
+                            descripcion = temp.getDescripcion();
+                        }
+                    }
+                }
+
+                // Agregar la fila al modelo
+                modeloTabla.addRow(new Object[]{id, placa, descripcion});
+                descripcion = "";
             }
 
-            // Cierra el ResultSet y el PreparedStatement
+            // Cerrar recursos
             rs.close();
             ps.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error al cargar los datos de vehiculos");
+            System.out.println("Error al cargar los datos de reparaciones");
         }
 
-        // Asigna el modelo a la tabla
-        tblVehiculos.setModel(modeloTabla);
+        // Asignar el modelo a la tabla
+        tblReparaciones.setModel(modeloTabla);
+
+        TableColumnModel columnModel = tblReparaciones.getColumnModel();
+
+        for (int col = 0; col < tblReparaciones.getColumnCount(); col++) {
+            int maxWidth = 0;
+
+            // Obtener ancho del encabezado
+            TableColumn column = columnModel.getColumn(col);
+            TableCellRenderer headerRenderer = tblReparaciones.getTableHeader().getDefaultRenderer();
+            Component headerComp = headerRenderer.getTableCellRendererComponent(
+                    tblReparaciones, column.getHeaderValue(), false, false, 0, col);
+            maxWidth = headerComp.getPreferredSize().width;
+
+            // Obtener ancho del contenido de las celdas
+            for (int row = 0; row < tblReparaciones.getRowCount(); row++) {
+                TableCellRenderer cellRenderer = tblReparaciones.getCellRenderer(row, col);
+                Component comp = tblReparaciones.prepareRenderer(cellRenderer, row, col);
+                maxWidth = Math.max(comp.getPreferredSize().width, maxWidth);
+            }
+
+            // Ajustar el ancho de la columna
+            column.setPreferredWidth(maxWidth + 10); // Agregar un margen
+        }
     }
 
     public void closeConnection() {
@@ -205,8 +199,54 @@ public class ReparacionesVista extends javax.swing.JFrame {
     }
 
     private void limpiarCampos() {
-        txtModelo.setText("");
-        txtColor.setText("");
+        txtServicios.setText("");
+        txtEmpleado.setText("");
+        cargarListas();
+    }
+
+    private void agregarServiciosLista() {
+        Servicio servicio = (Servicio) cmbServicios.getSelectedItem();
+        if (txtServicios.getText().equals("")) {
+            txtServicios.setText(servicio.getDescripcion());
+            serviciosReparacion.add(servicio);
+        } else {
+            txtServicios.setText(txtServicios.getText() + ", " + servicio.getDescripcion());
+            serviciosReparacion.add(servicio);
+        }
+        cmbServicios.removeItem(servicio);
+    }
+
+    private void agregarReparacion() {
+        int nuevoId = -1;
+        Reparacion reparacion = new Reparacion(txtEmpleado.getText(), (Vehiculo) cmbPlaca.getSelectedItem());
+        try {
+            String sql = "INSERT INTO reparaciones (nombre_empleado, placa_vehiculo) VALUES (?, ?)";
+            PreparedStatement stmt = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, reparacion.getNombre_empleado());
+            stmt.setString(2, reparacion.getVehiculo().getPlaca());
+            stmt.executeUpdate();
+
+            // Obtener el ID generado
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                nuevoId = rs.getInt(1); // El ID generado
+            }
+
+            if (nuevoId <= 0) {
+                System.err.println("Error al agregar la reparación.");
+            }
+
+            // Actualizar el objeto Reparación con el nuevo ID
+            reparacion.setId(nuevoId);
+
+            // Agregar servicios relacionados con la reparación
+            for (Servicio servicio : serviciosReparacion) {
+                controlReparacionServicio.agregarReparacionServicio(new ReparacionServicio(reparacion, servicio));
+            }
+            System.out.println("Reparación agregada con ID: " + nuevoId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -222,19 +262,17 @@ public class ReparacionesVista extends javax.swing.JFrame {
         lblTitulo = new javax.swing.JLabel();
         btnRegresar1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblVehiculos = new javax.swing.JTable();
+        tblReparaciones = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
-        txtModelo = new javax.swing.JTextField();
-        txtColor = new javax.swing.JTextField();
+        txtServicios = new javax.swing.JTextField();
+        txtEmpleado = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        btnAgregar = new javax.swing.JButton();
+        btnAgregarServicio = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         cmbServicios = new javax.swing.JComboBox<>();
-        jButton3 = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
         cmbPlaca = new javax.swing.JComboBox<>();
-        txtAnio = new com.toedter.calendar.JDateChooser();
-        lblFecha = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -259,37 +297,46 @@ public class ReparacionesVista extends javax.swing.JFrame {
         jPanel1.add(btnRegresar1);
         btnRegresar1.setBounds(1270, 20, 70, 70);
 
-        tblVehiculos.setBackground(new java.awt.Color(216, 217, 137));
-        tblVehiculos.setModel(new javax.swing.table.DefaultTableModel(
+        tblReparaciones.setBackground(new java.awt.Color(216, 217, 137));
+        tblReparaciones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Placa", "Cliente"
+                "Id", "Placa", "Descripción"
             }
-        ));
-        jScrollPane1.setViewportView(tblVehiculos);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblReparaciones.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jScrollPane1.setViewportView(tblReparaciones);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(50, 124, 319, 500);
+        jScrollPane1.setBounds(50, 124, 520, 500);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Servicios.png"))); // NOI18N
         jPanel1.add(jLabel2);
         jLabel2.setBounds(640, 180, 160, 31);
 
-        txtModelo.setEnabled(false);
-        txtModelo.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtServicios.setEnabled(false);
+        txtServicios.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtModeloKeyTyped(evt);
+                txtServiciosKeyTyped(evt);
             }
         });
-        jPanel1.add(txtModelo);
-        txtModelo.setBounds(640, 240, 700, 48);
-        jPanel1.add(txtColor);
-        txtColor.setBounds(640, 320, 700, 48);
+        jPanel1.add(txtServicios);
+        txtServicios.setBounds(640, 240, 700, 48);
+        jPanel1.add(txtEmpleado);
+        txtEmpleado.setBounds(640, 320, 700, 48);
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Empleado.png"))); // NOI18N
         jPanel1.add(jLabel6);
@@ -297,19 +344,19 @@ public class ReparacionesVista extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Placa.png"))); // NOI18N
         jPanel1.add(jLabel4);
-        jLabel4.setBounds(640, 590, 94, 31);
+        jLabel4.setBounds(640, 480, 94, 31);
 
-        btnAgregar.setBackground(new java.awt.Color(248, 242, 206));
-        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Agregar1.png"))); // NOI18N
-        btnAgregar.setBorderPainted(false);
-        btnAgregar.setContentAreaFilled(false);
-        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarServicio.setBackground(new java.awt.Color(248, 242, 206));
+        btnAgregarServicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Agregar1.png"))); // NOI18N
+        btnAgregarServicio.setBorderPainted(false);
+        btnAgregarServicio.setContentAreaFilled(false);
+        btnAgregarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarActionPerformed(evt);
+                btnAgregarServicioActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAgregar);
-        btnAgregar.setBounds(1040, 120, 300, 69);
+        jPanel1.add(btnAgregarServicio);
+        btnAgregarServicio.setBounds(1040, 120, 300, 69);
 
         jLabel1.setBackground(new java.awt.Color(248, 242, 206));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/NuevaReparacion.png"))); // NOI18N
@@ -321,36 +368,23 @@ public class ReparacionesVista extends javax.swing.JFrame {
         jPanel1.add(jLabel1);
         jLabel1.setBounds(710, 20, 548, 70);
 
-        cmbServicios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbServicios.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbServiciosActionPerformed(evt);
-            }
-        });
         jPanel1.add(cmbServicios);
         cmbServicios.setBounds(640, 120, 340, 40);
 
-        jButton3.setBackground(new java.awt.Color(248, 242, 206));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Agregar2.png"))); // NOI18N
-        jButton3.setBorderPainted(false);
-        jButton3.setContentAreaFilled(false);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar.setBackground(new java.awt.Color(248, 242, 206));
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Agregar2.png"))); // NOI18N
+        btnAgregar.setBorderPainted(false);
+        btnAgregar.setContentAreaFilled(false);
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAgregarActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3);
-        jButton3.setBounds(1060, 540, 280, 69);
+        jPanel1.add(btnAgregar);
+        btnAgregar.setBounds(1060, 540, 280, 69);
 
-        cmbPlaca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel1.add(cmbPlaca);
-        cmbPlaca.setBounds(640, 540, 340, 40);
-        jPanel1.add(txtAnio);
-        txtAnio.setBounds(640, 440, 340, 40);
-
-        lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesReparaciones/Fecha.png"))); // NOI18N
-        jPanel1.add(lblFecha);
-        lblFecha.setBounds(640, 490, 100, 31);
+        cmbPlaca.setBounds(640, 430, 340, 40);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
         jPanel1.add(jLabel11);
@@ -371,14 +405,13 @@ public class ReparacionesVista extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        // TODO add your handling code here:
-        this.registrarVehiculo();
-    }//GEN-LAST:event_btnAgregarActionPerformed
+    private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
+        agregarServiciosLista();
+    }//GEN-LAST:event_btnAgregarServicioActionPerformed
 
-    private void txtModeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloKeyTyped
+    private void txtServiciosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtServiciosKeyTyped
 
-    }//GEN-LAST:event_txtModeloKeyTyped
+    }//GEN-LAST:event_txtServiciosKeyTyped
 
     private void btnRegresar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresar1MouseClicked
         MenuVista clienteVista = new MenuVista();
@@ -387,27 +420,23 @@ public class ReparacionesVista extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresar1MouseClicked
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        txtColor.setVisible(true);
-        txtModelo.setVisible(true);
+        txtEmpleado.setVisible(true);
+        txtServicios.setVisible(true);
         cmbServicios.setVisible(true);
         cmbPlaca.setVisible(true);
 
         jLabel2.setVisible(true);
         jLabel4.setVisible(true);
         jLabel6.setVisible(true);
-        lblFecha.setVisible(true);
-        txtAnio.setVisible(true);
-        
-        btnAgregar.setVisible(true);
+
+        btnAgregarServicio.setVisible(true);
     }//GEN-LAST:event_jLabel1MouseClicked
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void cmbServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbServiciosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbServiciosActionPerformed
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        agregarReparacion();
+        serviciosReparacion.removeAll(serviciosReparacion);
+        limpiarCampos();
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -447,10 +476,10 @@ public class ReparacionesVista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnAgregarServicio;
     private javax.swing.JLabel btnRegresar1;
-    private javax.swing.JComboBox<String> cmbPlaca;
-    private javax.swing.JComboBox<String> cmbServicios;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox<Vehiculo> cmbPlaca;
+    private javax.swing.JComboBox<Servicio> cmbServicios;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -458,12 +487,10 @@ public class ReparacionesVista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblTitulo;
-    private javax.swing.JTable tblVehiculos;
-    private com.toedter.calendar.JDateChooser txtAnio;
-    private javax.swing.JTextField txtColor;
-    private javax.swing.JTextField txtModelo;
+    private javax.swing.JTable tblReparaciones;
+    private javax.swing.JTextField txtEmpleado;
+    private javax.swing.JTextField txtServicios;
     // End of variables declaration//GEN-END:variables
 
 }
