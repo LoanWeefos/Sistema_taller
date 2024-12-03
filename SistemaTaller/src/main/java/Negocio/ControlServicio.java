@@ -33,18 +33,18 @@ public class ControlServicio {
     }
 
     // Método para actualizar un servicio existente
-    public void actualizarServicio(int id, String descripcion, double costo) {
+    public void actualizarServicio(Servicio servicioP) {
         try {
-            Servicio servicio = servicioDAO.obtenerPorId(id);
+            Servicio servicio = servicioDAO.obtenerPorId(servicioP.getId_servicio());
             if (servicio != null) {
-                servicio.setDescripcion(descripcion);
-                servicio.setCosto(costo);
+                servicio.setDescripcion(servicioP.getDescripcion());
+                servicio.setCosto(servicioP.getCosto());
                 
 
                 servicioDAO.actualizar(servicio);
                 System.out.println("Servicio actualizado correctamente.");
             } else {
-                System.err.println("El servicio con ID " + id + " no existe.");
+                System.err.println("El servicio con ID " + servicioP.getId_servicio() + " no existe.");
             }
         } catch (RuntimeException e) {
             System.err.println("Error al actualizar el servicio: " + e.getMessage());
