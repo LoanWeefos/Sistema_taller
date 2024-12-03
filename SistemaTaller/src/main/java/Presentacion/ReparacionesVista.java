@@ -78,20 +78,30 @@ public class ReparacionesVista extends javax.swing.JFrame {
     }
 
     private void cargarListas() {
+        // Obtener lista de servicios
         List<Servicio> listarServicios = controlServicio.listarServicios();
         cmbServicios.removeAllItems();
 
-        for (Servicio servicio : listarServicios) {
-            cmbServicios.addItem(servicio);
+        if (listarServicios != null && !listarServicios.isEmpty()) {
+            for (Servicio servicio : listarServicios) {
+                cmbServicios.addItem(servicio);
+            }
+        } else {
+            System.out.println("No se encontraron servicios para cargar.");
         }
 
+        // Obtener lista de vehículos
         List<Vehiculo> listarPlacas = controlVehiculo.obtenerTodosLosVehiculos();
         cmbPlaca.removeAllItems();
 
-        for (Vehiculo vehiculo : listarPlacas) {
-            if (!vehiculo.getEliminada()) {
-                cmbPlaca.addItem(vehiculo);
+        if (listarPlacas != null && !listarPlacas.isEmpty()) {
+            for (Vehiculo vehiculo : listarPlacas) {
+                if (!vehiculo.getEliminada()) {
+                    cmbPlaca.addItem(vehiculo);
+                }
             }
+        } else {
+            System.out.println("No se encontraron vehículos para cargar.");
         }
     }
 
@@ -243,7 +253,11 @@ public class ReparacionesVista extends javax.swing.JFrame {
             for (Servicio servicio : serviciosReparacion) {
                 controlReparacionServicio.agregarReparacionServicio(new ReparacionServicio(reparacion, servicio));
             }
+
             System.out.println("Reparación agregada con ID: " + nuevoId);
+
+            // Llamar a cargarReparaciones() para actualizar la tabla
+            cargarReparaciones();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -434,6 +448,7 @@ public class ReparacionesVista extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         agregarReparacion();
+        JOptionPane.showMessageDialog(this, "Reparacion registrada exitosamente");
         serviciosReparacion.removeAll(serviciosReparacion);
         limpiarCampos();
     }//GEN-LAST:event_btnAgregarActionPerformed

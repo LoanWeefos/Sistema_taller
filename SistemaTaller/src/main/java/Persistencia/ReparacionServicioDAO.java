@@ -3,19 +3,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Persistencia;
+
 import Dominio.Reparacion;
 import Dominio.ReparacionServicio;
 import Dominio.Servicio;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author Oscar
  */
 public class ReparacionServicioDAO {
-    
- private Connection conexion;
+
+    private Connection conexion;
 
     public ReparacionServicioDAO(Connection conexion) {
         this.conexion = conexion;
@@ -97,8 +99,7 @@ public class ReparacionServicioDAO {
         String sql = "SELECT * FROM Reparaciones_Servicios";
         List<ReparacionServicio> reparacionesServicios = new ArrayList<>();
 
-        try (Statement stmt = conexion.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Statement stmt = conexion.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 ReparacionServicio reparacionServicio = new ReparacionServicio();
@@ -120,4 +121,35 @@ public class ReparacionServicioDAO {
 
         return reparacionesServicios;
     }
+
+    public List<ReparacionServicio> obtenerPorIdReparacion(long idReparacion) {
+        String sql = "SELECT * FROM Reparaciones_Servicios WHERE id_reparacion = ?";
+        List<ReparacionServicio> reparacionesServicios = new ArrayList<>();
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setLong(1, idReparacion); // Cambia setInt a setLong
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ReparacionServicio reparacionServicio = new ReparacionServicio();
+                    reparacionServicio.setId_repserv(rs.getInt("id_repserv"));
+
+                    Reparacion reparacion = new Reparacion();
+                    reparacion.setId(rs.getLong("id_reparacion")); // Ajusta a long si es necesario
+                    reparacionServicio.setReparacion(reparacion);
+
+                    Servicio servicio = new Servicio();
+                    servicio.setId_servicio(rs.getInt("id_servicio"));
+                    reparacionServicio.setServicio(servicio);
+
+                    reparacionesServicios.add(reparacionServicio);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reparacionesServicios;
+    }
+
 }

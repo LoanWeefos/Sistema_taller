@@ -4,11 +4,13 @@
  */
 package Negocio;
 
+import Dominio.Reparacion;
 import Dominio.ReparacionServicio;
 import Dominio.Servicio;
 import Persistencia.Conexion;
 import Persistencia.ServicioDAO;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +18,8 @@ import java.util.List;
  * @author Oscar
  */
 public class ControlServicio {
-     private ServicioDAO servicioDAO;
+
+    private ServicioDAO servicioDAO;
 
     public ControlServicio() {
         this.servicioDAO = new ServicioDAO(Conexion.getConnection());
@@ -39,7 +42,6 @@ public class ControlServicio {
             if (servicio != null) {
                 servicio.setDescripcion(servicioP.getDescripcion());
                 servicio.setCosto(servicioP.getCosto());
-                
 
                 servicioDAO.actualizar(servicio);
                 System.out.println("Servicio actualizado correctamente.");
@@ -83,20 +85,44 @@ public class ControlServicio {
     }
 
     // Método para listar todos los servicios
+    // Método para listar todos los servicios
     public List<Servicio> listarServicios() {
+        List<Servicio> servicios = new ArrayList<>(); // Inicializar con una lista vacía
         try {
-            List<Servicio> servicios = servicioDAO.obtenerTodos();
+            servicios = servicioDAO.obtenerTodos();
             if (servicios.isEmpty()) {
                 System.out.println("No hay servicios registrados.");
             } else {
                 for (Servicio servicio : servicios) {
                     System.out.println(servicio);
                 }
-                return servicios;
             }
         } catch (RuntimeException e) {
             System.err.println("Error al listar los servicios: " + e.getMessage());
         }
-        return null;
+        return servicios; // Devolver lista (vacía o con datos)
     }
+
+    public ServicioInfo obtenerServiciosPorPlaca(String placa) {
+        // Llamar al método del DAO para obtener los servicios asociados a la placa
+        List<Servicio> servicios = servicioDAO.obtenerServiciosPorPlaca(placa);
+
+        if (servicios != null && !servicios.isEmpty()) {
+            StringBuilder descripcionServicios = new StringBuilder();
+            double totalCosto = 0;
+
+            // Concatenar la descripción de los servicios y calcular el costo total
+            for (Servicio servicio : servicios) {
+                descripcionServicios.append(servicio.getDescripcion()).append("\n");
+                totalCosto += servicio.getCosto();
+            }
+
+            // Crear y devolver un objeto ServicioInfo que contiene la descripción y el costo total
+            return new ServicioInfo(descripcionServicios.toString(), totalCosto);
+        } else {
+            // Si no hay servicios, devolver un objeto ServicioInfo vacío
+            return new ServicioInfo("", 0);
+        }
+    }
+
 }

@@ -7,11 +7,18 @@ package Presentacion;
 import Dominio.Cliente;
 import Dominio.Pago;
 import Dominio.Reparacion;
+import Dominio.ReparacionServicio;
+import Dominio.Servicio;
 import Dominio.Vehiculo;
 import Negocio.ControlPago;
 import Negocio.ControlReparacion;
+import Negocio.ControlReparacionServicio;
+import Negocio.ControlServicio;
 import Negocio.ControlVehiculo;
+import Negocio.ServicioInfo;
 import Persistencia.Conexion;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -36,6 +43,8 @@ public class PagoVista extends javax.swing.JFrame {
     private ControlPago controlPago = new ControlPago();
     private ControlReparacion controlReparacion = new ControlReparacion();
     private ControlVehiculo controlVehiculo = new ControlVehiculo();
+    private ControlServicio controlServicio = new ControlServicio();
+    private ControlReparacionServicio controlReparacionServicio = new ControlReparacionServicio();
 
     /**
      * Creates new form PagoVista
@@ -56,17 +65,24 @@ public class PagoVista extends javax.swing.JFrame {
 
         });
 
+        // En el constructor de la clase PagoVista
+        cmbPlaca.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent evt) {
+                cmbPlacaItemStateChanged(evt);  // Llamas al método cuando el item cambia
+            }
+        });
+
     }
-    
+
     private void cargarPlacas() {
-    // Limpia el combo box antes de cargar nuevos datos
-    cmbPlaca.removeAllItems();
-    
-    List<Vehiculo> listaVehiculo = controlVehiculo.obtenerTodosLosVehiculos();
-    for (Vehiculo vehiculo : listaVehiculo) {
-        cmbPlaca.addItem(vehiculo.getPlaca());
+        // Limpia el combo box antes de cargar nuevos datos
+        cmbPlaca.removeAllItems();
+
+        List<Vehiculo> listaVehiculo = controlVehiculo.obtenerTodosLosVehiculos();
+        for (Vehiculo vehiculo : listaVehiculo) {
+            cmbPlaca.addItem(vehiculo.getPlaca());
+        }
     }
-}
 
     private void cargarDatosPagos() {
         // Modelo de la tabla con columnas Nombre y RFC
@@ -166,7 +182,6 @@ public class PagoVista extends javax.swing.JFrame {
 
         // Crear el objeto Pago con la reparación encontrada
         Pago pago = new Pago(Double.parseDouble(total), metodoPago, anio, reparacionEncontrada);
-        
 
         try {
             controlPago.agregarPago(pago);
@@ -175,6 +190,68 @@ public class PagoVista extends javax.swing.JFrame {
             cargarDatosPagos();
         } catch (Exception e) {
             System.out.println("Error al registrar el Pago: " + e.getMessage());
+        }
+    }
+
+    private void cargarDatosReparacion() {
+        // Obtén la placa seleccionada
+        String placaSeleccionada = (String) cmbPlaca.getSelectedItem();
+
+        if (placaSeleccionada == null || placaSeleccionada.isEmpty()) {
+            limpiarCampos(); // Limpia los campos si no hay selección
+            return;
+        }
+
+        // Obtén la reparación asociada a la placa
+        Reparacion reparacion = controlReparacion.obtenerReparacionPorPlaca(placaSeleccionada);
+
+        if (reparacion != null) {
+            // Usa ControlReparacionServicio para obtener los servicios asociados
+            List<Servicio> servicios = controlReparacionServicio.obtenerServiciosPorReparacion(reparacion.getId());
+
+            StringBuilder serviciosTexto = new StringBuilder();
+            double total = 0;
+
+            for (Servicio servicio : servicios) {
+                serviciosTexto.append(servicio.getDescripcion()).append("\n");
+                total += servicio.getCosto();
+            }
+
+            // Mostrar datos en los campos de texto
+            txtServicios.setText(serviciosTexto.toString());
+            txtTotal.setText(String.valueOf(total));
+
+            // Bloquear campos para que no puedan editarse
+            txtServicios.setEditable(false);
+            txtTotal.setEditable(false);
+        } else {
+            // Si no se encuentra reparación, limpia los campos
+            limpiarCampos();
+            JOptionPane.showMessageDialog(this, "No se encontraron servicios para la placa seleccionada.");
+        }
+    }
+
+    private void cmbPlacaItemStateChanged(java.awt.event.ItemEvent evt) {
+        // Obtener la placa seleccionada del ComboBox
+        String placaSeleccionada = (String) cmbPlaca.getSelectedItem();
+        System.out.println("Placa seleccionada: " + placaSeleccionada); // Verifica que la placa está siendo seleccionada
+
+        // Llamar al método del Controlador para obtener los servicios y costos asociados a la placa
+        ServicioInfo servicioInfo = controlServicio.obtenerServiciosPorPlaca(placaSeleccionada);
+
+        // Verificar si hay servicios asociados
+        if (servicioInfo != null && servicioInfo.getDescripcion() != null) {
+            // Si hay servicios, actualizar los TextFields con la descripción y el costo total
+            txtServicios.setText(servicioInfo.getDescripcion());
+            txtTotal.setText(String.valueOf(servicioInfo.getCostoTotal()));
+
+            // Hacer los TextFields no editables
+            txtServicios.setEditable(false);
+            txtTotal.setEditable(false);
+        } else {
+            // Si no hay servicios asociados, limpiar los TextFields
+            txtServicios.setText("");
+            txtTotal.setText("");
         }
     }
 
@@ -256,40 +333,40 @@ public class PagoVista extends javax.swing.JFrame {
         jPanel1.add(btnRegresar1);
         btnRegresar1.setBounds(1106, 24, 70, 70);
         jPanel1.add(txtServicios);
-        txtServicios.setBounds(476, 165, 700, 40);
+        txtServicios.setBounds(480, 240, 700, 40);
 
         lblServicios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Servicios.png"))); // NOI18N
         jPanel1.add(lblServicios);
-        lblServicios.setBounds(476, 211, 138, 28);
+        lblServicios.setBounds(480, 290, 138, 28);
         jPanel1.add(txtTotal);
-        txtTotal.setBounds(476, 269, 700, 39);
+        txtTotal.setBounds(480, 340, 700, 39);
 
         cmbMetodoPago.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
         jPanel1.add(cmbMetodoPago);
-        cmbMetodoPago.setBounds(476, 372, 340, 40);
+        cmbMetodoPago.setBounds(480, 440, 340, 40);
 
         lblTotal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Total.png"))); // NOI18N
         jPanel1.add(lblTotal);
-        lblTotal.setBounds(476, 314, 77, 28);
+        lblTotal.setBounds(480, 390, 77, 28);
 
         lblMetodoDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/MetodoDePago.png"))); // NOI18N
         jPanel1.add(lblMetodoDePago);
-        lblMetodoDePago.setBounds(476, 418, 226, 36);
+        lblMetodoDePago.setBounds(480, 490, 226, 36);
         jPanel1.add(txtAnio);
-        txtAnio.setBounds(836, 372, 340, 40);
+        txtAnio.setBounds(870, 450, 340, 40);
 
         cmbPlaca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel1.add(cmbPlaca);
-        cmbPlaca.setBounds(480, 500, 330, 40);
+        cmbPlaca.setBounds(480, 140, 330, 40);
 
         lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Fecha.png"))); // NOI18N
         jPanel1.add(lblFecha);
-        lblFecha.setBounds(836, 426, 82, 28);
+        lblFecha.setBounds(870, 500, 82, 28);
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Placa.png"))); // NOI18N
         jPanel1.add(jLabel7);
-        jLabel7.setBounds(480, 550, 84, 28);
+        jLabel7.setBounds(480, 190, 84, 28);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
         jPanel1.add(jLabel11);

@@ -5,9 +5,11 @@
 package Negocio;
 
 import Dominio.ReparacionServicio;
+import Dominio.Servicio;
 import Persistencia.Conexion;
 import Persistencia.ReparacionServicioDAO;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +17,8 @@ import java.util.List;
  * @author Oscar
  */
 public class ControlReparacionServicio {
-     private ReparacionServicioDAO reparacionServicioDAO;
+
+    private ReparacionServicioDAO reparacionServicioDAO;
 
     public ControlReparacionServicio() {
         this.reparacionServicioDAO = new ReparacionServicioDAO(Conexion.getConnection());
@@ -45,4 +48,18 @@ public class ControlReparacionServicio {
     public List<ReparacionServicio> obtenerTodasLasReparacionesServicios() {
         return reparacionServicioDAO.obtenerTodos();
     }
+
+    public List<Servicio> obtenerServiciosPorReparacion(long idReparacion) {
+        // Obtener las relaciones de ReparacionServicio usando el idReparacion de tipo long
+        List<ReparacionServicio> relaciones = reparacionServicioDAO.obtenerPorIdReparacion(idReparacion);
+        List<Servicio> servicios = new ArrayList<>();
+
+        // Iterar sobre las relaciones y agregar los servicios a la lista
+        for (ReparacionServicio relacion : relaciones) {
+            servicios.add(relacion.getServicio());
+        }
+
+        return servicios;
+    }
+
 }

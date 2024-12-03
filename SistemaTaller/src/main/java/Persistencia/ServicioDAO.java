@@ -4,9 +4,11 @@
  */
 package Persistencia;
 
+import Dominio.Reparacion;
 import IPersistencia.IPersistencia;
 import Dominio.ReparacionServicio;
 import Dominio.Servicio;
+import Dominio.Vehiculo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase para la gestión de operaciones CRUD de la entidad Servicio utilizando JDBC.
+ * Clase para la gestión de operaciones CRUD de la entidad Servicio utilizando
+ * JDBC.
  */
 public class ServicioDAO implements IPersistencia<Servicio> {
+
     private Connection conexion;
 
     public ServicioDAO(Connection conexion) {
@@ -42,7 +46,6 @@ public class ServicioDAO implements IPersistencia<Servicio> {
                 int servicioId = generatedKeys.getInt(1);  // Cambiado a int
                 entity.setId_servicio(servicioId); // Asignar ID al objeto Servicio
 
-                
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al agregar el servicio", e);
@@ -68,7 +71,6 @@ public class ServicioDAO implements IPersistencia<Servicio> {
                 stmtDeleteReparacionServicio.executeUpdate();
             }
 
-            
         } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar el servicio", e);
         }
@@ -95,8 +97,6 @@ public class ServicioDAO implements IPersistencia<Servicio> {
         }
     }
 
- 
- 
     public Servicio obtenerPorId(int id) {  // Cambiado a int
         String sqlServicio = "SELECT * FROM Servicios WHERE id_servicio = ?";  // Cambiado a id_servicio
         String sqlReparacionServicio = "SELECT * FROM Reparaciones_Servicios WHERE id_servicio = ?";
@@ -113,15 +113,12 @@ public class ServicioDAO implements IPersistencia<Servicio> {
                 servicio.setDescripcion(rsServicio.getString("descripcion"));
                 servicio.setCosto(rsServicio.getDouble("costo"));
 
-               
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al obtener el servicio por ID", e);
         }
         return servicio;
     }
-
-
 
     @Override
     public List<Servicio> obtenerTodos() {
@@ -145,6 +142,33 @@ public class ServicioDAO implements IPersistencia<Servicio> {
         return servicios;
     }
 
+    public List<Servicio> obtenerServiciosPorPlaca(String placa) {
+        List<Servicio> servicios = new ArrayList<>();
+
+        // SQL ajustado para usar la placa como referencia
+        String sql = "SELECT s.descripcion, s.costo "
+                + "FROM servicios s "
+                + "JOIN reparaciones_servicios sr ON s.id_servicio = sr.id_servicio "
+                + "JOIN reparaciones r ON r.id = sr.id_reparacion "
+                + "JOIN vehiculos v ON v.placa = r.placa_vehiculo "
+                + "WHERE v.placa = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, placa);  // Establecemos la placa como parámetro en la consulta
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String descripcion = rs.getString("descripcion");
+                double costo = rs.getDouble("costo");
+                servicios.add(new Servicio(descripcion, costo));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return servicios;
+    }
+
     @Override
     public void eliminar(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -155,4 +179,3 @@ public class ServicioDAO implements IPersistencia<Servicio> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
-
