@@ -6,19 +6,14 @@ package Presentacion;
 
 import Dominio.Cliente;
 import Dominio.Pago;
-import Dominio.Reparacion;
 import Dominio.ReparacionServicio;
 import Dominio.Servicio;
-import Dominio.Vehiculo;
 import Negocio.ControlPago;
 import Negocio.ControlReparacion;
 import Negocio.ControlReparacionServicio;
 import Negocio.ControlServicio;
 import Negocio.ControlVehiculo;
-import Negocio.ServicioInfo;
 import Persistencia.Conexion;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -28,8 +23,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -45,6 +38,8 @@ public class PagoVista extends javax.swing.JFrame {
     private ControlVehiculo controlVehiculo = new ControlVehiculo();
     private ControlServicio controlServicio = new ControlServicio();
     private ControlReparacionServicio controlReparacionServicio = new ControlReparacionServicio();
+    private Boolean reparaciones = true;
+    private int reparacion = 0;
 
     /**
      * Creates new form PagoVista
@@ -55,46 +50,55 @@ public class PagoVista extends javax.swing.JFrame {
 
         // Abre la conexión aquí
         this.conexion = Conexion.getConnection();
-        cargarDatosPagos();
-        cargarPlacas();
-        tblPagos.addMouseListener(new MouseAdapter() {
+        cargarDatosReparaciones();
+        tblReparaciones.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                tablaPagosMouseClicked(evt);
+                tablaReparacionesMouseClicked(evt);
             }
 
         });
-
-        // En el constructor de la clase PagoVista
-        cmbPlaca.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent evt) {
-                cmbPlacaItemStateChanged(evt);  // Llamas al método cuando el item cambia
-            }
-        });
-
     }
 
-    private void cargarPlacas() {
-        // Limpia el combo box antes de cargar nuevos datos
-        cmbPlaca.removeAllItems();
+    private void agregarTotal(double cantidad) {
+        if (txtTotal.getText().equals("")) {
+            txtTotal.setText((cantidad) + "");
+        } else {
+            txtTotal.setText((Double.parseDouble(txtTotal.getText()) + cantidad) + "");
+        }
+    }
 
-        List<Vehiculo> listaVehiculo = controlVehiculo.obtenerTodosLosVehiculos();
-        for (Vehiculo vehiculo : listaVehiculo) {
-            cmbPlaca.addItem(vehiculo.getPlaca());
+    private void tablaReparacionesMouseClicked(MouseEvent evt) {
+        if (reparaciones) {
+            int filaSeleccionada = tblReparaciones.getSelectedRow();
+            txtServicios.setText("");
+            txtTotal.setText("");
+            if (filaSeleccionada >= 0) {
+                reparacion = Integer.parseInt(tblReparaciones.getValueAt(filaSeleccionada, 0).toString());
+
+                for (ReparacionServicio reparacionServicio : controlReparacionServicio.obtenerTodasLasReparacionesServicios()) {
+                    if (reparacion == reparacionServicio.getReparacion().getId()) {
+                        Servicio temp = controlServicio.obtenerServicioPorId(reparacionServicio.getServicio().getId_servicio());
+                        if (!txtServicios.getText().equals("")) {
+                            txtServicios.setText(txtServicios.getText() + ", " + temp.getDescripcion());
+                        } else {
+                            txtServicios.setText(temp.getDescripcion());
+                        }
+                        agregarTotal(temp.getCosto());
+                    }
+                }
+            }
         }
     }
 
     private void cargarDatosPagos() {
-        // Modelo de la tabla con columnas Nombre y RFC
         DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Id", "Fecha", "Total"}, 0);
 
         try {
-            // Usa la conexión existente
             String consultaSQL = "SELECT ID, Fecha ,Total FROM pagos";
-            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL); // Usa la conexión de la clase
+            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL);
             ResultSet rs = ps.executeQuery();
 
-            // Agrega cada fila de la base de datos al modelo de la tabla
             while (rs.next()) {
                 int ID = rs.getInt("ID");
                 Date fecha = rs.getDate("Fecha");
@@ -111,32 +115,54 @@ public class PagoVista extends javax.swing.JFrame {
             System.out.println("Error al cargar los datos de clientes");
         }
 
-        // Asigna el modelo a la tabla
-        tblPagos.setModel(modeloTabla);
+        tblReparaciones.setModel(modeloTabla);
 
     }
 
-    private void tablaPagosMouseClicked(MouseEvent evt) {
-//        int filaSeleccionada = tblPagos.getSelectedRow();
-//        if (filaSeleccionada >= 0) {
-//            String rfc = tblPagos.getValueAt(filaSeleccionada, 1).toString(); // Asumiendo que el RFC está en la segunda columna
-//            Pago pago = controlPago.obtenerClientePorRfc(rfc); // Método que debes implementar
-//
-//            if (cliente != null) {
-//                // Cargar los datos del cliente en los campos de texto
-//                txtRFC.setText(cliente.getRfc());
-//                txtNombre.setText(cliente.getNombre());
-//                txtCorreo.setText(cliente.getCorreo());
-//                txtTelefono.setText(cliente.getTelefono());
-//                txtCalle.setText(cliente.getDomicilio().getCalle());
-//                txtColonia.setText(cliente.getDomicilio().getColonia());
-//                txtNumero.setText(cliente.getDomicilio().getNumero());
-//                txtFechaN.setDate(cliente.getFechaNacimiento());
-//            } else {
-//                System.out.println("Cliente no encontrado con RFC: " + rfc);
-//                limpiarCampos(); // Limpiar campos si no se encuentra cliente
-//            }
-//        }
+    private void cargarDatosReparaciones() {
+        // Modelo de la tabla con columnas Nombre y RFC
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Orden", "Placa", "Cliente"}, 0);
+
+        try {
+            // Usa la conexión existente
+            String consultaSQL = "SELECT ID, placa_vehiculo FROM reparaciones";
+            PreparedStatement ps = this.conexion.prepareStatement(consultaSQL);
+            ResultSet rs = ps.executeQuery();
+
+            // Agrega cada fila de la base de datos al modelo de la tabla
+            while (rs.next()) {
+                int ID = rs.getInt("ID");
+                String placa = rs.getString("placa_vehiculo");
+
+                Cliente cliente = controlVehiculo.obtenerVehiculoPorPlaca(placa).getCliente();
+
+                if (controlPago.obtenerPagoPorIdReparacion(ID) == null) {
+                    modeloTabla.addRow(new Object[]{ID, placa, cliente.getRfc()});
+                }
+            }
+
+            // Cierra el ResultSet y el PreparedStatement
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar los datos de clientes");
+        }
+
+        // Asigna el modelo a la tabla
+        tblReparaciones.setModel(modeloTabla);
+
+    }
+
+    private void cambiarTabla() {
+        if (reparaciones) {
+            cargarDatosPagos();
+            limpiarCampos();
+        } else {
+            cargarDatosReparaciones();
+        }
+        reparaciones = !reparaciones;
     }
 
     public void closeConnection() {
@@ -154,104 +180,30 @@ public class PagoVista extends javax.swing.JFrame {
         txtTotal.setText("");
         cmbMetodoPago.getItemAt(0);
         txtAnio.setDate(null);
+        reparacion = 0;
     }
 
     private void registrarPago() {
-        String servicios = txtServicios.getText();
         String total = txtTotal.getText();
         String metodoPago = String.valueOf(cmbMetodoPago.getSelectedIndex());
         LocalDateTime anio = txtAnio.getDate().toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
 
-        if (servicios.isEmpty() || total.isEmpty() || anio == null) {
+        if (reparacion == 0 || total.isEmpty() || anio == null) {
             System.out.println("Por favor, complete todos los campos.");
             return;
         }
 
-        // Utiliza el nuevo método para obtener la reparación por placa
-        System.out.println("Placa ingresada: " + (String) cmbPlaca.getSelectedItem());
-
-        Reparacion reparacionEncontrada = controlReparacion.obtenerReparacionPorPlaca((String) cmbPlaca.getSelectedItem());
-
-        if (reparacionEncontrada == null) {
-            JOptionPane.showMessageDialog(this, "Placa inexistente");
-            System.out.println("Servicios no encontrados con el especificado.");
-            return;
-        }
-
-        // Crear el objeto Pago con la reparación encontrada
-        Pago pago = new Pago(Double.parseDouble(total), metodoPago, anio, reparacionEncontrada);
+        Pago pago = new Pago(Double.valueOf(total), metodoPago, anio, controlReparacion.obtenerReparacionPorId(reparacion));
 
         try {
             controlPago.agregarPago(pago);
             JOptionPane.showMessageDialog(this, "Pago registrado exitosamente.");
             limpiarCampos();
-            cargarDatosPagos();
+            cargarDatosReparaciones();
         } catch (Exception e) {
             System.out.println("Error al registrar el Pago: " + e.getMessage());
-        }
-    }
-
-    private void cargarDatosReparacion() {
-        // Obtén la placa seleccionada
-        String placaSeleccionada = (String) cmbPlaca.getSelectedItem();
-
-        if (placaSeleccionada == null || placaSeleccionada.isEmpty()) {
-            limpiarCampos(); // Limpia los campos si no hay selección
-            return;
-        }
-
-        // Obtén la reparación asociada a la placa
-        Reparacion reparacion = controlReparacion.obtenerReparacionPorPlaca(placaSeleccionada);
-
-        if (reparacion != null) {
-            // Usa ControlReparacionServicio para obtener los servicios asociados
-            List<Servicio> servicios = controlReparacionServicio.obtenerServiciosPorReparacion(reparacion.getId());
-
-            StringBuilder serviciosTexto = new StringBuilder();
-            double total = 0;
-
-            for (Servicio servicio : servicios) {
-                serviciosTexto.append(servicio.getDescripcion()).append("\n");
-                total += servicio.getCosto();
-            }
-
-            // Mostrar datos en los campos de texto
-            txtServicios.setText(serviciosTexto.toString());
-            txtTotal.setText(String.valueOf(total));
-
-            // Bloquear campos para que no puedan editarse
-            txtServicios.setEditable(false);
-            txtTotal.setEditable(false);
-        } else {
-            // Si no se encuentra reparación, limpia los campos
-            limpiarCampos();
-            JOptionPane.showMessageDialog(this, "No se encontraron servicios para la placa seleccionada.");
-        }
-    }
-
-    private void cmbPlacaItemStateChanged(java.awt.event.ItemEvent evt) {
-        // Obtener la placa seleccionada del ComboBox
-        String placaSeleccionada = (String) cmbPlaca.getSelectedItem();
-        System.out.println("Placa seleccionada: " + placaSeleccionada); // Verifica que la placa está siendo seleccionada
-
-        // Llamar al método del Controlador para obtener los servicios y costos asociados a la placa
-        ServicioInfo servicioInfo = controlServicio.obtenerServiciosPorPlaca(placaSeleccionada);
-
-        // Verificar si hay servicios asociados
-        if (servicioInfo != null && servicioInfo.getDescripcion() != null) {
-            // Si hay servicios, actualizar los TextFields con la descripción y el costo total
-            txtServicios.setText(servicioInfo.getDescripcion());
-            txtTotal.setText(String.valueOf(servicioInfo.getCostoTotal()));
-
-            // Hacer los TextFields no editables
-            txtServicios.setEditable(false);
-            txtTotal.setEditable(false);
-        } else {
-            // Si no hay servicios asociados, limpiar los TextFields
-            txtServicios.setText("");
-            txtTotal.setText("");
         }
     }
 
@@ -267,8 +219,8 @@ public class PagoVista extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lblPagos = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblPagos = new javax.swing.JTable();
-        btnPagar = new javax.swing.JButton();
+        tblReparaciones = new javax.swing.JTable();
+        btnCambio = new javax.swing.JButton();
         btnRegresar1 = new javax.swing.JLabel();
         txtServicios = new javax.swing.JTextField();
         lblServicios = new javax.swing.JLabel();
@@ -277,15 +229,14 @@ public class PagoVista extends javax.swing.JFrame {
         lblTotal = new javax.swing.JLabel();
         lblMetodoDePago = new javax.swing.JLabel();
         txtAnio = new com.toedter.calendar.JDateChooser();
-        cmbPlaca = new javax.swing.JComboBox<>();
         lblFecha = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        btnPagar = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1221, 850));
-        setMinimumSize(new java.awt.Dimension(1221, 850));
-        setPreferredSize(new java.awt.Dimension(1221, 850));
+        setMaximumSize(new java.awt.Dimension(1263, 700));
+        setMinimumSize(new java.awt.Dimension(1263, 700));
+        setPreferredSize(new java.awt.Dimension(1263, 700));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(248, 242, 206));
@@ -295,9 +246,9 @@ public class PagoVista extends javax.swing.JFrame {
         jPanel1.add(lblPagos);
         lblPagos.setBounds(50, 24, 251, 44);
 
-        tblPagos.setBackground(new java.awt.Color(216, 217, 137));
-        tblPagos.setForeground(new java.awt.Color(73, 61, 63));
-        tblPagos.setModel(new javax.swing.table.DefaultTableModel(
+        tblReparaciones.setBackground(new java.awt.Color(216, 217, 137));
+        tblReparaciones.setForeground(new java.awt.Color(73, 61, 63));
+        tblReparaciones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -308,10 +259,61 @@ public class PagoVista extends javax.swing.JFrame {
                 "Orden", "Placa", "Cliente"
             }
         ));
-        jScrollPane1.setViewportView(tblPagos);
+        jScrollPane1.setViewportView(tblReparaciones);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(50, 99, 393, 677);
+        jScrollPane1.setBounds(50, 99, 393, 450);
+
+        btnCambio.setBackground(new java.awt.Color(73, 61, 63));
+        btnCambio.setFont(new java.awt.Font("Sugo Pro Classic Trial", 0, 24)); // NOI18N
+        btnCambio.setForeground(new java.awt.Color(255, 255, 255));
+        btnCambio.setText("CAMBIAR TABLA");
+        btnCambio.setBorderPainted(false);
+        btnCambio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambioActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnCambio);
+        btnCambio.setBounds(100, 570, 280, 50);
+
+        btnRegresar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
+        btnRegresar1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRegresar1MouseClicked(evt);
+            }
+        });
+        jPanel1.add(btnRegresar1);
+        btnRegresar1.setBounds(1160, 10, 70, 70);
+
+        txtServicios.setEnabled(false);
+        jPanel1.add(txtServicios);
+        txtServicios.setBounds(530, 110, 700, 40);
+
+        lblServicios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Servicios.png"))); // NOI18N
+        jPanel1.add(lblServicios);
+        lblServicios.setBounds(530, 160, 138, 28);
+        jPanel1.add(txtTotal);
+        txtTotal.setBounds(530, 210, 310, 39);
+
+        cmbMetodoPago.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
+        jPanel1.add(cmbMetodoPago);
+        cmbMetodoPago.setBounds(880, 210, 350, 40);
+
+        lblTotal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Total.png"))); // NOI18N
+        jPanel1.add(lblTotal);
+        lblTotal.setBounds(530, 260, 77, 28);
+
+        lblMetodoDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/MetodoDePago.png"))); // NOI18N
+        jPanel1.add(lblMetodoDePago);
+        lblMetodoDePago.setBounds(880, 260, 230, 36);
+        jPanel1.add(txtAnio);
+        txtAnio.setBounds(530, 320, 310, 40);
+
+        lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Fecha.png"))); // NOI18N
+        jPanel1.add(lblFecha);
+        lblFecha.setBounds(530, 370, 90, 28);
 
         btnPagar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/PagosBoton.png"))); // NOI18N
         btnPagar.setBorderPainted(false);
@@ -322,55 +324,11 @@ public class PagoVista extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnPagar);
-        btnPagar.setBounds(896, 704, 280, 72);
-
-        btnRegresar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/Regresar.png"))); // NOI18N
-        btnRegresar1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnRegresar1MouseClicked(evt);
-            }
-        });
-        jPanel1.add(btnRegresar1);
-        btnRegresar1.setBounds(1106, 24, 70, 70);
-        jPanel1.add(txtServicios);
-        txtServicios.setBounds(480, 240, 700, 40);
-
-        lblServicios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Servicios.png"))); // NOI18N
-        jPanel1.add(lblServicios);
-        lblServicios.setBounds(480, 290, 138, 28);
-        jPanel1.add(txtTotal);
-        txtTotal.setBounds(480, 340, 700, 39);
-
-        cmbMetodoPago.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
-        jPanel1.add(cmbMetodoPago);
-        cmbMetodoPago.setBounds(480, 440, 340, 40);
-
-        lblTotal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Total.png"))); // NOI18N
-        jPanel1.add(lblTotal);
-        lblTotal.setBounds(480, 390, 77, 28);
-
-        lblMetodoDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/MetodoDePago.png"))); // NOI18N
-        jPanel1.add(lblMetodoDePago);
-        lblMetodoDePago.setBounds(480, 490, 226, 36);
-        jPanel1.add(txtAnio);
-        txtAnio.setBounds(870, 450, 340, 40);
-
-        cmbPlaca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(cmbPlaca);
-        cmbPlaca.setBounds(480, 140, 330, 40);
-
-        lblFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesPagos/Fecha.png"))); // NOI18N
-        jPanel1.add(lblFecha);
-        lblFecha.setBounds(870, 500, 82, 28);
-
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesVehiculo/Placa.png"))); // NOI18N
-        jPanel1.add(jLabel7);
-        jLabel7.setBounds(480, 190, 84, 28);
+        btnPagar.setBounds(940, 460, 280, 72);
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ImagenesCliente/fondo.png"))); // NOI18N
         jPanel1.add(jLabel11);
-        jLabel11.setBounds(230, 70, 740, 720);
+        jLabel11.setBounds(270, 90, 740, 710);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -380,22 +338,25 @@ public class PagoVista extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 710, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
-        // TODO add your handling code here:
-        this.registrarPago();
-    }//GEN-LAST:event_btnPagarActionPerformed
+    private void btnCambioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambioActionPerformed
+        cambiarTabla();
+    }//GEN-LAST:event_btnCambioActionPerformed
 
     private void btnRegresar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegresar1MouseClicked
         MenuVista clienteVista = new MenuVista();
         clienteVista.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegresar1MouseClicked
+
+    private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
+        registrarPago();
+    }//GEN-LAST:event_btnPagarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -433,12 +394,11 @@ public class PagoVista extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCambio;
     private javax.swing.JButton btnPagar;
     private javax.swing.JLabel btnRegresar1;
     private javax.swing.JComboBox<String> cmbMetodoPago;
-    private javax.swing.JComboBox<String> cmbPlaca;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFecha;
@@ -446,7 +406,7 @@ public class PagoVista extends javax.swing.JFrame {
     private javax.swing.JLabel lblPagos;
     private javax.swing.JLabel lblServicios;
     private javax.swing.JLabel lblTotal;
-    private javax.swing.JTable tblPagos;
+    private javax.swing.JTable tblReparaciones;
     private com.toedter.calendar.JDateChooser txtAnio;
     private javax.swing.JTextField txtServicios;
     private javax.swing.JTextField txtTotal;
